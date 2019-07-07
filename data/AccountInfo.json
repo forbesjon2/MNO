@@ -1,0 +1,19 @@
+{
+    "name":"Marshall Keagan",
+    "subName":"Biological Systems Engineering",
+    "alias": "@mkagan",
+    "description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt exptur?",
+    "imageURI": "https://www.wilsoncenter.org/sites/default/files/styles/450x550-scale-crop/public/18457363298_3ac27e78fb_o.jpg?itok=9nrUxEfI",
+    "followers":12,
+    "following":29,
+    "lastLoggedIn":"",
+    "sessionToken":"",
+    "groups":[
+        {"name":"UNL", "rooms":[{"name":"@home", "followers": 12}, {"name":"@OS2G", "followers":40}]},
+        {"name":"UNO", "rooms":[{"name":"@home", "followers": 123}, {"name":"@YAL", "followers":32}]}],
+    "schedule":[
+        {"2019-09-23":[{"School day off": "all day"}, {"Auction":"all day"}]},
+        {"2019-09-24":[{"School day off": "all day"}, {"Auction":"all day"}]},
+        {"2019-09-25":[{"School day off": "all day"}, {"Auction":"all day"}]},
+        {"2019-09-26":[{"School day off": "all day"}, {"Auction":"all day"}]}]
+}

@@ -1,0 +1,29 @@
+{
+    "dates":[
+        {"date":"2019-06-01", "events":[
+            {"heading":"School day off", "description":"all day no school beacause there is snow", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]},   
+            {"heading":"Shred white & blue", "description":"So where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you goingSo where are you going ", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-02", "events":[
+            {"heading":"party at the union", "description": "this is a rager party. Bring baseball bats", "start_time":"14:00", "end_time":"15:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"e1","description":"hey its e one", "start_time":"10:00", "end_time":"11:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-03", "events":[
+            {"heading":"Chakra Attack", "description": " Keep reaching for the heavens, and when you get there, be careful, as there is no oxygen in the heavens and the upper regions of the stratosphere and you will die, I promise you, you will die. Ommm. You cannot go to heaven as a human, you can only go to heaven as a damn angel! You hear me?", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"Event at the union", "description":"this event takes place at the union", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-04", "events":[
+            {"heading":"another title", "description": "another description never gets old", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"Fall bust", "description":"what does that even mean?", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-05", "events":[
+            {"heading":"os1g meetup", "description": "descriptions required.io", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"Square Dance", "description":"the eminem show", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-06", "events":[
+            {"heading":"School day off", "description": "all day", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+        {"heading":"Dr ray De Angelo Harris", "description":"Listen, when we're getting through turbulence, I grab a titty! That's the first thing I'm thinking about because that's where my mind goes sometimes. If we're gonna die - we're gonna go down in a fetal position. Fetuses want titties! I ain't sucking no damn thumb! I'm going out the same way I came in - everything in the universe is about two. And that again is a duality. When one become two, problems can arise. I am very clear about this in my book. Cheryl, what's the name of the goddamn book?", "start_time":"10:00", "end_time":"15:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"heres some text except its not a short title", "description":"short description", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-07", "events":[
+            {"heading":"Why National Public Radio shouldnt exist", "description": "Anal lisa quinn, a liberal rabble-rouser, uses a publically funded platform to trash america's founding principles", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+            {"heading":"iphone 12", "description":"politicaly charged", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]},
+        {"date":"2019-06-08", "events":[
+            {"heading":"Never miss another game", "description": "seriously", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}, 
+        {"heading":"e3", "description":"dont put times in the description - legendJerry", "start_time":"9:00", "end_time":"18:00", "location":"143 North st", "attending":["23ifj", "392qhfn"]}]}
+    ]
+}
