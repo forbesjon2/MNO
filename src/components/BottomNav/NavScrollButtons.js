@@ -59,15 +59,15 @@ function navItemPresed(currentID, thisInstance, classInstance){
     //handle recurrent presses
     if(pageID == currentID && expandable == true) {
         if(dist._value == 60){
-            classInstance.fastTransition(navHeight[pageID]);
+            classInstance.moveNav(navHeight[pageID], true);
             classInstance.colorCalculator(true, 1);
         }else{
-            classInstance.fastTransition(60);
+            classInstance.moveNav(60, true);
             classInstance.colorCalculator(true, 0);
         }
         //index of -1 if DNE
     }else{
-        classInstance.fastTransition(60);
+        classInstance.moveNav(60, true);
         classInstance.colorCalculator(true, 0);
         /**
          * PAGE INDEX SUMMARY

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, Animated, StyleSheet, PanResponder, Dimensions, Text, SafeAreaView} from 'react-native';
+import {ScrollView, View, Animated, StyleSheet, PanResponder, Dimensions, Text} from 'react-native';
 import { connect } from "react-redux";
 import NavScrollButtons from "./NavScrollButtons";
 import NavContent from "./NavContent";
@@ -29,7 +29,7 @@ class Nav extends React.Component{
                     let percent = (currentHeight - minHeight)/(navHeight[this.props.pageID]-minHeight);
                     this.setState({distPercent: percent});
                     this.colorCalculator(false, 0);
-                    this.fastTransition(currentHeight);
+                    this.moveNav(currentHeight, false);
                 }
             },
             onPanResponderRelease: (evt, gesture) => {
@@ -38,9 +38,9 @@ class Nav extends React.Component{
                     let percent = (currentHeight - minHeight)/(navHeight[this.props.pageID]-minHeight);
                     if(percent > 0.5){
                         this.setState({distPercent: 1});
-                        this.fastTransition(navHeight[this.props.pageID]);
+                        this.moveNav(navHeight[this.props.pageID], true);
                     }else{
-                        this.fastTransition(minHeight);
+                        this.moveNav(minHeight, true);
                         this.setState({distPercent:0});
                     }
                 }
@@ -95,18 +95,27 @@ class Nav extends React.Component{
      * duration = how long you want the transistion to last in ms
      *          this is usually at 500 for normal or 200 for fast
      */
-    fastTransition(value){
+    moveNav(value, transition){
         const {dist} = this.state;
         const {navHeight} = this.props;
         const minHeight = 60;
-        Animated.timing(
-            dist,{
-            toValue: value,
-            duration: 200,}
-        ).start();
+        if(transition){
+            Animated.timing(
+                dist,{
+                toValue: value,
+                duration: 200,}
+            ).start();
+        }else{
+            Animated.timing(
+                dist,{
+                toValue: value,
+                duration: 0,}
+            ).start();
+        }
         let percent = (value - minHeight)/(navHeight[this.props.pageID]-minHeight);
         this.colorCalculator(true, percent);
     }
+
 
     render(){
         const {dist} = this.state;

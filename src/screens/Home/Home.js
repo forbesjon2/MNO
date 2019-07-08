@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Animated, Image, StyleSheet, TouchableWithoutFeedback, ScrollView, Dimensions} from 'react-native';
+import {Text, View, Animated, Image, StyleSheet, TouchableWithoutFeedback, ScrollView, Dimensions, PanResponder} from 'react-native';
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import HomeComponent from './HomeComponent';
@@ -8,10 +8,30 @@ import NavigationService from "../../navigation/NavigationService";
 class Home extends React.Component{
     constructor(props){
         super(props);
+
+
+        /*************************************************************************
+         * panResponder handles
+         * Some redux variables need the latest value. in which case it has to be
+         * referenced at that instance
+         *************************************************************************/
+        const panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: (evt, gesture) => true,
+            onMoveShouldSetPanResponder: (evt, gestureState) => true,
+            onPanResponderMove: (evt, gesture) => {
+                // console.log("HIH", gesture);
+            },
+            onPanResponderRelease: (evt, gesture) => {
+                // console.log("HIH", gesture);
+                
+            }
+        });
+
         this.state = {
             navExpanded: false,
             positionValue: new Animated.Value(-250),
-            mainPositionValue: new Animated.Value(0)
+            mainPositionValue: new Animated.Value(0),
+            panResponder
         }
         this.animateSidebar = this.animateSidebar.bind(this);
     }
@@ -38,8 +58,9 @@ class Home extends React.Component{
     const {homeData, currentGroup}= this.props;
     const {navState} = this.state;
     const currentGroupContent = getHomeData(homeData, currentGroup);
+    let handles = this.state.panResponder.panHandlers;
     return(
-    <View style={{flex: 1}}>
+    <View style={{flex: 1}} elevation={5} {...handles}>
     {/* The header with the (not yet functional) search and side menu feature */}
         <Animated.View style={[styles.header, {width: Dimensions.get("window").width, left:this.state.mainPositionValue}]}>
             <TouchableWithoutFeedback onPress={() => this.animateSidebar(0, 250)}>
@@ -57,7 +78,7 @@ class Home extends React.Component{
         </Animated.View>
 
 
-        <Animated.View style={{width:250, left:this.state.positionValue, top:0, bottom:0, position:"absolute", backgroundColor:"white"}}>
+        <Animated.View style={{width:250, left:this.state.positionValue, top:0, bottom:0, position:"absolute", backgroundColor:"#F8F8FA"}} elevation={0}>
         {/* This view shows general information about your account */}
         {getAccountDetails(this.props.dispatch)}
         
@@ -131,13 +152,15 @@ function getButtonList(homeData, currentGroup, dispatch){
         //generates the channel header
         let view = homeData[i]["name"];
         let isInGroup = view == current_group_view;
-        let groupListOne = [isInGroup ? {opacity: 1, color: "black"} : {opacity:0.6, color:"black"}];
-        returnObj.push(<View key={"header" + i.toString()} style={[sideListStyles.headerView]}><Ionicons name="ios-globe" style={[sideListStyles.headerIcon, groupListOne[0]]} color={"black"}/><Text style={[sideListStyles.headerText, groupListOne[0]]}>{homeData[i]["name"]}</Text></View>);
+        let iconOpacity = [isInGroup ? {opacity: 1, color: "black"} : {opacity:0.5, color:"black"}];
+        returnObj.push(<View key={"header" + i.toString()} style={[sideListStyles.headerView]}><Ionicons name="ios-globe" style={[sideListStyles.headerIcon, iconOpacity[0]]} color={"black"}/><Text style={[sideListStyles.headerText, iconOpacity[0]]}>{homeData[i]["name"]}</Text></View>);
         //Generates header contents (each room)
         for(var j in homeData[i]["rooms"]){
             let group = homeData[i]["rooms"][j]["name"];
-            let groupListTwo =  [group == current_group_room && isInGroup ? [sideListStyles.elementView, sideListStyles.elementSelected] : sideListStyles.elementView];
-            returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {dispatch({type:"SET_CURRENT_GROUP", payload: "" + view + group})}}><Text style={[sideListStyles.elementText, groupListTwo[0]]}>{homeData[i]["rooms"][j]["name"]}</Text></TouchableWithoutFeedback>);
+            var elementStyle, viewStyle;
+            [group == current_group_room && isInGroup ? elementStyle = sideListStyles.elementSelected : elementStyle = sideListStyles.elementView];
+            [group == current_group_room && isInGroup ? viewStyle = sideListStyles.selectedView : viewStyle = sideListStyles.normalView];
+            returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {dispatch({type:"SET_CURRENT_GROUP", payload: "" + view + group})}}><View style={viewStyle}><Text style={[sideListStyles.elementText, elementStyle]}>{homeData[i]["rooms"][j]["name"]}</Text></View></TouchableWithoutFeedback>);
         }
     }
     return returnObj;
@@ -264,19 +287,26 @@ const sideListStyles = StyleSheet.create({
         flexDirection:"column"
     },
     elementSelected:{
-        borderColor: "#0000ff",
-        borderBottomWidth:2,
-        borderStyle:"solid",
+        flex:1,
+        flexDirection:"row",
         color:"black",
-        opacity:1
+        opacity: 1
     },
     elementView:{
         left:20,
         flex:1,
         flexDirection:"row",
-        marginBottom:10,
         opacity:0.6
     },
+    selectedView:{
+        borderLeftWidth: 2,
+        borderLeftColor:"#0000ff",
+        marginLeft:20,
+        marginBottom:10
+    },
+    normalView:{
+        marginBottom:10,
+    }
 })
 
 

@@ -107,6 +107,7 @@ function generateBasicEvents(calendarData, currentDate){
                     "start_time":calendarData["dates"][i]["events"][j]["start_time"], 
                     "end_time":calendarData["dates"][i]["events"][j]["end_time"], 
                     "description": calendarData["dates"][i]["events"][j]["description"],
+                    "attending": calendarData["dates"][i]["events"][j]["attending"],
                     "date": currentDate});
             }}>
                         <View style={[styles.eventView]}>
