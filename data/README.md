@@ -38,7 +38,9 @@ Event
 {< date YYYY-MM-DD as string>:[{ }, { }]}
 {"2019-09-23":[{"School day off": "all day"}, {"Auction":"all day"}]},
 
-
+## GroupData.json
+Used by SchoolSearch (an init page) and the discover page.
+This is the format that a _fetch groups_ type request will return
 <br>
 
 ## AccountInfo.json

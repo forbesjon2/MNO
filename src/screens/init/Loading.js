@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, InteractionManager, Text , Button} from "react-native";
 import { connect } from "react-redux";
-import GroupView from "../../components/other/GroupView";
 import MiniCalendar from "../../components/other/MiniCalendar";
 class Loading extends React.Component{
     constructor(props){

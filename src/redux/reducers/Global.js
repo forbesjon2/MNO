@@ -11,13 +11,16 @@ export default function reducer(
         navHeight: [0, 150, 600, 500, 60, 60, 400], //not zero indexed, the leading zero is filler
         colorInverse:"#FFFFFF",
         colorNormal: "#000000",
-        //random
+
+        //page data
         notifications: [],
         calendarData:{},
         groupData:{},
+        roomData:{},
         chats:{},
         homeData:{},
         messagesHome:{},
+        
         
         //home
         homeGroups: "",
@@ -88,6 +91,8 @@ export default function reducer(
             return{...state, homeData: action.payload};
         case "SET_E":
             return{...state, messagesHome: action.payload};
+        case "SET_R":
+            return{...state, roomData: action.payload};
         case "SHOW_NAV":
             return{...state, showNav: true};
         case "HIDE_NAV":

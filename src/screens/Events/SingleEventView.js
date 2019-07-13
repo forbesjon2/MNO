@@ -23,7 +23,7 @@ export default class SingleEventView extends React.Component{
         const {navigation} = this.props;
         return(
     <ScrollView style={{flex:1}}>
-        <View style={{minHeight:200, backgroundColor:"#0A60E2"}}>
+        <View style={{minHeight:200, backgroundColor:"#5D75F7"}}>
             <TouchableWithoutFeedback title="Go back" onPress={() => this.props.navigation.goBack()}>
                 <View style={{margin:10, maxHeight: 50, maxWidth:200, flex:1, flexDirection:"row", minHeight:50}}>
                 <Ionicons name="ios-arrow-back" style={{color:"white", maxWidth:26, marginTop:4, flex:1, flexDirection:"column", fontSize:25}}/>

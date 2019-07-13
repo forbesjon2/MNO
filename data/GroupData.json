@@ -1,0 +1,8 @@
+{
+    "groups":[
+        {"uuid":"1", "name":"University of Michigan", "epithet":"UofM", "members":253, "rooms":16, "icon":"https://upload.wikimedia.org/wikipedia/commons/3/3b/Michigan_Wolverines_Logo.svg"},
+        {"uuid":"2", "name":"University of Nebraska Lincoln", "epithet":"UNL", "members":23, "rooms":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/1200px-Nebraska_Cornhuskers_logo.svg.png"},
+        {"uuid":"3", "name":"University of Nebraska Omaha", "epithet":"UNO", "members":23, "rooms":8, "icon":"https://cdn2.sportngin.com/attachments/document/0135/9674/icon_acad-clr.png"},
+        {"uuid":"6", "name":"University of Illinois Urbana-Champaign", "epithet":"UIUC", "members":23, "rooms":8, "icon":"http://2.bp.blogspot.com/-02x6pWRgZuM/UknnzdI0OYI/AAAAAAAABmk/aK2JNJ2MxoU/s1600/U+of+I+Urbana+Champaign.png"}
+    ]
+}

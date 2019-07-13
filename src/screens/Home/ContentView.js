@@ -30,7 +30,7 @@ export default class ContentView extends React.Component{
         if(this.props.type == "image"){
             Image.getSize(this.props.content, (width, height) =>{
                 var dimensionWidth = Dimensions.get("window").width
-                var tempHeight = [width > dimensionWidth ? height * (dimensionWidth / width) : height += (height * (width / dimensionWidth))]
+                var tempHeight = [width > dimensionWidth ? height * (dimensionWidth / width) : height * (width / dimensionWidth)];
                 this.setState({imgHeight: tempHeight[0]});
             }, (error) =>{
                 console.log("ERROR IN CONTENTVIEW", error);

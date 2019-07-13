@@ -49,11 +49,15 @@ const init = function* init(){
         const hd = require("../../data/HomeData.json");
         const mh = require("../../data/MessagesHome.json");
         const ai = require("../../data/AccountInfo.json");
+        const ab = require("../../data/GroupData.json");
+        const as = require("../../data/RoomData.json");
         yield put({type: "SET_A", payload: cd});
+        yield put({type: "SET_B", payload: ab});
         yield put({type: "SET_C", payload: ct});
         yield put({type: "SET_D", payload: hd});
         yield put({type: "SET_E", payload: mh});
         yield put({type: "SET_AI", payload: ai});
+        yield put({type: "SET_R", payload: as});
         yield put({type: "SET_CURRENT_GROUP", payload: "" + hd["data"][0]["name"] + hd["data"][0]["rooms"][0]["name"]});
     });
 }
