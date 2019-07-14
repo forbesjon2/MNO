@@ -14,10 +14,15 @@ import {Ionicons} from '@expo/vector-icons';
  * be hidden. Other attributes will appear but those are the general properties
  *************************************************************************/
 class Profile extends React.Component{
+    constructor(props){
+        super(props);
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+    }
     render(){
     const {accountInfo, showNav} = this.props;
     return(
-    <View style={{flex: 1, flexDirection: "column"}}>
+    <View style={{flex: 1, flexDirection: "column", backgroundColor:"white"}}>
         {generateHeader(showNav)}
         <View style={{flex:2, flexDirection:"row"}}>
             <View style={{flex:3}}>

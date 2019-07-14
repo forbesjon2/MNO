@@ -13,12 +13,7 @@ class SignIn extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            login:"Login",
-            password:"Password"
         }
-        
-        //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     redirectSignUp(){
@@ -29,7 +24,7 @@ class SignIn extends React.Component{
     <View style={styles.main}>
 
         {/* Header */}
-        <Text style={styles.header}>Welcome back.</Text>
+        <Text style={styles.header}>Enter your email to .</Text>
         <Text style={styles.subHeader}>Sign in to continue</Text>
         <Text style={[styles.subHeader, {marginBottom:60}]}>using our app</Text>
 

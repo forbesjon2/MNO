@@ -12,9 +12,8 @@ class MessagesHome extends React.Component{
     });
     constructor(props){
         super(props);
-        this.state = {
-     
-        }
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
     render(){
         var content = [];

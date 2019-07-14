@@ -7,6 +7,8 @@ import Loading from "./src/screens/init/Loading";
 import NavigationService from "./src/navigation/NavigationService";
 import * as Font from 'expo-font';
 import SignUp from './src/screens/init/SchoolSearch';
+import ValidateEmail from "./src/screens/init/ValidateEmail";
+
 class AppContent extends React.Component{
     constructor(props){
         super(props);
@@ -66,20 +68,23 @@ class AppContent extends React.Component{
                 ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                 style={{flex: 1}}/>
                 <Nav /> */}
-            <SignUp />
+            <ValidateEmail />
             </KeyboardAvoidingView>
             
             </SafeAreaView>);
         }else{
         return(
-            // <View style={{flex: 1, paddingTop:30}}>
-            //     {/* View that holds all of the main screens + nav */}
-            //     <AppRoutes
-            //     ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
-            //     style={{flex: 1}}/>
-            //     <Nav />
-            // </View>
-            <SignUp />
+            <View style={{flex: 1, paddingTop:30, backgroundColor:this.props.safeAreaBackground}}>
+            <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
+                 {/* View that holds all of the main screens + nav */}
+                 <AppRoutes
+                 ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
+                 style={{flex: 1}}/>
+                 <Nav />
+            </KeyboardAvoidingView>
+            {/* <ValidateEmail /> */}
+            </View>
+            
         );
         }
     }

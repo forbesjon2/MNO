@@ -8,6 +8,11 @@ class Settings extends React.Component{
         title: "Settings",
         header: null,
     });
+    constructor(props){
+        super(props);
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+    }
     
     render(){
         return(

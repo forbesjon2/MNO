@@ -9,9 +9,7 @@ import {Ionicons} from '@expo/vector-icons';
  * 
  * Notes:
  * the list is set up to be semi efficient using flatlist but it is a very 
- * simple implementa
- * 
- * 
+ * simple implementation
  *************************************************************************/
 class SchoolSearch extends React.Component{
     constructor(props){
@@ -34,6 +32,10 @@ class SchoolSearch extends React.Component{
         }
     }
 
+
+    /*************************************************************************
+    * This returns the JSX for each element (Group) in the flatlist.
+    *************************************************************************/
     groupView(item){
         item = JSON.parse(JSON.stringify(item));
         return(
@@ -68,18 +70,25 @@ class SchoolSearch extends React.Component{
             </View>
             
             {/* Nav Button */}
-            <TouchableWithoutFeedback style={{borderRadius:12}}>
+            <TouchableOpacity style={{borderRadius:12}}>
                 <View style={{backgroundColor:'rgba(66,54,138,0.2)', width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45, flex:1, flexDirection:"row"}}>
                     <Text style={{color:'rgba(66,54,138,1)', paddingTop:9, paddingLeft:12, fontSize:18, flex:4, flexDirection:"column"}}>Select school.</Text>
                     <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, flex:1, flexDirection:"column", alignSelf:"center"}} />
                 </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
         </View>
     </View>
         );
     }
 
-    
+    /*************************************************************************
+    * This performs operations essential for icon sizing. 
+    * 
+    * For every Group (or school) it recieves from the API, it gets & calculates 
+    * the correct dimensions for the icon.
+    * 
+    * It then appends that to the state
+    *************************************************************************/
     componentWillMount(){
         let data = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
         for(let item in data){
@@ -105,6 +114,10 @@ class SchoolSearch extends React.Component{
         }
     }
 
+    /*************************************************************************
+    * associates a key for every item in the flatlist. We use keyExtractor to 
+    * preserve the naming of 'uuid' from the API
+    *************************************************************************/
     _keyExtractor = (item, index) => item.uuid;
     
     /*************************************************************************
@@ -161,7 +174,7 @@ class SchoolSearch extends React.Component{
             renderItem={({item}) => 
             this.groupView(item)}
         />
-        <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10}}>
+        <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10, marginBottom:5}}>
             <Text style={styles.bottomPageTextEnglish}>miniowl, 2019</Text>
             {/* Find, Discover, Explore */}
             <Text style={styles.bottomPageTextJapanese}>発見、発見、探検</Text>
@@ -247,10 +260,6 @@ const groupStyles = StyleSheet.create({
         marginTop:10,
         borderRadius:12
     },
-    content:{
-        margin:15,
-
-    },
     contentText:{
         fontFamily: "Khula-Regular",
         fontSize:21,
@@ -264,12 +273,6 @@ const groupStyles = StyleSheet.create({
         paddingLeft:3,
         paddingTop:1,
         paddingBottom:4,
-    },
-    buttonIcon:{
-        alignSelf:"center",
-        color:"white",
-        fontSize:40,
-        marginRight:20,
     },
 })
 

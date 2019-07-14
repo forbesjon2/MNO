@@ -49,7 +49,8 @@ export default function reducer(
          * 
          *      SET_SAFE_AREA_BACKGROUND
          * This changes the safe area's background color. It's a component
-         * for iOS that defines a safe area to put content in. 
+         * for iOS that defines a safe area to put content in but this app
+         * also implements a rough version for android. 
          * 
          * This is outside of the notch and a little over the bottom of the 
          * screen. It's changed according to the background color of the

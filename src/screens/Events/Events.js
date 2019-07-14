@@ -19,6 +19,8 @@ class Events extends React.Component{
         super(props);
         this.state = {
         }
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
     render(){
         const {currentDate, calendarData} = this.props;

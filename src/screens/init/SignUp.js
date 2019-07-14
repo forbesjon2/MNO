@@ -17,6 +17,8 @@ class SignUp extends React.Component{
             password:"Password",
             confirmPassword:"Confirm Password",
         }
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     redirectSignUp(){

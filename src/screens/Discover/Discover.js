@@ -16,6 +16,8 @@ class Discover extends React.Component{
             searchTriggered:false,
             calendarHeader: "H"
         }
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     render(){

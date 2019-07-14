@@ -9,7 +9,6 @@ class Home extends React.Component{
     constructor(props){
         super(props);
 
-
         /*************************************************************************
          * panResponder handles
          * Some redux variables need the latest value. in which case it has to be
@@ -33,6 +32,9 @@ class Home extends React.Component{
             mainPositionValue: new Animated.Value(0),
             panResponder
         }
+        //set safe area background
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        
         this.animateSidebar = this.animateSidebar.bind(this);
     }
     //Handles the animation for the sidebar aka leftNav (specific to the homescreen)
@@ -60,7 +62,7 @@ class Home extends React.Component{
     const currentGroupContent = getHomeData(homeData, currentGroup);
     let handles = this.state.panResponder.panHandlers;
     return(
-    <View style={{flex: 1}} elevation={5} {...handles}>
+    <View style={{flex: 1, backgroundColor:"white"}} {...handles}>
     {/* The header with the (not yet functional) search and side menu feature */}
         <Animated.View style={[styles.header, {width: Dimensions.get("window").width, left:this.state.mainPositionValue}]}>
             <TouchableWithoutFeedback onPress={() => this.animateSidebar(0, 250)}>

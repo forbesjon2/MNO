@@ -3,7 +3,7 @@ import Loading from "./Loading";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import SchoolSearch from "./SchoolSearch";
-import RoomSearch from './RoomSearch';
+import ValidateEmail from './ValidateEmail';
 
 
 
@@ -12,7 +12,7 @@ const initialRoutes = createStackNavigator({
     SignIn:{screen: SignIn},
     SignUp:{screen: SignUp},
     SchoolSearch:{screen: SchoolSearch},
-    RoomSearch:{screen: RoomSearch},
+    ValidateEmail:{screen: ValidateEmail},
 },{
     mode:"card",
     headerMode:"none",
