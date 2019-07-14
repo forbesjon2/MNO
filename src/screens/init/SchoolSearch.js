@@ -2,7 +2,6 @@ import React from 'react';
 import { View, TouchableWithoutFeedback, Text , TouchableOpacity, FlatList, Keyboard, StyleSheet, TextInput, Image} from "react-native";
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
-import GroupView from "../../components/other/GroupView";
 
 /*************************************************************************
  * This is the School Search screen, it appears after you enter your
@@ -22,8 +21,11 @@ class SchoolSearch extends React.Component{
             groupData:[],
             searchData:[]
         }
+        //sets the safe area background for iOS
+        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#42368A"});
     }
 
+    
     returnImg(width, height, url){
         if(width == 0 || height == 0){
             return(<Text>No image</Text>)
@@ -116,10 +118,10 @@ class SchoolSearch extends React.Component{
     search(){
         Keyboard.dismiss()
         let filteredArray = [];
-        var regex = new RegExp(this.state.text, 'g');
+        var regex = new RegExp(this.state.text.toLowerCase(), 'g');
         const {groupData} = this.state;
         for(let item in groupData){
-            let nameMatch = (groupData[item]["name"]).toLowerCase().match(regex);
+            let nameMatch = groupData[item]["name"].toLowerCase().match(regex);
             let epithetMatch = groupData[item]["epithet"].toLowerCase().match(regex);
             if(nameMatch != null || epithetMatch != null){
                 filteredArray.push(groupData[item]);
@@ -137,10 +139,11 @@ class SchoolSearch extends React.Component{
         <Text style={[styles.subHeader, {marginBottom:25}]}>{this.state.groupData.length} schools available</Text>
         <View style={styles.textInputView}>
             <TextInput
-            style={[styles.textInput, {minWidth:300, maxWidth:300}]}
+            style={styles.textInput}
             onChangeText={(text) => this.setState({text})}
             value={this.state.text} 
             selectionColor={"black"}
+            autoCorrect={false}
             numberOfLines={1}
             onFocus={() =>{[this.state.text == "Search" ? this.setState({text:""}) :null]}}
             clearTextOnFocus={true}
@@ -158,12 +161,36 @@ class SchoolSearch extends React.Component{
             renderItem={({item}) => 
             this.groupView(item)}
         />
+        <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10}}>
+            <Text style={styles.bottomPageTextEnglish}>miniowl, 2019</Text>
+            {/* Find, Discover, Explore */}
+            <Text style={styles.bottomPageTextJapanese}>発見、発見、探検</Text>
+        </View>
     </View>
     );
 }}
 
 
 const styles = StyleSheet.create({
+    bottomPageTextJapanese:{
+        fontFamily:"DidactGothic-Regular",
+        color:"white",
+        fontSize:14,
+        padding: 0,
+        flex:1,
+        flexDirection:"column",
+        textAlign:"right"
+    },
+    bottomPageTextEnglish:{
+        fontFamily:"Khula-Light", 
+        fontSize:17,
+        lineHeight:26,
+        color:"white",
+        padding: 0,
+        flex:1,
+        flexDirection:"column",
+        textAlign:"left"
+    },
     main:{
         flex:1,
         flexDirection:"column",
@@ -196,7 +223,9 @@ const styles = StyleSheet.create({
         padding:0,
         textAlignVertical:"bottom",
         borderBottomWidth:1,
-        borderBottomColor:"white"
+        borderBottomColor:"white",
+        minWidth:300, 
+        maxWidth:300
     },
     textInputView:{
         maxHeight:35,

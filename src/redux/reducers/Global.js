@@ -5,6 +5,8 @@ export default function reducer(
         //Global variables
         loading: true,
         accountInfo:{},
+        safeAreaBackground:"#ffffff",
+
         //nav
         pageID: 1,
         showNav: true,
@@ -45,9 +47,21 @@ export default function reducer(
          * 
          *      SET_CURRENT_DATE (YYYY-MM-DD format)
          * 
+         *      SET_SAFE_AREA_BACKGROUND
+         * This changes the safe area's background color. It's a component
+         * for iOS that defines a safe area to put content in. 
+         * 
+         * This is outside of the notch and a little over the bottom of the 
+         * screen. It's changed according to the background color of the
+         * screen behind it
+         * 
+         * This must be in hex form!
          ******************************************************************/
         case "SET_ACCOUNT_INFO":
             return{...state, accountInfo: action.payload};
+        case "SET_SAFE_AREA_BACKGROUND":
+            return{...state, safeAreaBackground: action.payload};
+
         /*****************************************************************
          * PAGE INDEX SUMMARY
          * 
@@ -146,6 +160,8 @@ export default function reducer(
         case "SET_END_EVENT_TIME":
             return{...state, endEventTime: action.payload};
         
+
+
         default:
             return state;
         

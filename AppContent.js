@@ -59,7 +59,7 @@ class AppContent extends React.Component{
     }else{
         if(Platform.OS === 'ios'){
             return(
-                <SafeAreaView style={{flex:1, backgroundColor:"black"}}>
+                <SafeAreaView style={{flex:1, backgroundColor:this.props.safeAreaBackground}}>
             <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
                 
                 {/* <AppRoutes
@@ -89,7 +89,7 @@ class AppContent extends React.Component{
 
 const mapStateToProps = (store) => ({
     loading: store.Global.loading,
-
+    safeAreaBackground: store.Global.safeAreaBackground,
 });
 
 const apcScreen = connect(mapStateToProps)(AppContent);
