@@ -174,8 +174,7 @@ class Nav extends React.Component{
 
                 {/* This is the subNav, the content is generated inside NavContent */}
                 <View style={{backgroundColor: "black", color: "white"}}>
-                <NavContent
-                classInstance={this}/>
+                    <NavContent />
                 </View>
             </Animated.View>);
         }else{

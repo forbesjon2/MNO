@@ -13,10 +13,8 @@ class SignIn extends React.Component{
     constructor(props){
         super(props);
         this.state={
+            email:"enter your email"
         }
-    }
-
-    redirectSignUp(){
     }
 
     render(){
@@ -24,43 +22,37 @@ class SignIn extends React.Component{
     <View style={styles.main}>
 
         {/* Header */}
-        <Text style={styles.header}>Enter your email to .</Text>
-        <Text style={styles.subHeader}>Sign in to continue</Text>
-        <Text style={[styles.subHeader, {marginBottom:60}]}>using our app</Text>
+        <Text style={styles.header}>Enter your email to validate.</Text>
+        <Text style={[styles.subHeader, {marginBottom:10}]}>Valid email subdomains for University of Nebraska Lincoln are</Text>
+        <Text style={styles.subHeader}>@unl.edu</Text>
+        <Text style={[styles.subHeader, {marginBottom:10}]}>@huskers.unl.edu</Text>
+        <Text style={[styles.subHeader, {marginBottom:30}]}>You can validate later by visiting the validate email menu in the settings</Text>
 
 
         {/* Text boxes */}
         <TextInput
             style={[styles.textInput]}
-            onChangeText={(text) => this.setState({login: text})}
-            value={this.state.login} 
+            onChangeText={(text) => this.setState({email: text})}
+            value={this.state.email} 
+            autoCapitalize={"none"}
+            onSubmitEditing={() => console.log("hit enter")}
+            autoCorrect={false}
+            textContentType={"emailAddress"}
             selectionColor={"black"}
             numberOfLines={1}
-            onFocus={() =>{[this.state.login == "Login" ? this.setState({login:""}) :null]}}
+            onFocus={() =>{[this.state.email == "enter your email" ? this.setState({email:""}) :null]}}
             clearTextOnFocus={true}
             maxLength={80}/>
 
-        <TextInput
-            style={[styles.textInput, {marginBottom:30}]}
-            onChangeText={(text) => this.setState({password: text})}
-            value={this.state.password} 
-            textContentType={"password"}
-            selectionColor={"black"}
-            secureTextEntry={true}
-            numberOfLines={1}
-            onFocus={() =>{[this.state.password == "Password" ? this.setState({password:""}) :null]}}
-            clearTextOnFocus={true}
-            maxLength={80}/>
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={() => console.log("validate email")}>
+            <Text style={styles.buttonText}>Validate</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.buttonIcon}/>
         </TouchableOpacity>
         
 
         {/* Footer */}
-        <Text style={[styles.footerText, {color:"black", opacity:0.7}]}>Don't have an account?</Text>
         <TouchableWithoutFeedback onPress={() => this.redirectSignUp()}>
-            <Text style={[styles.footerText, {color:"#CE2E7B"}]}>Sign up</Text>
+            <Text style={[styles.footerText, {color:"#CE2E7B"}]}>Validate later</Text>
         </TouchableWithoutFeedback>
     </View>
     );        
@@ -74,14 +66,16 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:"column",
         backgroundColor:"white",
-        margin:20
+        marginLeft:20,
+        marginRight:20,
+        marginBottom:20
     },
     header:{
         fontFamily:"DidactGothic-Regular",
         fontSize:38,
         color:"black",
         marginTop:40,
-        marginBottom:8
+        marginBottom:12
     },
     subHeader:{
         fontFamily:"DidactGothic-Regular",
@@ -103,12 +97,11 @@ const styles = StyleSheet.create({
         borderBottomColor:"gray"
     },
     button:{
-        height:48,
-        width: 180,
+        height:40,
+        width: 150,
         borderRadius: 10,
         flexDirection:"row",
         backgroundColor:"#CE2E7B",
-        marginLeft:20,
         marginTop:20,
         marginBottom:70
     },

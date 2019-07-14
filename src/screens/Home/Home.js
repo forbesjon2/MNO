@@ -15,13 +15,21 @@ class Home extends React.Component{
          * referenced at that instance
          *************************************************************************/
         const panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (evt, gesture) => true,
-            onMoveShouldSetPanResponder: (evt, gestureState) => true,
+            onStartShouldSetPanResponder: (evt, gesture) => {
+                if((Math.abs(gesture.dx) < 20)) return false;
+                return true;
+            },
+            onMoveShouldSetPanResponder: (evt, gesture) => {
+                if((Math.abs(gesture.dx) < 20)) return false;
+                return true;
+            },
             onPanResponderMove: (evt, gesture) => {
-                // console.log("HIH", gesture);
+                this.moveSidebar(gesture.dx);
             },
             onPanResponderRelease: (evt, gesture) => {
-                // console.log("HIH", gesture);
+                let setNavExpanded = [gesture.dx < 82.5 ? true : false];
+                this.setState({navExpanded: setNavExpanded});
+                this.animateSidebar(0, 250, 200);
                 
             }
         });
@@ -34,25 +42,43 @@ class Home extends React.Component{
         }
         //set safe area background
         this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
-        
         this.animateSidebar = this.animateSidebar.bind(this);
     }
     //Handles the animation for the sidebar aka leftNav (specific to the homescreen)
-    animateSidebar(r1, r2){
+    animateSidebar(r1, r2, speed){
         const {positionValue, navExpanded, mainPositionValue} = this.state;
         Animated.timing(
             positionValue,{
                 toValue: [navExpanded ? -250 : r1][0],
-                duration: 500,
+                duration: speed,
             }
         ).start();
         Animated.timing(
             mainPositionValue,{
                 toValue:[navExpanded ? 0 : r2][0],
-                duration: 500,
+                duration: speed,
             }
         ).start();
         this.setState({navExpanded: !navExpanded});
+    }
+
+    moveSidebar(value){
+        const {positionValue, mainPositionValue, navExpanded} = this.state;
+        if(value >= 165 || navExpanded == true) return;
+        
+        Animated.timing(
+          positionValue,{
+              toValue: (1.5 * value) - 250,
+              duration:0
+          }
+        ).start();
+
+        Animated.timing(
+          mainPositionValue,{
+              toValue: 1.5* value,
+              duration:0
+          }
+        ).start();
     }
 
 
@@ -65,7 +91,7 @@ class Home extends React.Component{
     <View style={{flex: 1, backgroundColor:"white"}} {...handles}>
     {/* The header with the (not yet functional) search and side menu feature */}
         <Animated.View style={[styles.header, {width: Dimensions.get("window").width, left:this.state.mainPositionValue}]}>
-            <TouchableWithoutFeedback onPress={() => this.animateSidebar(0, 250)}>
+            <TouchableWithoutFeedback onPress={() => this.animateSidebar(0, 250, 400)}>
                 <Ionicons name="ios-menu" style={[styles.headerIcon, {textAlign:"right", marginRight:8}]} color={"black"}/>
             </TouchableWithoutFeedback>
             <Text style={styles.headerText} numberOfLines={1}>{currentGroupContent["title"]}</Text>
@@ -76,7 +102,9 @@ class Home extends React.Component{
 
         {/* The main view with all of the content */}
         <Animated.View style={[styles.mainView, {width:Dimensions.get("window").width, left:this.state.mainPositionValue}]}>
+            <View style={{flex:1}}>
             <HomeComponent />
+            </View>
         </Animated.View>
 
 
