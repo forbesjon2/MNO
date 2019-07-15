@@ -27,6 +27,8 @@ import TimePicker from '../other/TimePicker';
  * add more number of lines & dynamically expand height
  * https://www.npmjs.com/package/react-native-image-picker 
  * 
+ * TODO refactor this
+ * 
  * perms
  * https://github.com/react-native-community/react-native-image-picker/blob/HEAD/docs/Install.md
  * also
@@ -153,12 +155,12 @@ class NavContent extends React.Component{
         return(
         <View style={{minHeight: 500, backgroundColor:"black"}}>
             <Text style={[styles.headerTextDiscover, {paddingLeft:10, marginBottom:10, maxHeight:90}]}>Create a Group</Text>
-            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20}}>Visibility</Text>
+            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20, marginBottom:20}}>Visibility</Text>
                 <Switch style={{ alignSelf:"center", maxHeight:40}} disabled={false} onValueChange={(value) => this.setState({visibilitySwitch: value})} value={this.state.visibilitySwitch}/>
-            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:80}}>only students can view this group</Text>
-            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20}}>Accessibility</Text>
+            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:80, marginBottom:40}}>only students can view this group</Text>
+            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20, marginBottom:20}}>Accessibility</Text>
                 <Switch style={{alignSelf:"center", maxHeight:40}} onValueChange={(value) => this.setState({accessibilitySwitch: value})} value={this.state.accessibilitySwitch} />
-            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:150}}>anyone can join this group</Text>
+            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, marginBottom:40}}>anyone can join this group</Text>
             <TouchableWithoutFeedback  onPress={() => this.no}>
                 <Text style={[styles.headerTextDiscover, {color:"white", textAlign:"right", textAlignVertical:"top",fontSize:16, marginRight:12, marginTop:0, marginBottom:10}]}>Continue</Text>
             </TouchableWithoutFeedback>
@@ -182,10 +184,10 @@ class NavContent extends React.Component{
                 {/* TODO finish */}
                 <Text style={[styles.eventItemText, {fontSize: 20}]}>comments</Text>
                 <View style={{justifyContent:"flex-start"}}>
-                    <TextInput style={{color:"white", width: 380, height:100, borderColor: 'gray', borderWidth: 1, marginLeft:10, borderRadius:5}} numberOfLines={6} multiline={true} onChangeText={(text) => this.setState({feedback: text})} />
+                    <TextInput style={{color:"white", width: 380, height:100, borderColor: 'gray', borderWidth: 1, marginLeft:10, borderRadius:5, textAlignVertical:"top", padding:5}} numberOfLines={6} multiline={true} onChangeText={(text) => this.setState({feedback: text})} />
                 </View>
-                <View style={{flex:2, flexDirection:"row", }}>
-                    <TouchableOpacity  style={{flex:1, flexDirection:"column", backgroundColor:"white", maxWidth:60}}>
+                <View style={{flex:2, flexDirection:"row-reverse", }}>
+                    <TouchableOpacity  style={{flex:1, flexDirection:"column", maxWidth:60}}>
                         <Ionicons name="ios-send" style={[styles.clipSendIcon, {lineHeight:55, marginRight:30}]}/>
                     </TouchableOpacity>
                 </View>
@@ -218,14 +220,6 @@ class NavContent extends React.Component{
 
 
 const styles = StyleSheet.create({
-    headerTextHome:{
-        backgroundColor: "black",
-        color: "white",
-        fontFamily: "DidactGothic-Regular",
-        fontSize: 50,
-        opacity: 0.8,
-        marginLeft: 10,
-    },
     headerTextDiscover:{
         backgroundColor: "black",
         color: "white",
@@ -241,14 +235,6 @@ const styles = StyleSheet.create({
         fontFamily: "Khula-Light",
         marginLeft: 10,
         marginTop: 25,
-    },
-    clearAllText:{
-        fontFamily: "DidactGothic-Regular",
-        backgroundColor: "black",
-        color: "white",
-        fontSize: 16,
-        marginLeft: 20,
-        marginBottom: 10,
     },
     textInput:{
         color:"white",

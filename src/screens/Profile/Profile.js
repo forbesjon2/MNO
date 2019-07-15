@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleSheet, Image, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import {Text, View, StyleSheet, Image, ScrollView, TouchableWithoutFeedback, Platform} from 'react-native';
 import {connect} from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 
@@ -16,11 +16,94 @@ import {Ionicons} from '@expo/vector-icons';
 class Profile extends React.Component{
     constructor(props){
         super(props);
+
+        this.state = {
+            //1 = groups, 2 = tags, 3 = friends
+            selectedMenuIndex: 1
+        }
         //set safe area background
         this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
+
+    dotGen(index){
+        if(this.state.selectedMenuIndex == index){
+            return(<Text style={styles.menuButton}>.</Text>);
+        }else{
+            return(null);
+        }
+    }
     render(){
     const {accountInfo, showNav} = this.props;
+    var shadowStyle = {shadowColor:'#000000',shadowOffset:{width:4, height:4},shadowRadius:10,shadowOpacity:0.8};
+    if(Platform.OS == "android") shadowStyle = {elevation:5};
+    return(
+    <View style={{flex: 1, flexDirection: "column", backgroundColor:"white"}}>
+        
+        {/* Follow */}
+        <TouchableWithoutFeedback>
+            <View style={{flex:1, flexDirection:"row", backgroundColor:"blue", maxWidth:80, alignSelf:"flex-end"}}>
+                <Ionicons name="ios-add-circle-outline" style={{fontSize:16}}/>
+                <Text style={styles.friendButton}>follow</Text>
+            </View>
+        </TouchableWithoutFeedback>
+
+        {/* Profile image */}
+        <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
+            <Image source={{uri:accountInfo["imageURI"]}} style={styles.topViewImage}/>
+        </View>
+
+        {/* Name */}
+        <View style={{flex:1, flexDirection:"row", alignSelf:"center", maxHeight:30, marginTop:20}}>
+            <Text style={styles.name}>Kenneth Kaniff</Text>
+        </View>
+
+        {/* short description (subName)*/}
+        <View style={{flex:1, flexDirection:"row", alignSelf:"center",  maxHeight:25, marginBottom:20}}>
+            <Text style={styles.subName}>Biological Engineering</Text>
+        </View>
+
+        {/* groups/tags/friends tags */}
+        <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
+            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:1})}>
+                <View style={styles.menuView}>
+                    <Text style={styles.menuNumber}>4</Text>
+                    <Text style={styles.menuText}>groups</Text>
+                    {this.dotGen(1)}
+                </View>
+            </TouchableWithoutFeedback>
+            
+            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:2})}>
+                <View style={styles.menuView}>
+                    <Text style={styles.menuNumber}>192</Text>
+                    <Text style={styles.menuText}>tags</Text>
+                    {this.dotGen(2)}
+                </View>
+            </TouchableWithoutFeedback>
+
+            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:3})}>
+                <View style={styles.menuView}>
+                    <Text style={styles.menuNumber}>14</Text>
+                    <Text style={styles.menuText}>friends</Text>
+                    {this.dotGen(3)}
+                </View>
+            </TouchableWithoutFeedback>
+        </View>
+
+        {/* Content pane */}
+        <View style={{flex:11, flexDirection:"row", backgroundColor:"#F8FAFB"}}>
+            <View style={{flex:1, flexDirection:"column", alignContent:"space-between"}}>
+                <View style={{flex:1, flexDirection:"row", maxHeight:100, paddingVertical:20, backgroundColor:"gray", }}>
+                <View style={{flex:1, flexDirection:"column", backgroundColor:"blue", marginHorizontal:10, borderRadius:5, maxWidth:160, maxHeight:60, justifyContent:"center",}}>
+                    <Text>UNL@home</Text>
+                </View>
+                <View style={{flex:1, flexDirection:"column", backgroundColor:"orange", borderRadius:5,  marginHorizontal:10, maxWidth:160, maxHeight:60, justifyContent:"center"}}>
+                    <Text>UNL@home</Text>
+                </View>
+                </View>
+            </View>
+        </View>
+    </View>
+    );
     return(
     <View style={{flex: 1, flexDirection: "column", backgroundColor:"white"}}>
         {generateHeader(showNav)}
@@ -59,15 +142,20 @@ class Profile extends React.Component{
     );}
 };
 
+
+
+
+
 /*************************************************************************
  * This generates the header for the profile page. It appears on top of the 
  * 
  * @param {*} navExpanded If the profile is you (happens when the navBar 
  * is showing), than set the header to say profile instead
  *************************************************************************/
-function generateHeader(showNav){
+function generateHeader(showNav){ 
     if(!showNav) return(<View style={{flex:1}}><Text>Ken</Text></View>);
-    return(<View style={{flex:1}}></View>);
+    return(<View style={{flex:1}}><Text>eos</Text></View>);
+    
 }
 
 /*************************************************************************
@@ -116,71 +204,55 @@ function generateGroupTiles(groupsArray){
 }
 
 const styles = StyleSheet.create({
+    name:{
+        fontFamily:"Khula-SemiBold",
+        fontSize:24,
+        opacity:1,
+        justifyContent:"flex-end"
+    },
+    subName:{
+        alignSelf:"center", 
+        fontFamily:"Roboto-Regular", 
+        fontSize:14,
+        opacity:0.6,
+        
+    },
+    menuView:{
+        flex:1, 
+        flexDirection:"column", 
+        alignSelf:"center"
+    },
+    menuButton:{
+        alignSelf:"center", 
+        fontFamily:"Roboto-Medium", 
+        fontSize:36, 
+        lineHeight:26, 
+        color:"#5D75F7",
+    },
+    menuText:{
+        alignSelf:"center", 
+        fontFamily:"Roboto-Regular", 
+        fontSize:14,
+        opacity:0.6
+    },
+    menuNumber:{
+        opacity:0.7,
+        alignSelf:"center", 
+        fontFamily:"Khula-Bold", 
+        fontSize:24, 
+        maxHeight:30
+    },
+    friendButton:{
+        opacity:0.7,
+        fontFamily:"Khula-Regular",
+        color:"black",
+        fontSize:16
+    },
     topViewImage:{
-        width: 90,
-        height: 90,
+        width: 80,
+        height: 80,
         borderRadius: 65,
-        marginLeft: 15,
     },
-    followerNumbers:{
-        fontFamily: "Roboto-Bold",
-        fontSize: 22,
-        color: "black",
-    },
-    followerText:{
-        fontFamily: "DidactGothic-Regular",
-        color: "gray",
-        fontSize: 18,
-    },
-    userName:{
-        fontFamily: "Roboto-Medium",
-        fontSize: 30,
-        color: "black",
-        marginLeft: 13,
-        marginRight: 13,
-    },
-    userSubName:{
-        fontFamily: "DidactGothic-Regular",
-        color: "gray",
-        fontSize: 14,
-        marginLeft: 13,
-        marginRight: 13,
-    },
-    itemHeading:{
-        fontFamily: "Roboto-Medium",
-        fontSize: 18,
-        color: "black",
-        marginLeft: 13,
-        marginRight: 13,
-        marginTop: 26,
-    },
-    descriptionText:{
-        fontFamily: "DidactGothic-Regular",
-        color: "gray",
-        fontSize: 16,
-        marginLeft:13,
-        marginRight:13
-    },
-    followUnfollowText:{
-        fontFamily: "Roboto-Medium",
-        fontSize: 17,
-        marginTop: 16,
-        textAlign:"center"
-    },
-    groupName:{
-        fontFamily: "Roboto-Bold",
-        fontSize: 21,
-        color: "black",
-        paddingLeft: 13,
-        marginRight: 13,
-        marginTop: 6
-    },
-    tileView:{
-        backgroundColor:"#CCF0F9", 
-        marginHorizontal:3, 
-        height:100, 
-        width: 175,
-    }
 })
 const mapStateToProps = (store) => ({
     accountInfo: store.Global.accountInfo,

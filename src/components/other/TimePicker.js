@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Platform, Text, TouchableWithoutFeedback, TimePickerAndroid} from 'react-native';
+import {View, Platform, Text, TouchableWithoutFeedback, TimePickerAndroid, DatePickerIOS} from 'react-native';
 import {connect} from 'react-redux';
 
 
@@ -7,6 +7,10 @@ import {connect} from 'react-redux';
 class TimePicker extends React.Component{
     constructor(props){
         super(props);
+        
+        this.state = {
+          chosenDate: new Date(),
+        }
         this.openTimePicker = this.openTimePicker.bind(this);
     }
 
@@ -36,7 +40,12 @@ class TimePicker extends React.Component{
     if(Platform.OS === 'ios'){
     return(
         <View style={{backgroundColor:"blue"}}>
-            <Text>iOS</Text>
+            <DatePickerIOS
+            date={this.state.chosenDate}
+            onDateChange={(date) => this.setState({chosenDate: date})}
+            minuteInterval={5}
+            mode={"time"}
+            />
         </View>
     );
     }else{
