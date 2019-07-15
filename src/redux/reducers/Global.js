@@ -18,7 +18,7 @@ export default function reducer(
         notifications: [],
         calendarData:{},
         groupData:{},
-        roomData:{},
+        serverData:{},
         chats:{},
         homeData:{},
         messagesHome:{},
@@ -107,7 +107,7 @@ export default function reducer(
         case "SET_E":
             return{...state, messagesHome: action.payload};
         case "SET_R":
-            return{...state, roomData: action.payload};
+            return{...state, serverData: action.payload};
         case "SHOW_NAV":
             return{...state, showNav: true};
         case "HIDE_NAV":

@@ -154,13 +154,13 @@ class NavContent extends React.Component{
     discoverSubNav(){
         return(
         <View style={{minHeight: 500, backgroundColor:"black"}}>
-            <Text style={[styles.headerTextDiscover, {paddingLeft:10, marginBottom:10, maxHeight:90}]}>Create a Group</Text>
+            <Text style={[styles.headerTextDiscover, {paddingLeft:10, marginBottom:10, maxHeight:90}]}>Create a Server</Text>
             <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20, marginBottom:20}}>Visibility</Text>
                 <Switch style={{ alignSelf:"center", maxHeight:40}} disabled={false} onValueChange={(value) => this.setState({visibilitySwitch: value})} value={this.state.visibilitySwitch}/>
-            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:80, marginBottom:40}}>only students can view this group</Text>
+            <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:80, marginBottom:40}}>only students can view this server</Text>
             <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20, marginBottom:20}}>Accessibility</Text>
                 <Switch style={{alignSelf:"center", maxHeight:40}} onValueChange={(value) => this.setState({accessibilitySwitch: value})} value={this.state.accessibilitySwitch} />
-            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, marginBottom:40}}>anyone can join this group</Text>
+            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, marginBottom:40}}>anyone can join this server</Text>
             <TouchableWithoutFeedback  onPress={() => this.no}>
                 <Text style={[styles.headerTextDiscover, {color:"white", textAlign:"right", textAlignVertical:"top",fontSize:16, marginRight:12, marginTop:0, marginBottom:10}]}>Continue</Text>
             </TouchableWithoutFeedback>

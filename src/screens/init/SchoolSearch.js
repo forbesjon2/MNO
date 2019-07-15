@@ -64,8 +64,8 @@ class SchoolSearch extends React.Component{
                     <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["members"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
-                <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>rooms</Text>
-                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["rooms"]}</Text>
+                <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>servers</Text>
+                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["servers"]}</Text>
                 </View>
             </View>
             
@@ -94,7 +94,7 @@ class SchoolSearch extends React.Component{
         for(let item in data){
             Image.getSize(data[item]["icon"], (w, h) => {
                 var dimensionWidth = 50;
-                var obj = {icon: data[item]["icon"], rooms:data[item]["rooms"], 
+                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
                     members:data[item]["members"], epithet:data[item]["epithet"],
                     name:data[item]["name"], uuid:data[item]["uuid"], 
                     width:dimensionWidth, height:[w > dimensionWidth ? h * (dimensionWidth / w) : h * (w / dimensionWidth)][0]};
@@ -102,7 +102,7 @@ class SchoolSearch extends React.Component{
                 tempArray.push(obj);
                 this.setState({groupData: tempArray});
             }, (error) => {
-                var obj = {icon: data[item]["icon"], rooms:data[item]["rooms"], 
+                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
                     members:data[item]["members"], epithet:data[item]["epithet"],
                     name:data[item]["name"], uuid:data[item]["uuid"], 
                     width:0, height:0};

@@ -9,8 +9,8 @@
     "lastLoggedIn":"",
     "sessionToken":"",
     "groups":[
-        {"name":"UNL", "rooms":[{"name":"@home", "followers": 12}, {"name":"@OS2G", "followers":40}]},
-        {"name":"UNO", "rooms":[{"name":"@home", "followers": 123}, {"name":"@YAL", "followers":32}]}],
+        {"name":"UNL", "servers":[{"name":"@home", "followers": 12}, {"name":"@OS2G", "followers":40}]},
+        {"name":"UNO", "servers":[{"name":"@home", "followers": 123}, {"name":"@YAL", "followers":32}]}],
     "schedule":[
         {"2019-09-23":[{"School day off": "all day"}, {"Auction":"all day"}]},
         {"2019-09-24":[{"School day off": "all day"}, {"Auction":"all day"}]},

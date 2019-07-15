@@ -28,20 +28,6 @@ integrate mini profile calendar on profile & profile subnav
 
 
 
-Create group page design notes
-Header "Create a Group" 
-    khula light
-topic headers "group name, title..."
-    khula semibold
-    color EC187C
-Descriptor under the forms
-    didact gothic regular
-    color 787878
-switch header
-    khula regular
-switch footer
-    khula light
-
 
 # publishing
 dont use codepush for publishing but instead do this \

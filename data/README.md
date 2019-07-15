@@ -21,11 +21,11 @@ Used by Home.js
 <br>
 "Global" lists the most important content. Eventually we're going to add "Notifications" after "Global"..
 <br>
-"Global"(array) --> {"Name"(string), "Rooms"(array)}
+"Global"(array) --> {"Name"(string), "servers"(array)}
 <br>
 "Name" will be the school names at first. These wont be any longer than 6 characters(?). Examples include UNL, MSU...
 <br>
-"Rooms" will always be preceded with an '@' and can be 12 characters max(?)
+"servers" will always be preceded with an '@' and can be 12 characters max(?)
 <br>
 
 ## CalendarData.json
@@ -60,7 +60,7 @@ _followers:_ An integer representing how many followers that user has
 <br>
 _following:_ An integer representing how many people this user is following
 <br>
-_groups:_ A list of groups. For each group there will be a name and a list of at least one room. For each room there will be the room name and the number of followers. The unique tag will be < groupName> @ < room>
+_groups:_ A list of groups. For each group there will be a name and a list of at least one server. For each server there will be the server name and the number of followers. The unique tag will be < groupName> @ < server>
 <br>
 _schedule:_ TODO edit this. not sure if ill keep this but its useful for scheduling tutor stuff idk
 <br>

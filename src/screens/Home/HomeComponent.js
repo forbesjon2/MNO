@@ -68,10 +68,10 @@ class HomeComponent extends React.Component{
  **************************************************************************/
 function getHomeData(homeData, currentGroup){
     let name = currentGroup.toString().split("@")[0];
-    let room = "@" + currentGroup.toString().split("@")[1];
+    let server = "@" + currentGroup.toString().split("@")[1];
     for(let i in homeData["data"]){
         if(name == homeData["data"][i]["name"]){
-            for(let j in homeData["data"][i]["rooms"]) if(homeData["data"][i]["rooms"][j]["name"] == room) return homeData["data"][i]["rooms"][j];
+            for(let j in homeData["data"][i]["servers"]) if(homeData["data"][i]["servers"][j]["name"] == server) return homeData["data"][i]["servers"][j];
         }
     }
     return;

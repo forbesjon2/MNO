@@ -171,26 +171,26 @@ function randomLanguage(){
  *      the users subscribed to groups. For examples & a better description
  *      of whats in the JSON see the data folder
  * @param {*} currentGroup  a string representing the currently selected
- *      group. This is <global>@<room>
+ *      group. This is <global>@<server>
  * @param {*} dispatch  an instance of the 'this.props.dispatch' redux var
  **************************************************************************/
 function getButtonList(homeData, currentGroup, dispatch){
     let returnObj = [];
     let current_group_view = currentGroup.split("@")[0];
-    let current_group_room = "@" + currentGroup.split("@")[1];
+    let current_group_server = "@" + currentGroup.split("@")[1];
     for(var i in homeData){
         //generates the channel header
         let view = homeData[i]["name"];
         let isInGroup = view == current_group_view;
         let iconOpacity = [isInGroup ? {opacity: 1, color: "black"} : {opacity:0.5, color:"black"}];
         returnObj.push(<View key={"header" + i.toString()} style={[sideListStyles.headerView]}><Ionicons name="ios-globe" style={[sideListStyles.headerIcon, iconOpacity[0]]} color={"black"}/><Text style={[sideListStyles.headerText, iconOpacity[0]]}>{homeData[i]["name"]}</Text></View>);
-        //Generates header contents (each room)
-        for(var j in homeData[i]["rooms"]){
-            let group = homeData[i]["rooms"][j]["name"];
+        //Generates header contents (each server)
+        for(var j in homeData[i]["servers"]){
+            let group = homeData[i]["servers"][j]["name"];
             var elementStyle, viewStyle;
-            [group == current_group_room && isInGroup ? elementStyle = sideListStyles.elementSelected : elementStyle = sideListStyles.elementView];
-            [group == current_group_room && isInGroup ? viewStyle = sideListStyles.selectedView : viewStyle = sideListStyles.normalView];
-            returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {dispatch({type:"SET_CURRENT_GROUP", payload: "" + view + group})}}><View style={viewStyle}><Text style={[sideListStyles.elementText, elementStyle]}>{homeData[i]["rooms"][j]["name"]}</Text></View></TouchableWithoutFeedback>);
+            [group == current_group_server && isInGroup ? elementStyle = sideListStyles.elementSelected : elementStyle = sideListStyles.elementView];
+            [group == current_group_server && isInGroup ? viewStyle = sideListStyles.selectedView : viewStyle = sideListStyles.normalView];
+            returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {dispatch({type:"SET_CURRENT_GROUP", payload: "" + view + group})}}><View style={viewStyle}><Text style={[sideListStyles.elementText, elementStyle]}>{homeData[i]["servers"][j]["name"]}</Text></View></TouchableWithoutFeedback>);
         }
     }
     return returnObj;
@@ -207,10 +207,10 @@ function getButtonList(homeData, currentGroup, dispatch){
  **************************************************************************/
 function getHomeData(homeData, currentGroup){
     let name = currentGroup.toString().split("@")[0];
-    let room = "@" + currentGroup.toString().split("@")[1];
+    let server = "@" + currentGroup.toString().split("@")[1];
     for(let i in homeData["data"]){
         if(name == homeData["data"][i]["name"]){
-            for(let j in homeData["data"][i]["rooms"]) if(homeData["data"][i]["rooms"][j]["name"] == room) return homeData["data"][i]["rooms"][j];
+            for(let j in homeData["data"][i]["servers"]) if(homeData["data"][i]["servers"][j]["name"] == server) return homeData["data"][i]["servers"][j];
         }
     }
     return;
