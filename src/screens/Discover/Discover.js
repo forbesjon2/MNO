@@ -15,6 +15,7 @@ class Discover extends React.Component{
         this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
+
     listButtonGen(index, selectedButton){
         const infiniteList = [[0,1,2],[2,0,1],[1,2,0]];
         var infList;
@@ -39,13 +40,6 @@ class Discover extends React.Component{
         );
     }
 
-    // getList(selectedListID){
-    //     const infiniteList = [[0,1,2],[2,0,1],[1,2,0]];
-    //     for(var i = 0; i < infiniteList.length; ++i){
-    //         if(selectedListID == infiniteList[i][1]) return infiniteList[i];
-    //     }
-    // }
-
     render(){
     return(
     <View style={{flex:1, flexDirection:"column", backgroundColor: "white"}}>
@@ -61,7 +55,6 @@ class Discover extends React.Component{
                     {this.listButtonGen(0, false)}
                     {this.listButtonGen(1, true)}
                     {this.listButtonGen(2, false)}
-                    {/* {this.listButtonGen(selectedList[2], false)} */}
                 </View>
             </View>
         </View>
