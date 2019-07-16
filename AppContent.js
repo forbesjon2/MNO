@@ -8,7 +8,7 @@ import NavigationService from "./src/navigation/NavigationService";
 import * as Font from 'expo-font';
 import SignUp from './src/screens/init/SchoolSearch';
 import ValidateEmail from "./src/screens/init/ValidateEmail";
-
+import SchoolSearch from "./src/screens/init/SchoolSearch";
 class AppContent extends React.Component{
     constructor(props){
         super(props);
@@ -81,6 +81,7 @@ class AppContent extends React.Component{
                  ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                  style={{flex: 1}}/>
                  <Nav />
+                 {/* <SchoolSearch /> */}
                  {/* <ValidateEmail /> */}
             </KeyboardAvoidingView>
             </View>

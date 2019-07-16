@@ -1,10 +1,9 @@
 {
     "groups":[
-        {"uuid":"1", "name":"University of Michigan", "epithet":"UofM", "members":253, "servers":16, "icon":"https://upload.wikimedia.org/wikipedia/commons/3/3b/Michigan_Wolverines_Logo.svg"},
-        {"uuid":"2", "name":"University of Nebraska Lincoln", "epithet":"UNL", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/1200px-Nebraska_Cornhuskers_logo.svg.png"},
-        {"uuid":"3", "name":"University of Nebraska Omaha", "epithet":"UNO", "members":23, "servers":8, "icon":"https://cdn2.sportngin.com/attachments/document/0135/9674/icon_acad-clr.png"},
-        {"uuid":"4", "name":"University of Wisconsin", "epithet":"UW", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Wisconsin_Badgers_logo.svg/1200px-Wisconsin_Badgers_logo.svg.png"},
-        {"uuid":"5", "name":"Northwestern University", "epithet":"NU", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Northwestern_Wildcats_logo.svg/1200px-Northwestern_Wildcats_logo.svg.png"},
-        {"uuid":"6", "name":"University of Illinois Urbana-Champaign", "epithet":"UIUC", "members":23, "servers":8, "icon":"http://2.bp.blogspot.com/-02x6pWRgZuM/UknnzdI0OYI/AAAAAAAABmk/aK2JNJ2MxoU/s1600/U+of+I+Urbana+Champaign.png"}
+        {"uuid":"2", "name":"University of Nebraska Lincoln", "epithet":"UNL", "scale":"1200x1200", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Nebraska_Cornhuskers_logo.svg/1200px-Nebraska_Cornhuskers_logo.svg.png"},
+        {"uuid":"3", "name":"University of Nebraska Omaha", "epithet":"UNO", "scale":"1200x1200", "members":23, "servers":8, "icon":"https://cdn2.sportngin.com/attachments/document/0135/9674/icon_acad-clr.png"},
+        {"uuid":"4", "name":"University of Wisconsin", "epithet":"UW", "scale":"1200x1133", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Wisconsin_Badgers_logo.svg/1200px-Wisconsin_Badgers_logo.svg.png"},
+        {"uuid":"5", "name":"Northwestern University", "epithet":"NU", "scale":"1200x1847", "members":23, "servers":8, "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Northwestern_Wildcats_logo.svg/1200px-Northwestern_Wildcats_logo.svg.png"},
+        {"uuid":"6", "name":"University of Illinois Urbana-Champaign", "scale":"256x256", "epithet":"UIUC", "members":23, "servers":8, "icon":"http://2.bp.blogspot.com/-02x6pWRgZuM/UknnzdI0OYI/AAAAAAAABmk/aK2JNJ2MxoU/s1600/U+of+I+Urbana+Champaign.png"}
     ]
 }

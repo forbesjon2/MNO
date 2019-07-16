@@ -21,7 +21,7 @@ class Discover extends React.Component{
             groupSearchData:[],
 
             //profile page
-            profileData:"",
+            profileData:[],
             profileSearchData:[],
 
         }
@@ -40,29 +40,10 @@ class Discover extends React.Component{
     * It then appends that to the state
     *************************************************************************/
    componentWillMount(){
-        let userData = JSON.stringify(require("../../../data/UsersData.json"));
-        let data = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
-        for(let item in data){
-            Image.getSize(data[item]["icon"], (w, h) => {
-                var dimensionWidth = 50;
-                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
-                    members:data[item]["members"], epithet:data[item]["epithet"],
-                    name:data[item]["name"], uuid:data[item]["uuid"], 
-                    width:dimensionWidth, height:[w > dimensionWidth ? h * (dimensionWidth / w) : h * (w / dimensionWidth)][0]};
-                let tempArray = this.state.groupData;
-                tempArray.push(obj);
-                this.setState({groupData: tempArray});
-            }, (error) => {
-                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
-                    members:data[item]["members"], epithet:data[item]["epithet"],
-                    name:data[item]["name"], uuid:data[item]["uuid"], 
-                    width:0, height:0};
-                let tempArray = this.state.groupData;
-                tempArray.push(obj);
-                this.setState({groupData: tempArray});
-            });
-        }
-        this.setState({groupSearchData:this.state.groupData, profileData:userData, profileSearchData:userData});
+        let profileData = JSON.stringify(require("../../../data/UsersData.json"));
+        let groupData = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
+        profileData = JSON.parse(profileData)["users"];
+        this.setState({groupData: groupData, groupSearchData:groupData, profileData:profileData, profileSearchData:profileData});
     }
 
     /*************************************************************************
@@ -72,40 +53,6 @@ class Discover extends React.Component{
     _keyExtractor = (item, index) => item.uuid;
 
 
-    /*************************************************************************
-     * This is a search implementation using javascript regex. 
-     *
-     * the argument originalData is the original list of groups that is
-     * never changed (used as a reference)
-     * 
-     * XX is updated every time this is run
-    *************************************************************************/
-    groupSearch(){
-        Keyboard.dismiss()
-        let filteredArray = [];
-        var regex = new RegExp(this.state.text.toLowerCase(), 'g');
-        const {groupData} = this.state;
-        for(let i in groupData){
-            if(groupData[i]["name"].toLowerCase().match(regex) != null ||
-                groupData[i]["epithet"].toLowerCase().match(regex) != null){
-                    filteredArray.push(groupData[i]);
-            }
-        }
-        this.setState({groupSearchData: filteredArray});
-    }
-
-    profileSearch(){
-        Keyboard.dismiss();
-        let filteredArray = [];
-        var regex = new RegExp(this.state.text.toLowerCase(), 'g');
-        const {profileData} = this.state;
-        for(let i in profileData){
-            if(profileData[i].toLowerCase().match(regex) != null){
-                filteredArray.push(profileData[i]);
-            }
-        }
-        this.setState({profileSearchData:filteredArray});
-    }
 
     /*************************************************************************
      * This creates each component for the Servers/groups/profiles list
@@ -131,7 +78,7 @@ class Discover extends React.Component{
         //for deselected buttons
         return(
             <TouchableWithoutFeedback
-            onPress={() => this.setState({selectedListID: infList[index], text: "Search"})}>
+            onPress={() => this.setState({selectedListID: infList[index], text: "Search", groupSearchData: this.state.groupData, profileSearchData: this.state.profileData})}>
                 <Text style={styles.discover_deselectedButton}>{textArray[infList[index]]}</Text>
             </TouchableWithoutFeedback>
         );
@@ -139,45 +86,9 @@ class Discover extends React.Component{
 
 
     /*************************************************************************
-     * This generates the list of users that is being searched
-     * array -> {"name":"<some name>", "friends":<some number>, "icon":"<image url>"}
-     * 
-     * 
-     * TODO I will eventually link this to the user profile screen
-     * 
-     * hey wb!
-     * not sure wtf is happening here
+     * This is run every time an item (groups/profile/servers) on tripleList 
+     * is selected
      *************************************************************************/
-    profileTileGen(){
-        var tilelist = [];
-        var profileData = JSON.parse(JSON.stringify(this.state.profileData));
-        const {profileSearchData} = this.state;
-        for(let i in profileData){
-            tilelist.push(
-            <View style={styles.discover_friendRow}>
-                <View style={{flex:1, flexDirection:"column", justifyContent:"center"}}>
-                <Image source={{uri:profileSearchData[i]["icon"]}} style={styles.discover_friendImage}/>
-                </View>
-                <View style={{flex:3, flexDirection:"column"}}>
-                    <View style={{flex:1, flexDirection:"row"}}>
-                        <Text style={styles.discover_friendNameText}>{profileSearchData[i]["name"]}</Text>
-                    </View>
-                    <View style={{flex:1, flexDirection:"row"}}>
-                        <Text style={styles.discover_friendFollowersText}>{profileSearchData[i]["friends"]} friends</Text>
-                    </View>
-                </View>
-                <View style={{flex:1, flexDirection:"column"}}>
-                    <View style={styles.discover_viewProfileBorder}>
-                        <Text style={styles.discover_viewProfileText}>view</Text>
-                    </View>
-                </View>
-            </View>
-            );
-        }
-        return(tilelist);
-    }
-
-
     itemSwitch(){
         switch(this.state.selectedListID){
             case 1:
@@ -188,9 +99,17 @@ class Discover extends React.Component{
                     showsHorizontalScrollIndicator={false}
                     style={{marginTop:40}}
                     renderItem={({item}) => 
-                this.state.components.groupView(item)}/>);
+                this.state.components.groupView(item, false)}/>);
             case 2:
-                return(this.profileTileGen());
+                return(<FlatList
+                    horizontal={false}
+                    data={this.state.profileSearchData}
+                    keyExtractor={this._keyExtractor}
+                    showsHorizontalScrollIndicator={false}
+                    style={{marginTop:40}}
+                    renderItem={({item})=>
+                    this.state.components.profileView(item)}
+                />);
         }
     }
 
@@ -224,10 +143,12 @@ class Discover extends React.Component{
                 onSubmitEditing={() => {
                     switch(this.state.selectedListID){
                         case 1:
-                            this.groupSearch();
+                            let groupFiltered = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "epithet"]);
+                            this.setState({groupSearchData: groupFiltered});
                             break;
                         case 2:
-                            this.profileSearch();
+                            let profileFiltered = this.state.components.searchFunction(this.state.profileData, this.state.text, ["name"]);
+                            this.setState({profileSearchData: profileFiltered});
                             break;
                     }
                 }}

@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Keyboard} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
+import {styles} from "../../Styles";
 
 /*************************************************************************
  * The BareComponents class's purpose is to include all redundant methods
@@ -32,13 +33,93 @@ export default class BareComponents extends React.PureComponent{
     * @argument width expects a number representing the image's width
     * @argument height expects a number representing the image's height
     *************************************************************************/
-    returnImg(width, height, url){
-        if(width == 0 || height == 0){
-            return(<Text>No image</Text>)
-        }else{
-            return(<Image source={{uri:url}} style={{ minWidth:width, minHeight:height, alignSelf:"center", marginTop:20}}/>);
-        }
+    returnImg(w, h, url){
+        let width = 50;
+        let height = [w > width ? h * (width / w) : h * (w / width)][0];
+        return(<Image source={{uri:url}} style={{ minWidth:width, minHeight:height, alignSelf:"center", marginTop:20}}/>);
     }
+
+
+
+
+
+
+
+
+
+
+
+    /*************************************************************************
+     * This is a search implementation using javascript regex. 
+     *
+     * @argument preFilteredData the original data that is never changed but
+     * rather used as a reference
+     * 
+     * @argument inputStr is the string of characters that the user entered 
+     * in the text box
+     * 
+     * @argument matchArray the array of JSON elements to search.
+     * 
+     * ["name", "epithet"] would search {"name":"<...>", "epithet":"<...>"}
+     * for each iteration
+     * 
+    *************************************************************************/
+   searchFunction(preFilteredData, inputStr, matchArray){
+    Keyboard.dismiss()
+    var filteredArray = [];
+    var regex = new RegExp(inputStr.toLowerCase(), 'g');
+    for(var i in preFilteredData){
+        var isMatch = false;
+        for(let j in matchArray){
+            let enteredData = preFilteredData[i][matchArray[j]].toLowerCase();
+            if(enteredData.match(regex) != null) {
+                isMatch = true;
+                break;
+            }
+        }
+        if(isMatch) filteredArray.push(preFilteredData[i]);
+    }
+    return filteredArray;
+    }
+
+
+
+
+
+
+
+
+    /*************************************************************************
+     * This generates the list of users that is being searched
+     * array -> {"name":"<some name>", "friends":<some number>, "icon":"<image url>"}
+     * 
+     * 
+     * TODO I will eventually link this to the user profile screen
+     *************************************************************************/
+    profileView(profileSearchData){
+        profileSearchData = JSON.parse(JSON.stringify(profileSearchData));
+        return(
+        <View style={styles.discover_friendRow}>
+            <View style={{flex:1, flexDirection:"column", justifyContent:"center"}}>
+                <Image source={{uri:profileSearchData["icon"]}} style={styles.discover_friendImage}/>
+            </View>
+            <View style={{flex:3, flexDirection:"column"}}>
+                <View style={{flex:1, flexDirection:"row"}}>
+                    <Text style={styles.discover_friendNameText}>{profileSearchData["name"]}</Text>
+                </View>
+                <View style={{flex:1, flexDirection:"row"}}>
+                    <Text style={styles.discover_friendFollowersText}>{profileSearchData["friends"]} friends</Text>
+                </View>
+            </View>
+            <View style={{flex:1, flexDirection:"column"}}>
+                <View style={styles.discover_viewProfileBorder}>
+                    <Text style={styles.discover_viewProfileText}>view</Text>
+                </View>
+            </View>
+        </View>
+        );
+    }
+
 
 
     /*************************************************************************
@@ -83,7 +164,7 @@ export default class BareComponents extends React.PureComponent{
                     <Text numberOfLines={1} style={groupStyles.contentText}>{item["epithet"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
-                    {this.returnImg(item["width"], item["height"], item["icon"])}
+                    {this.returnImg(item["scale"].split("x")[0], item["scale"].split("x")[1], item["icon"])}
                 </View>
             </View>
 
@@ -109,7 +190,6 @@ export default class BareComponents extends React.PureComponent{
         </View>
     </View>);
     }
-
 }
 
 

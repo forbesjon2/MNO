@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text , TouchableOpacity, FlatList, Keyboard, TextInput, Image} from "react-native";
+import { View, TouchableWithoutFeedback, Text , FlatList, TextInput} from "react-native";
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
+import BareComponents from '../../components/other/BareComponents';
 
 
 /*************************************************************************
@@ -19,72 +20,13 @@ class SchoolSearch extends React.Component{
         this.state={
             text:"",
             groupData:[],
-            searchData:[]
+            searchData:[],
+
+            //general page integration
+            components: new BareComponents(),
         }
         //sets the safe area background for iOS
         this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#42368A"});
-    }
-
-    
-    returnImg(width, height, url){
-        if(width == 0 || height == 0){
-            return(<Text>No image</Text>)
-        }else{
-            return(<Image source={{uri:url}} style={{ minWidth:width, minHeight:height, alignSelf:"center", marginTop:20}}/>);
-        }
-    }
-
-
-    /*************************************************************************
-    * This returns the JSX for each element (Group) in the flatlist.
-    * 
-    * It expects the following format (where uuid is used elsewhere)
-    *   {"uuid":"<unique identifier>", "name":"<group name>", 
-    *   "epithet":"<group epithet>", "members":<number of members>, 
-    *   "servers":<number of servers>, "icon":"<icon url>"}
-    *************************************************************************/
-    groupView(item){
-        item = JSON.parse(JSON.stringify(item));
-        return(
-            <View style={styles.schoolsearch_groupMain}>
-        <View style={{flex:1, flexDirection:"column", margin:15}}>
-            {/* Name */}
-            <View style={{flex:1, maxHeight:50, minHeight:50, flexDirection:"row", borderBottomColor:"#D0D1D3", borderBottomWidth:2}}>
-                <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText]}>{item["name"]}</Text>
-            </View>
-
-            {/* Epithet & icon */}
-            <View style={{flex:1, maxHeight:80, minHeight:80, flexDirection:"row",  borderBottomColor:"#D0D1D3", borderBottomWidth:2}}>
-                <View style={{flex:1, flexDirection:"column"}}>
-                    <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>epithet</Text>
-                    <Text numberOfLines={1} style={styles.schoolsearch_groupContentText}>{item["epithet"]}</Text>
-                </View>
-                <View style={{flex:1, flexDirection:"column"}}>
-                    {this.returnImg(item["width"], item["height"], item["icon"])}
-                </View>
-            </View>
-
-            {/* Members &  Groups*/}
-            <View style={{flex:1, flexDirection:"row",  borderBottomColor:"#D0D1D3", borderBottomWidth:2, maxHeight:120, minHeight:120}}>
-                <View style={{flex:1, flexDirection:"column", borderRightColor:"#D0D1D3", borderRightWidth:2}}>
-                <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>members</Text>
-                    <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText, {alignSelf:"center", fontSize:48}]}>{item["members"]}</Text>
-                </View>
-                <View style={{flex:1, flexDirection:"column"}}>
-                <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>servers</Text>
-                    <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText, {alignSelf:"center", fontSize:48}]}>{item["servers"]}</Text>
-                </View>
-            </View>
-            
-            {/* Nav Button */}
-            <TouchableOpacity style={{borderRadius:12}}>
-                <View style={{backgroundColor:'rgba(66,54,138,0.2)', width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45, flex:1, flexDirection:"row"}}>
-                    <Text style={{color:'rgba(66,54,138,1)', paddingTop:9, paddingLeft:12, fontSize:18, flex:4, flexDirection:"column"}}>Select school.</Text>
-                    <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, flex:1, flexDirection:"column", alignSelf:"center"}} />
-                </View>
-            </TouchableOpacity>
-        </View>
-    </View>);
     }
 
     /*************************************************************************
@@ -96,28 +38,8 @@ class SchoolSearch extends React.Component{
     * It then appends that to the state
     *************************************************************************/
     componentWillMount(){
-        let data = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
-        for(let item in data){
-            Image.getSize(data[item]["icon"], (w, h) => {
-                var dimensionWidth = 50;
-                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
-                    members:data[item]["members"], epithet:data[item]["epithet"],
-                    name:data[item]["name"], uuid:data[item]["uuid"], 
-                    width:dimensionWidth, height:[w > dimensionWidth ? h * (dimensionWidth / w) : h * (w / dimensionWidth)][0]};
-                let tempArray = this.state.groupData;
-                tempArray.push(obj);
-                this.setState({groupData: tempArray});
-            }, (error) => {
-                var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
-                    members:data[item]["members"], epithet:data[item]["epithet"],
-                    name:data[item]["name"], uuid:data[itrrrrem]["uuid"], 
-                    width:0, height:0};
-                let tempArray = this.state.groupData;
-                tempArray.push(obj);
-                this.setState({groupData: tempArray});
-            });
-            this.setState({searchData:this.state.groupData})
-        }
+        let groupData = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
+        this.setState({searchData:groupData, groupData:groupData})
     }
 
     /*************************************************************************
@@ -126,27 +48,10 @@ class SchoolSearch extends React.Component{
     *************************************************************************/
     _keyExtractor = (item, index) => item.uuid;
     
-    /*************************************************************************
-     * This is a simple search implementation using javascript regex. 
-     *
-     * the state variable 'groupData' is the original list of groups that is
-     * never changed (used as a reference)
-     * 
-     * 'searchData' is updated every time this is run
-    *************************************************************************/
+    //implements BareComponents searchFunction() to perform a simple search
     search(){
-        Keyboard.dismiss()
-        let filteredArray = [];
-        var regex = new RegExp(this.state.text.toLowerCase(), 'g');
-        const {groupData} = this.state;
-        for(let item in groupData){
-            let nameMatch = groupData[item]["name"].toLowerCase().match(regex);
-            let epithetMatch = groupData[item]["epithet"].toLowerCase().match(regex);
-            if(nameMatch != null || epithetMatch != null){
-                filteredArray.push(groupData[item]);
-            }
-        }
-        this.setState({searchData: filteredArray});
+        let filterData = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "epithet"]);
+        this.setState({searchData: filterData});
     }
 
     render(){
@@ -178,7 +83,7 @@ class SchoolSearch extends React.Component{
             keyExtractor={this._keyExtractor}
             showsHorizontalScrollIndicator={false}
             renderItem={({item}) => 
-            this.groupView(item, false)}
+            this.state.components.groupView(item, true)}
         />
         <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10, marginBottom:5}}>
             <Text style={styles.schoolsearch_bottomPageTextEnglish}>miniowl, 2019</Text>
