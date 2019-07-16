@@ -35,6 +35,11 @@ class SchoolSearch extends React.Component{
 
     /*************************************************************************
     * This returns the JSX for each element (Group) in the flatlist.
+    * 
+    * It expects the following format (where uuid is used elsewhere)
+    *   {"uuid":"<unique identifier>", "name":"<group name>", 
+    *   "epithet":"<group epithet>", "members":<number of members>, 
+    *   "servers":<number of servers>, "icon":"<icon url>"}
     *************************************************************************/
     groupView(item){
         item = JSON.parse(JSON.stringify(item));
@@ -77,8 +82,7 @@ class SchoolSearch extends React.Component{
                 </View>
             </TouchableOpacity>
         </View>
-    </View>
-        );
+    </View>);
     }
 
     /*************************************************************************
@@ -104,7 +108,7 @@ class SchoolSearch extends React.Component{
             }, (error) => {
                 var obj = {icon: data[item]["icon"], servers:data[item]["servers"], 
                     members:data[item]["members"], epithet:data[item]["epithet"],
-                    name:data[item]["name"], uuid:data[item]["uuid"], 
+                    name:data[item]["name"], uuid:data[itrrrrem]["uuid"], 
                     width:0, height:0};
                 let tempArray = this.state.groupData;
                 tempArray.push(obj);
@@ -172,7 +176,7 @@ class SchoolSearch extends React.Component{
             keyExtractor={this._keyExtractor}
             showsHorizontalScrollIndicator={false}
             renderItem={({item}) => 
-            this.groupView(item)}
+            this.groupView(item, false)}
         />
         <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10, marginBottom:5}}>
             <Text style={styles.bottomPageTextEnglish}>miniowl, 2019</Text>

@@ -1,0 +1,9 @@
+{
+    "users":[
+        {"name":"Henry Jackson", "uuid":"1", "friends":12, "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0"}, 
+        {"name":"Tomo Suzuki", "uuid":"2", "friends":23, "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0"},
+        {"name":"Henry Jackson", "uuid":"3", "friends":12, "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0"},
+        {"name":"Tomo Suzuki", "uuid":"4", "friends":23, "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0"}, 
+        {"name":"Henry Jackson", "uuid":"5", "friends":12, "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0"}
+    ]
+}

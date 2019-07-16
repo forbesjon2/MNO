@@ -14,6 +14,8 @@ import {Ionicons} from '@expo/vector-icons';
  * be hidden. Other attributes will appear but those are the general properties
  * 
  * Note: the shadow under the server list only works on iOS devices
+ * 
+ * TODO: implement this
  *************************************************************************/
 class Profile extends React.Component{
     constructor(props){
@@ -27,18 +29,24 @@ class Profile extends React.Component{
         this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
+    /*************************************************************************
+     * The dot here appears under the currently selected menu
+     *************************************************************************/
     dotGen(index){
-        if(this.state.selectedMenuIndex == index){
-            return(<Text style={styles.menuButton}>.</Text>);
-        }else{
-            return(null);
-        }
+        if(this.state.selectedMenuIndex == index) return(<Text style={styles.menuButton}>.</Text>);
+        return(null);
     }
 
    
 
     /*************************************************************************
-     * This generates the serverList
+     * This generates the list of servers that the user is a member of.
+     * it appears under 'servers'. It requires an array of server names.
+     * The color is one of 4 possibilities generated randomly
+     * 
+     * The shadow effect appears on iOS but not on android
+     * 
+     * TODO I will eventually link this to the server info screen
      *************************************************************************/
     serverTileGen(serverList){
         var tileList = [];
@@ -68,7 +76,15 @@ class Profile extends React.Component{
         return tileList;
     }
 
-
+    /*************************************************************************
+     * This generates the list of tags that the user assigns to themselves.
+     * it appears under 'tags' and is a very simple list (2 columns wide)
+     * of tags. This requires an array of tags
+     * 
+     * These tags can be added in the individual users settings
+     * 
+     * TODO I will eventually link this to the tag info screen
+     *************************************************************************/
     tagTileGen(tagList){
         var tileList = [];
         if(tagList.length == 0) return(<Text style={[styles.tagTileText, {marginTop:25}]}>This user has no tags</Text>)
@@ -97,7 +113,15 @@ class Profile extends React.Component{
         return tileList;
     }
 
-
+    /*************************************************************************
+     * This generates the list of users that the current user is friends with.
+     * it appears under 'friends'. It requires an array of friends with the
+     * following format
+     * array -> {"name":"<some name>", "friends":<some number>, "icon":"<image url>"}
+     * 
+     * 
+     * TODO I will eventually link this to the user profile screen
+     *************************************************************************/
     friendTileGen(friendList){
         var tilelist = [];
         for(let i in friendList){
@@ -246,12 +270,13 @@ const styles = StyleSheet.create({
         fontFamily:"Roboto-Medium", 
         fontSize: 19,
         color:"black",
-        maxHeight:24,
+        minHeight:26,
+        maxHeight:26,
     },
     friendFollowersText:{
         fontFamily:"Roboto-Regular", 
         fontSize: 13,
-        paddingTop:3,
+        paddingTop:5,
         color:"black",
     },
     serverRow:{
