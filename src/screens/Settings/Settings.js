@@ -1,7 +1,8 @@
 import React from 'react';
-import {Text, View, StyleSheet, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import {Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
 import NavigationService from "../../navigation/NavigationService";
 import { connect } from "react-redux";
+import {styles} from "../../Styles";
 
 class Settings extends React.Component{
     static navigationOptions = ({navigation}) => ({
@@ -16,20 +17,20 @@ class Settings extends React.Component{
     
     render(){
         return(
-            <View style={styles.main}>      
+            <View style={styles.settings_main}>      
                 <ScrollView
-                style={styles.scroll}
+                style={styles.settings_scroll}
                 showsVerticalScrollIndicator={false}>
 
                     {/* Headers */}
-                    <Text style={[{paddingTop: 10},styles.header]}>More</Text>
-                    <Text style={styles.header}>Mehr</Text>
-                    <Text style={styles.headerKorean}>더</Text>
-                    <Text style={styles.headerChinese}>更</Text>
+                    <Text style={[{paddingTop: 10}, styles.settings_header]}>More</Text>
+                    <Text style={styles.settings_header}>Mehr</Text>
+                    <Text style={styles.settings_headerForeign}>더</Text>
+                    <Text style={styles.settings_headerForeign}>更</Text>
 
 
                     {/* Accounts header */}
-                    <Text style={[{paddingTop: 20},styles.topicHeader]}>Account</Text>
+                    <Text style={[{paddingTop: 20},styles.settings_topicHeader]}>Account</Text>
                     
                     {/* Accounts buttons */}
                     {generateButton("Language", false, "Language")}
@@ -44,7 +45,7 @@ class Settings extends React.Component{
 
 
                     {/* Notifications header */}
-                    <Text style={[{paddingTop: 20},styles.topicHeader]}>Notifications</Text>
+                    <Text style={[{paddingTop: 20},styles.settings_topicHeader]}>Notifications</Text>
                 
                     {/* Notifications buttons */}
                     {generateButton("Push Notifications", false, "PushNotifications")}
@@ -53,7 +54,7 @@ class Settings extends React.Component{
 
 
                     {/* Support header */}
-                    <Text style={[{paddingTop: 20},styles.topicHeader]}>Support</Text>
+                    <Text style={[{paddingTop: 20},styles.settings_topicHeader]}>Support</Text>
                     
                     {/* Support buttons */}
                     {generateButton("Report a Bug", false, "ReportBug")}
@@ -62,7 +63,7 @@ class Settings extends React.Component{
 
 
                     {/* Logins header */}
-                    <Text style={[{paddingTop: 20},styles.topicHeader]}>Logins</Text>
+                    <Text style={[{paddingTop: 20},styles.settings_topicHeader]}>Logins</Text>
                     
                     {/* Logins buttons */}
                     {generateButton("Log out of null", true, "Home")}
@@ -82,63 +83,18 @@ function generateButton(text, isBlue, navigateTo){
         return(
             <TouchableWithoutFeedback
             onPress={() => NavigationService.navigate(navigateTo)}>
-                <Text style={[styles.buttonText, {color: "#00B5E0"}]}>{text}</Text>
+                <Text style={[styles.settings_buttonText, {color: "#00B5E0"}]}>{text}</Text>
             </TouchableWithoutFeedback>
         );
     }else{
         return(
             <TouchableWithoutFeedback
             onPress={() => NavigationService.navigate(navigateTo)}>
-            <Text style={styles.buttonText}>{text}</Text>
+            <Text style={styles.settings_buttonText}>{text}</Text>
         </TouchableWithoutFeedback>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    main:{
-        flex: 1,
-        flexDirection: "column",
-    },
-    buttonText:{
-        fontSize: 21,
-        fontFamily:"Roboto-Regular",
-        color: "black", 
-        lineHeight: 48,       
-    },
-    topicHeader:{
-        fontSize: 52,
-        fontFamily:"Roboto-Regular",
-        color: "black",
-    },
-    header:{
-        fontSize: 56,
-        fontFamily:"DidactGothic-Regular",
-        color: "black",
-        lineHeight: 50,
-    },
-    headerKorean:{
-        // fontFamily:"NM",
-        fontSize: 54,
-        color:"black",
-        lineHeight: 65,
-    },
-    headerChinese:{
-        // fontFamily:"NM",
-        fontSize: 54,
-        color:"black",
-        lineHeight: 65,
-    },
-    scroll:{
-        flex: 20,
-        paddingLeft: 20,
-        paddingRight: 20,
-        flexDirection: "column",
-    },
-    nav:{
-        height: 50,
-    }
-});
 
 
 const mapStateToProps = (store) => ({

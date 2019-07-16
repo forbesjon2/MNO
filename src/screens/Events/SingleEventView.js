@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text, View, Button, TouchableWithoutFeedback, StyleSheet, ScrollView} from 'react-native';
+import {Text, View, Button, TouchableWithoutFeedback, ScrollView} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import { connect } from "react-redux";
-
+import {styles} from "../../Styles";
 /**
  * This is the page that shows the individual event.
  * It appears when you click on a particular event in the
@@ -33,25 +33,25 @@ class SingleEventView extends React.Component{
                 <Text style={{color:"white", flex:4, flexDirection:"column", fontSize:24, textAlign:"left", fontFamily:"Roboto-Regular"}}>{dateToMonth(navigation.getParam("date"))}</Text>
                 </View>
             </TouchableWithoutFeedback>
-            <Text numberOfLines={3} style={{marginLeft:16, marginRight:20, lineHeight:34, fontFamily:"Roboto-Medium", fontSize:26, color:"white"}}>{navigation.getParam("heading")}</Text>
-            <Text numberOfLines={1} style={[styles.dateText, {marginTop:30}]}>Thursday, February 28, 2019</Text>
-            <Text numberOfLines={1} style={{color:"white", fontFamily:"Roboto-Light", marginLeft:16, fontSize:16, marginBottom:20}}>10:00am - 12:00pm</Text>
+            <Text numberOfLines={3} style={styles.singleeventview_heading}>{navigation.getParam("heading")}</Text>
+            <Text numberOfLines={1} style={styles.singleeventview_dateText}>Thursday, February 28, 2019</Text>
+            <Text numberOfLines={1} style={styles.singleeventview_timeText}>10:00am - 12:00pm</Text>
         </View>
-            <View style={styles.itemView}>
-            <Ionicons name="md-paper" style={styles.icon}/>
-            <View style={styles.textBorder}>
+            <View style={styles.singleeventview_itemView}>
+            <Ionicons name="md-paper" style={styles.singleeventview_icon}/>
+            <View style={styles.singleeventview_textBorder}>
                 <Text style={{fontFamily:"Roboto-Light", lineHeight:24, fontSize:14}}>{navigation.getParam("description")}</Text>
             </View>
             </View>
-            <View style={[styles.itemView, {maxHeight:40}]}>
-            <Ionicons name="ios-pin" style={styles.icon}/>
-            <View style={styles.textBorder}>
+            <View style={[styles.singleeventview_itemView, {maxHeight:40}]}>
+            <Ionicons name="ios-pin" style={styles.singleeventview_icon}/>
+            <View style={styles.singleeventview_textBorder}>
                 <Text style={{fontFamily:"Roboto-Regular", lineHeight:24, fontSize:14}}>{navigation.getParam("location")}</Text>
             </View>
             </View>
-            <View style={[styles.itemView, {maxHeight:40}]}>
-            <Ionicons name="ios-people" style={styles.icon}/>
-            <View style={styles.textBorder}>
+            <View style={[styles.singleeventview_itemView, {maxHeight:40}]}>
+            <Ionicons name="ios-people" style={styles.singleeventview_icon}/>
+            <View style={styles.singleeventview_textBorder}>
                 <Text style={{fontFamily:"Roboto-Regular", lineHeight:24, fontSize:14}}>{navigation.getParam("attending").length} Attending</Text>
             </View>
             </View>
@@ -61,35 +61,6 @@ class SingleEventView extends React.Component{
         );
     }
 }
-
-const styles = StyleSheet.create({
-    dateText:{
-        color:"white",
-        fontFamily:"Roboto-Light",
-        marginLeft:16,
-        fontSize:16,
-    },
-    icon:{
-        color:"#897BD1",
-        flex:1,
-        flexDirection:"column",
-        textAlign:"center",
-        fontSize:24
-    },
-    itemView:{
-        flex:1,
-        flexDirection:"row",
-        marginTop:10,
-        marginRight:10
-    },
-    textBorder:{
-        flex:7,
-        flexDirection:"column",
-        borderBottomColor:"#BEBEBE",
-        borderBottomWidth:1.5,
-        paddingBottom:12
-    }
-});
 
 function dateToMonth(date){
     const monthArray = ["Janurary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

@@ -1,5 +1,6 @@
 import React from 'react';
-import {Image, View, StyleSheet, Text, Dimensions, Linking, Button, TouchableWithoutFeedback} from 'react-native';
+import {Image, View, Text, Dimensions, Linking, Button, TouchableWithoutFeedback} from 'react-native';
+import {styles} from "../../Styles";
 
 /*************************************************************************
  * each post someone makes is loaded from the DB & rendered here to be 
@@ -91,31 +92,19 @@ function syntaxTree(content, classInstance){
           let matchPos = matchArray[matchTracker].split(",")[0];
 
           //if theres text before the next link, add it
-          if(currentPosition < matchPos){returnObj.push(<Text style={contentStyles.text} key={currentPosition}>{content.slice(currentPosition, matchPos)}</Text>)}
+          if(currentPosition < matchPos){returnObj.push(<Text style={styles.contentview_text} key={currentPosition}>{content.slice(currentPosition, matchPos)}</Text>)}
           currentPosition = matchArray[matchTracker].split(",")[0];
           let matchText = matchArray[matchTracker].split(",")[1];
           //add the link
           returnObj.push(<TouchableWithoutFeedback key={currentPosition} onPress={() => {classInstance.openLink(matchText);}}>
-                  <Text style={[contentStyles.text, {color:"blue", textDecorationLine:"underline"}]}>{matchText}</Text></TouchableWithoutFeedback>);
+                  <Text style={[styles.contentview_text, {color:"blue", textDecorationLine:"underline"}]}>{matchText}</Text></TouchableWithoutFeedback>);
           currentPosition = Number(currentPosition) + Number(matchText.length);
           ++matchTracker;
           //check if theres text after the last link, if so add it
-          if((matchTracker == matchArray.length) && (currentPosition + 1) < content.length){returnObj.push(<Text style={contentStyles.text} key={currentPosition}>{content.slice(currentPosition, content.length)}</Text>)}
+          if((matchTracker == matchArray.length) && (currentPosition + 1) < content.length){returnObj.push(<Text style={styles.contentview_text} key={currentPosition}>{content.slice(currentPosition, content.length)}</Text>)}
         }
       }else{
-        returnObj.push(<Text key={0} style={contentStyles.text}>{content}</Text>);
+        returnObj.push(<Text key={0} style={styles.contentview_text}>{content}</Text>);
       }
       return returnObj;
 }
-const contentStyles = StyleSheet.create({
-    text:{
-        fontFamily:"DidactGothic-Regular",
-        fontSize:16,
-        paddingLeft:10,
-        paddingRight:10,
-    },
-    image:{
-        width:10,
-        height:10
-    }
-})

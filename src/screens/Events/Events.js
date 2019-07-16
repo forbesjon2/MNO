@@ -1,8 +1,10 @@
 import React from 'react';
-import {Text, View, StyleSheet, ScrollView, TouchableWithoutFeedback} from 'react-native';
+import {Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
 import { connect } from "react-redux";
 import {CalendarList} from "react-native-calendars";
 import NavigationService from "../../navigation/NavigationService";
+import {styles} from "../../Styles";
+
 /**
  * REFERENCES
  * https://github.com/wix/react-native-calendars/blob/master/src/calendar/header/style.js#L4
@@ -112,14 +114,14 @@ function generateBasicEvents(calendarData, currentDate){
                     "attending": calendarData["dates"][i]["events"][j]["attending"],
                     "date": currentDate});
             }}>
-                        <View style={[styles.eventView]}>
-                <View style={styles.eventTimeView}>
-                    <Text style={styles.eventTimeViewText}>{calendarData["dates"][i]["events"][j]["start_time"]}</Text>
-                    <Text style={styles.eventTimeViewText}>{calendarData["dates"][i]["events"][j]["end_time"]}</Text>
+                        <View style={[styles.events_eventView]}>
+                <View style={styles.events_eventTimeView}>
+                    <Text style={styles.events_eventTimeViewText}>{calendarData["dates"][i]["events"][j]["start_time"]}</Text>
+                    <Text style={styles.events_eventTimeViewText}>{calendarData["dates"][i]["events"][j]["end_time"]}</Text>
                 </View>
-                <View style={styles.eventViewTwo}>
-                    <Text style={styles.eventHeading} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["heading"]}</Text>
-                    <Text style={styles.eventDescription} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["description"]}</Text>
+                <View style={styles.events_eventViewTwo}>
+                    <Text style={styles.events_eventHeading} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["heading"]}</Text>
+                    <Text style={styles.events_eventDescription} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["description"]}</Text>
                 </View>
             </View>
             </TouchableWithoutFeedback>
@@ -132,55 +134,8 @@ function generateBasicEvents(calendarData, currentDate){
     if(count > 0) return returnObj;
     
     //eventHeading, eventContent
-    return(<Text style={[styles.eventHeading, {color:"black", marginLeft:12}]}>No events for today</Text>);
+    return(<Text style={[styles.events_eventHeading, {color:"black", marginLeft:12}]}>No events for today</Text>);
 }
-
-const styles = StyleSheet.create({
-    eventView:{
-        flex: 1,
-        flexDirection:"row",
-        height: 85,
-        borderRadius:12,
-        backgroundColor:"#0A60E2",
-        marginLeft:15,
-        marginRight:15,
-        marginTop:12,
-        shadowColor: '#000000',
-        shadowOffset: {width: 0,height: 3},
-        shadowRadius: 5,
-        shadowOpacity: 1.0
-    },
-    eventTimeView:{
-        alignItems:"center",
-        width:80,
-        marginLeft:5
-    },
-    eventTimeViewText:{
-        fontFamily: "Khula-Regular",
-        fontSize:15,
-        color:"white",
-        paddingTop:14,
-        textAlign:"right"
-    },
-    eventViewTwo:{
-        marginLeft:10,
-        marginRight:10,
-        flex:1,
-        alignItems:"flex-start"
-    },
-    eventHeading:{
-        fontFamily: "Khula-Bold",
-        color:"white",
-        fontSize:19,
-        paddingTop:11,
-    
-    },
-    eventDescription:{
-        fontFamily: "Khula-Regular",
-        color:"white",
-        paddingTop:8
-    }
-})
 
 const mapStateToProps = (store) => ({
     currentDate: store.Global.currentDate,

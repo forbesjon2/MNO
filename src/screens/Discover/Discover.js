@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, View, StyleSheet, ScrollView, Image, TextInput, TouchableWithoutFeedback, Animated, Keyboard, FlatList} from 'react-native';
+import {Text, View, ScrollView, Image, TextInput, TouchableWithoutFeedback, Animated, Keyboard, FlatList} from 'react-native';
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import BareComponents from "../../components/other/BareComponents";
+import {styles} from "../../Styles";
 
 class Discover extends React.Component{
     constructor(props){
@@ -124,14 +125,14 @@ class Discover extends React.Component{
         if(selectedButton){
             return(
             <View>
-                <Text style={styles.selectedButtonStyle}>{textArray[infList[index]]}</Text>
+                <Text style={styles.discover_selectedButton}>{textArray[infList[index]]}</Text>
             </View>);
         }
         //for deselected buttons
         return(
             <TouchableWithoutFeedback
             onPress={() => this.setState({selectedListID: infList[index], text: "Search"})}>
-                <Text style={styles.deselectedButtonStyle}>{textArray[infList[index]]}</Text>
+                <Text style={styles.discover_deselectedButton}>{textArray[infList[index]]}</Text>
             </TouchableWithoutFeedback>
         );
     }
@@ -153,21 +154,21 @@ class Discover extends React.Component{
         const {profileSearchData} = this.state;
         for(let i in profileData){
             tilelist.push(
-            <View style={styles.friendRow}>
+            <View style={styles.discover_friendRow}>
                 <View style={{flex:1, flexDirection:"column", justifyContent:"center"}}>
-                <Image source={{uri:profileSearchData[i]["icon"]}} style={styles.friendImage}/>
+                <Image source={{uri:profileSearchData[i]["icon"]}} style={styles.discover_friendImage}/>
                 </View>
                 <View style={{flex:3, flexDirection:"column"}}>
                     <View style={{flex:1, flexDirection:"row"}}>
-                        <Text style={styles.friendNameText}>{profileSearchData[i]["name"]}</Text>
+                        <Text style={styles.discover_friendNameText}>{profileSearchData[i]["name"]}</Text>
                     </View>
                     <View style={{flex:1, flexDirection:"row"}}>
-                        <Text style={styles.friendFollowersText}>{profileSearchData[i]["friends"]} friends</Text>
+                        <Text style={styles.discover_friendFollowersText}>{profileSearchData[i]["friends"]} friends</Text>
                     </View>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
-                    <View style={styles.viewProfileBorder}>
-                        <Text style={styles.viewProfileText}>view</Text>
+                    <View style={styles.discover_viewProfileBorder}>
+                        <Text style={styles.discover_viewProfileText}>view</Text>
                     </View>
                 </View>
             </View>
@@ -199,11 +200,11 @@ class Discover extends React.Component{
     <ScrollView style={{marginTop:50}}>
 
         {/* Header */}
-        <View style={styles.topContentView}>
-            <Text style={styles.headerText}>Discover</Text>
+        <View style={styles.discover_topContentView}>
+            <Text style={styles.discover_headerText}>Discover</Text>
             
             {/* TripleList */}
-            <View style={styles.tripleList}>
+            <View style={styles.discover_tripleList}>
                 <View style={{alignContent:"center"}}>
                     {this.listButtonGen(0, false)}
                     {this.listButtonGen(1, true)}
@@ -215,7 +216,7 @@ class Discover extends React.Component{
         {/* Input */}
         <View style={{flex:1, flexDirection:"row", maxHeight:30, marginLeft:50, marginTop:30}}>
             <TextInput
-                style={[styles.textInput, {minWidth:300, maxWidth:300}]}
+                style={[styles.discover_textInput, {minWidth:300, maxWidth:300}]}
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text} 
                 selectionColor={"black"}
@@ -233,11 +234,11 @@ class Discover extends React.Component{
                 onFocus={() =>{[this.state.text == "Search" ? this.setState({text:""}) :null]}}
                 clearTextOnFocus={true}
                 maxLength={125}/>
-            <Ionicons name="ios-search" style={[{textAlign:"center", color:"black", textAlignVertical:"center", position:"absolute", marginLeft: 280, marginTop:4, fontSize:22}]}/>
+            <Ionicons name="ios-search" style={styles.discover_searchIcon}/>
         </View>
 
         {/* Content */}
-        <View style={styles.bottomContentView}>
+        <View style={styles.discover_bottomContentView}>
             {this.itemSwitch()}
         </View>
     </ScrollView>
@@ -245,103 +246,6 @@ class Discover extends React.Component{
     );
     }
 };
-
-
-const styles = StyleSheet.create({
-    deselectedButtonStyle:{
-        fontSize:26, 
-        height: 30, 
-        maxWidth: 90, 
-        fontFamily: "Khula-Light", 
-        color: "black"
-    },
-    selectedButtonStyle:{
-        fontSize:32, 
-        height: 30,
-        fontFamily: "Khula-ExtraBold", 
-        color: "black", 
-        lineHeight: 44, 
-        maxWidth: 120
-    },
-    headerText:{
-        fontFamily:"Khula-Light",
-        fontSize: 38,
-        flex: 1, 
-        marginLeft: 55,
-        maxWidth:150,
-        alignSelf: "center",
-        color: "black",
-    },
-    textInput:{
-        flex:1,
-        color: "black",
-        fontFamily:"Khula-Light",
-        fontSize: 20,
-        margin:0,
-        padding:0,
-        textAlignVertical:"bottom",
-        borderBottomWidth:1,
-        borderBottomColor:"gray"
-    },
-    topContentView:{
-        flex: 3,
-        flexDirection:"row",
-    },
-    bottomContentView:{
-        flex: 8,
-    },
-    tripleList:{
-        flex:1,
-        alignSelf:"center",
-    },
-    friendRow:{
-        flex:1, 
-        flexDirection:"row",
-        maxHeight:50,
-        marginTop:20
-    },    
-    friendImage:{
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignSelf:"center",
-        shadowOffset:{width:0, height:10},
-        shadowRadius:20,
-        shadowOpacity:0.8,
-        shadowColor:"#000"
-    },
-    friendNameText:{
-        fontFamily:"Roboto-Medium", 
-        fontSize: 19,
-        color:"black",
-        minHeight:26,
-        maxHeight:26,
-    },
-    friendFollowersText:{
-        fontFamily:"Roboto-Regular", 
-        fontSize: 13,
-        paddingTop:5,
-        color:"black",
-    },
-    viewProfileBorder:{
-        borderColor:"#975EF7",
-        borderRadius: 5,
-        backgroundColor:"#F8FAFB",
-        maxHeight:25,
-        minHeight:25,
-        minWidth:60,
-        maxWidth:60,
-        borderWidth:1,
-        alignItems:"center",
-    },
-    viewProfileText:{
-        color:"#975EF7",
-        opacity:0.6,
-        fontFamily:"Roboto-Regular", 
-        fontSize: 14,
-        justifyContent:"center"
-    },
-});
 
 
 const mapStateToProps = (store) => ({

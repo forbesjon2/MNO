@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text , TouchableOpacity, FlatList, Keyboard, StyleSheet, TextInput, Image} from "react-native";
+import { View, TouchableWithoutFeedback, Text , TouchableOpacity, FlatList, Keyboard, TextInput, Image} from "react-native";
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
+import {styles} from "../../Styles";
+
 
 /*************************************************************************
  * This is the School Search screen, it appears after you enter your
@@ -44,18 +46,18 @@ class SchoolSearch extends React.Component{
     groupView(item){
         item = JSON.parse(JSON.stringify(item));
         return(
-            <View style={groupStyles.main}>
+            <View style={styles.schoolsearch_groupMain}>
         <View style={{flex:1, flexDirection:"column", margin:15}}>
             {/* Name */}
             <View style={{flex:1, maxHeight:50, minHeight:50, flexDirection:"row", borderBottomColor:"#D0D1D3", borderBottomWidth:2}}>
-                <Text numberOfLines={1} style={[groupStyles.contentText]}>{item["name"]}</Text>
+                <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText]}>{item["name"]}</Text>
             </View>
 
             {/* Epithet & icon */}
             <View style={{flex:1, maxHeight:80, minHeight:80, flexDirection:"row",  borderBottomColor:"#D0D1D3", borderBottomWidth:2}}>
                 <View style={{flex:1, flexDirection:"column"}}>
-                    <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>epithet</Text>
-                    <Text numberOfLines={1} style={groupStyles.contentText}>{item["epithet"]}</Text>
+                    <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>epithet</Text>
+                    <Text numberOfLines={1} style={styles.schoolsearch_groupContentText}>{item["epithet"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
                     {this.returnImg(item["width"], item["height"], item["icon"])}
@@ -65,12 +67,12 @@ class SchoolSearch extends React.Component{
             {/* Members &  Groups*/}
             <View style={{flex:1, flexDirection:"row",  borderBottomColor:"#D0D1D3", borderBottomWidth:2, maxHeight:120, minHeight:120}}>
                 <View style={{flex:1, flexDirection:"column", borderRightColor:"#D0D1D3", borderRightWidth:2}}>
-                <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>members</Text>
-                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["members"]}</Text>
+                <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>members</Text>
+                    <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText, {alignSelf:"center", fontSize:48}]}>{item["members"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
-                <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>servers</Text>
-                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["servers"]}</Text>
+                <Text numberOfLines={1} style={[styles.schoolsearch_groupHeaderText, {color:'rgba(66,54,138,1)'}]}>servers</Text>
+                    <Text numberOfLines={1} style={[styles.schoolsearch_groupContentText, {alignSelf:"center", fontSize:48}]}>{item["servers"]}</Text>
                 </View>
             </View>
             
@@ -149,14 +151,14 @@ class SchoolSearch extends React.Component{
 
     render(){
     return(
-    <View style={styles.main}>
+    <View style={styles.schoolsearch_main}>
 
         {/* Header */}
-        <Text style={styles.header}>Search for your school.</Text>
-        <Text style={[styles.subHeader, {marginBottom:25}]}>{this.state.groupData.length} schools available</Text>
-        <View style={styles.textInputView}>
+        <Text style={styles.schoolsearch_header}>Search for your school.</Text>
+        <Text style={[styles.schoolsearch_subHeader, {marginBottom:25}]}>{this.state.groupData.length} schools available</Text>
+        <View style={styles.schoolsearch_textInputView}>
             <TextInput
-            style={styles.textInput}
+            style={styles.schoolsearch_textInput}
             onChangeText={(text) => this.setState({text})}
             value={this.state.text} 
             selectionColor={"black"}
@@ -179,107 +181,13 @@ class SchoolSearch extends React.Component{
             this.groupView(item, false)}
         />
         <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10, marginBottom:5}}>
-            <Text style={styles.bottomPageTextEnglish}>miniowl, 2019</Text>
+            <Text style={styles.schoolsearch_bottomPageTextEnglish}>miniowl, 2019</Text>
             {/* Find, Discover, Explore */}
-            <Text style={styles.bottomPageTextJapanese}>発見、発見、探検</Text>
+            <Text style={styles.schoolsearch_bottomPageTextJapanese}>発見、発見、探検</Text>
         </View>
     </View>
     );
 }}
-
-
-const styles = StyleSheet.create({
-    bottomPageTextJapanese:{
-        fontFamily:"DidactGothic-Regular",
-        color:"white",
-        fontSize:14,
-        padding: 0,
-        flex:1,
-        flexDirection:"column",
-        textAlign:"right"
-    },
-    bottomPageTextEnglish:{
-        fontFamily:"Khula-Light", 
-        fontSize:17,
-        lineHeight:26,
-        color:"white",
-        padding: 0,
-        flex:1,
-        flexDirection:"column",
-        textAlign:"left"
-    },
-    main:{
-        flex:1,
-        flexDirection:"column",
-        backgroundColor:"#42368A",
-    },
-    header:{
-        fontFamily:"DidactGothic-Regular",
-        fontSize:38,
-        color:"white",
-        marginTop:40,
-        marginBottom:8,
-        paddingLeft:20,
-        paddingTop:20
-    },
-    subHeader:{
-        fontFamily:"Roboto-Light",
-        fontSize:18,
-        color:"white",
-        opacity:0.7,
-        lineHeight:19,
-        paddingLeft:20,
-        paddingRight:20
-    },
-    textInput:{
-        flex:1,
-        color: "white",
-        fontFamily:"Khula-Light",
-        fontSize: 20,
-        margin:0,
-        padding:0,
-        textAlignVertical:"bottom",
-        borderBottomWidth:1,
-        borderBottomColor:"white",
-        minWidth:300, 
-        maxWidth:300
-    },
-    textInputView:{
-        maxHeight:35,
-        minHeight:35,
-        marginBottom:50,
-        paddingLeft:20,
-        paddingRight:20
-    }
-});
-
-const groupStyles = StyleSheet.create({
-    main:{
-        maxHeight:350,
-        minHeight:350,
-        minWidth: 290,
-        maxWidth: 290,
-        marginHorizontal:20,
-        backgroundColor:"white",
-        marginTop:10,
-        borderRadius:12
-    },
-    contentText:{
-        fontFamily: "Khula-Regular",
-        fontSize:21,
-        paddingLeft:3,
-        color:"black",
-        paddingTop:12
-    },
-    headerText:{
-        fontFamily: "DidactGothic-Regular",
-        fontSize:18,
-        paddingLeft:3,
-        paddingTop:1,
-        paddingBottom:4,
-    },
-})
-
 
 const mapStateToProps = (store) => ({
     groupData: store.Global.groupData

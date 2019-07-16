@@ -1,8 +1,9 @@
 import React from 'react';
-import {Text, View, StyleSheet, TouchableWithoutFeedback, FlatList, Image} from 'react-native';
+import {Text, View, TouchableWithoutFeedback, FlatList, Image} from 'react-native';
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import ContentView from './ContentView';
+import {styles} from "../../Styles";
 
 class HomeComponent extends React.Component{
     constructor(props){
@@ -17,29 +18,29 @@ class HomeComponent extends React.Component{
     const {homeData, currentGroup} = this.props;
     const dataObj = getHomeData(homeData, currentGroup);
     return(
-    <FlatList style={styles.mainView}
+    <FlatList style={styles.homecomponent_mainView}
         data={dataObj["content"]}
         
         renderItem={({item, separators}) =>(
-        <View style={styles.mainView}>
+        <View style={styles.homecomponent_mainView}>
         
         {/* This is the styling for each of the headers date is not yet included*/}
-        <View style={styles.headerView}>
-            <Image source={{uri:item.imageURI}} style={styles.headerImgView}/>
-            <View style={styles.headerTextView}>
-                <Text numberOfLines={1} style={styles.headerName}>{item.name}</Text>
-                <Text numberOfLines={1} style={styles.headerSubName}>{item.subName}</Text>
+        <View style={styles.homecomponent_headerView}>
+            <Image source={{uri:item.imageURI}} style={styles.homecomponent_headerImgView}/>
+            <View style={styles.homecomponent_headerTextView}>
+                <Text numberOfLines={1} style={styles.homecomponent_headerName}>{item.name}</Text>
+                <Text numberOfLines={1} style={styles.homecomponent_headerSubName}>{item.subName}</Text>
             </View>
             {/* <Text style={{flex:1, minWidth:60, textAlign:"right", alignSelf:"flex-end", fontFamily:"Khula-Regular", fontSize:14}}>6 minutes ago</Text> */}
         </View>
 
         {/* Text or image content (uses type property*/}
-        <View style={styles.contentView}>
+        <View style={styles.homecomponent_contentView}>
             <ContentView content={item.content} type={item.type} />
         </View>
 
         {/* Sub content view. This includes the heart icon & the to be implemented @ icon */}
-        <View style={styles.subContentView}>
+        <View style={styles.homecomponent_subContentView}>
         <TouchableWithoutFeedback style={{flex:1, flexDirection:"column"}}>
             <View style={{flex:1, flexDirection:"row"}}>
                 <Ionicons name="ios-heart-empty" style={{fontSize:21, flex:1, flexDirection:"column"}} color={"#ED1A7C"}/>  
@@ -76,51 +77,6 @@ function getHomeData(homeData, currentGroup){
     }
     return;
 }
-
-const styles = StyleSheet.create({
-    mainView:{
-        flex: 1, 
-        flexDirection:"column",
-        paddingTop:20,
-        paddingBottom:20,
-    },
-    headerView:{
-        flex:1,
-        flexDirection:"row",
-        paddingLeft:10,
-        paddingRight:10,
-    },
-    headerTextView:{
-        flex:3,
-        flexDirection:"column",
-        paddingLeft:12
-    },
-    headerName:{
-        fontFamily:"Khula-Bold",
-        fontSize:20,
-        color:"black"
-    },
-    headerSubName:{
-        fontFamily:"Khula-Regular",
-        fontSize:14,
-
-    },
-    headerImgView:{
-        width:50,
-        height:50,
-        borderRadius:10,
-    },
-    subContentView:{
-        paddingLeft:10,
-        paddingRight:10,
-        paddingTop:10,
-        flex:1,
-        flexDirection:"row"
-    },
-    contentView:{
-        paddingTop:10
-    }
-})
 
 
 
