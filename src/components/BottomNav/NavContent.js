@@ -98,22 +98,32 @@ class NavContent extends React.Component{
      *************************************************************************/
     homeSubNav(){
         return(
-        <View style={{flexDirection: "row", height:100, marginRight:12}}>
-            <TouchableWithoutFeedback>
-                <Ionicons name="ios-attach" style={[styles.clipSendIcon, {marginBottom:30}]}/>
+    <TouchableWithoutFeedback onPressOut={() => Keyboard.dismiss()}>
+        <View style={{flexDirection: "row", height:200}}>
+            
+            {/* The left attach file icon and the private message icon */}
+            <View style={{flexDirection:"column", maxHeight:140}}>
+            <TouchableWithoutFeedback style={{flexDirection:"row"}}>
+                <Ionicons name="ios-eye-off" style={[styles.clipSendIcon]}/>
             </TouchableWithoutFeedback>
+            <TouchableOpacity style={{flexDirection:"row"}}>
+                <Ionicons name="ios-attach" style={[styles.clipSendIcon]}/>
+            </TouchableOpacity>
+            </View>
             
             {/* The textbox */}
-            <View style={{alignItems:"stretch",}}>
-                <TextInput blurOnSubmit={true} style={[styles.textInput]} onChangeText={(text) => this.setState({homeSubNavText:text})}
+            <View style={{alignItems:"stretch",margin:0, padding:0}}>
+                <TextInput blurOnSubmit={true} style={[styles.textInput]} keyboardAppearance={"dark"} onChangeText={(text) => this.setState({homeSubNavText:text})}
                 onFocus={() =>{[this.state.homeSubNavText == "What's on your mind?" ? this.setState({homeSubNavText:""}) :null]}} maxLength={1000} multiline={true} numberOfLines={2}
                 value={this.state.homeSubNavText} enablesReturnKeyAutomatically={true} scrollEnabled={true} keyboardAppearance="dark" selectionColor="gray"/>
             </View>
-            
-            <TouchableWithoutFeedback>
-                <Ionicons name="ios-send" style={[styles.clipSendIcon, {marginBottom:30}]}/>
-            </TouchableWithoutFeedback> 
-        </View>);
+
+            {/* The send icon */}
+            <TouchableOpacity>
+                <Ionicons name="ios-send" style={[styles.clipSendIcon, {marginTop:50}]}/>
+            </TouchableOpacity> 
+        </View>
+        </TouchableWithoutFeedback>);
     }
 
 
@@ -133,10 +143,10 @@ class NavContent extends React.Component{
                 <View style={{flex:1, flexDirection:"column"}}><Text style={[styles.eventItemText, {flexDirection:"row"}]}>Ending Date/Time</Text><TimePicker isStart={false}/></View>
             </View>
             <View style={{flex:2, flexDirection:"row"}}>
-                <View style={{flex:1, flexDirection:"column"}}><Text style={[styles.eventItemText, {flexDirection:"row"}]}>Event Title</Text><TextInput style={{color:"white", height: 35, width:155, borderColor: 'gray', borderWidth: 1, marginLeft:10, marginRight:30, borderRadius:5, textAlignVertical:"center"}} maxLength={75} onChangeText={(text) => {this.setState({eventTitle: text})} }/></View>
+                <View style={{flex:1, flexDirection:"column"}}><Text style={[styles.eventItemText, {flexDirection:"row"}]}>Event Title</Text><TextInput style={{color:"white", height: 35, width:155, borderColor: 'gray', borderWidth: 1, marginLeft:10, marginRight:30, borderRadius:5, textAlignVertical:"center"}} maxLength={75} keyboardAppearance={"dark"} onChangeText={(text) => {this.setState({eventTitle: text})} }/></View>
             </View>
             <View style={{flex:4, flexDirection:"row"}}>
-                <View style={{flex:1, flexDirection:"column"}}><Text style={[styles.eventItemText, {flexDirection:"row"}]}>Event Description</Text><TextInput style={{color:"white", height: 120, borderColor: 'gray', borderWidth: 1, marginLeft:10, marginRight:30, borderRadius:5, textAlignVertical:"top", padding:5}} maxLength={2000} onChangeText={(text) => {this.setState({eventDescription:text})}}/></View>
+                <View style={{flex:1, flexDirection:"column"}}><Text style={[styles.eventItemText, {flexDirection:"row"}]}>Event Description</Text><TextInput style={{color:"white", height: 120, borderColor: 'gray', borderWidth: 1, marginLeft:10, marginRight:30, borderRadius:5, textAlignVertical:"top", padding:5}} maxLength={2000} keyboardAppearance={"dark"} onChangeText={(text) => {this.setState({eventDescription:text})}}/></View>
             </View>
             <View style={{flex:4, flexDirection:"row"}}><Text style={[styles.eventItemText, {flex:1, marginRight:30, flexDirection:"row", textAlign:"right", fontSize:18}]}>Create</Text></View>
         </View>);
@@ -160,7 +170,7 @@ class NavContent extends React.Component{
             <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, maxHeight:80, marginBottom:40}}>only students can view this server</Text>
             <Text style={{ color:"white", textAlign:"center", fontFamily:"Khula-Regular", fontSize:16, maxHeight:20, marginBottom:20}}>Accessibility</Text>
                 <Switch style={{alignSelf:"center", maxHeight:40}} onValueChange={(value) => this.setState({accessibilitySwitch: value})} value={this.state.accessibilitySwitch} />
-            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, marginBottom:40}}>anyone can join this server</Text>
+            <Text style={{color:"white", textAlign:"center", fontFamily:"Khula-Light", fontSize:16, marginBottom:20}}>anyone can join this server</Text>
             <TouchableWithoutFeedback  onPress={() => this.no}>
                 <Text style={[styles.headerTextDiscover, {color:"white", textAlign:"right", textAlignVertical:"top",fontSize:16, marginRight:12, marginTop:0, marginBottom:10}]}>Continue</Text>
             </TouchableWithoutFeedback>
@@ -180,11 +190,11 @@ class NavContent extends React.Component{
         return(
             <TouchableWithoutFeedback onPressOut={() => Keyboard.dismiss()}>
             <View style={{minHeight: 350, backgroundColor:"black"}}>
-                <Text style={[styles.headerTextDiscover, {paddingLeft:10, marginBottom:40, maxHeight:120}]}>Send Feedback</Text>
+                <Text style={[styles.headerTextDiscover, {paddingLeft:10, marginBottom:15, maxHeight:120}]}>Send Feedback</Text>
                 {/* TODO finish */}
                 <Text style={[styles.eventItemText, {fontSize: 20}]}>comments</Text>
                 <View style={{justifyContent:"flex-start"}}>
-                    <TextInput style={{color:"white", width: 380, height:100, borderColor: 'gray', borderWidth: 1, marginLeft:10, borderRadius:5, textAlignVertical:"top", padding:5}} numberOfLines={6} multiline={true} onChangeText={(text) => this.setState({feedback: text})} />
+                    <TextInput style={{color:"white", width: 380, height:100, borderColor: 'gray', borderWidth: 1, marginLeft:10, borderRadius:5, textAlignVertical:"top", padding:5}} numberOfLines={6} multiline={true} keyboardAppearance={"dark"} onChangeText={(text) => this.setState({feedback: text})} />
                 </View>
                 <View style={{flex:2, flexDirection:"row-reverse", }}>
                     <TouchableOpacity  style={{flex:1, flexDirection:"column", maxWidth:60}}>
@@ -238,27 +248,34 @@ const styles = StyleSheet.create({
     },
     textInput:{
         color:"white",
-        flex:7,
+        flex:9,
+        minWidth:270,
+        maxWidth:270,
         flexDirection:"column",
         fontFamily: "Khula-Light",
         fontSize:19,
         lineHeight:24,
-        marginTop:6,
         padding:6,
-        maxHeight: 75,
-        minHeight: 75,
+        maxHeight: 80,
+        minHeight: 80,
         textAlignVertical:"bottom",
-        borderRadius:10,
+        borderColor: 'gray', 
+        borderWidth: 1, 
+        borderRadius:5, 
+        textAlignVertical:"top", 
     },
     clipSendIcon:{
         flex:1,
+        maxHeight:45,
         flexDirection:"column",
         fontSize:26,
-        alignSelf:"flex-end",
+        maxWidth:50,
+        minWidth:50,
+        marginLeft:10,
+        marginRight:5,
         textAlign:"center",
         opacity:0.7,
         color:"white",
-        marginBottom:13
     }
 });
 

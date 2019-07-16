@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, Animated, StyleSheet, PanResponder, Dimensions, Text} from 'react-native';
+import {ScrollView, View, Animated, StyleSheet, PanResponder, Dimensions, Text, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import { connect } from "react-redux";
 import NavScrollButtons from "./NavScrollButtons";
 import NavContent from "./NavContent";
@@ -123,6 +123,7 @@ class Nav extends React.Component{
         let handles = this.state.panResponder.panHandlers;
         if(showNav == true){
         return(
+        <TouchableWithoutFeedback onPressOut={() => Keyboard.dismiss()}>
         <Animated.View style={[{height: dist}]}>
             {/* The view above doesnt respond to gestures but the content inside does */}
                 <View style={[styles.navBar, {backgroundColor: colorInverse}]}>
@@ -176,7 +177,8 @@ class Nav extends React.Component{
                 <View style={{backgroundColor: "black", color: "white"}}>
                     <NavContent />
                 </View>
-            </Animated.View>);
+            </Animated.View>
+            </TouchableWithoutFeedback>);
         }else{
             return(<View></View>);
         }

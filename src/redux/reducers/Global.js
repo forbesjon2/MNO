@@ -10,7 +10,7 @@ export default function reducer(
         //nav
         pageID: 1,
         showNav: true,
-        navHeight: [0, 150, 600, 500, 60, 60, 400], //not zero indexed, the leading zero is filler
+        navHeight: [0, 250, 600, 500, 60, 60, 400], //not zero indexed, the leading zero is filler
         colorInverse:"#FFFFFF",
         colorNormal: "#000000",
 
