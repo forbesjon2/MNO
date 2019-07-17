@@ -1098,82 +1098,11 @@ const styles = StyleSheet.create({
 
 //___________________________Profile.js_________________________________________
 
-    profile_viewProfileBorder:{
-        borderColor:"#975EF7",
-        borderRadius: 5,
-        backgroundColor:"#F8FAFB",
-        maxHeight:25,
-        minHeight:25,
-        minWidth:60,
-        maxWidth:60,
-        borderWidth:1,
-        alignItems:"center",
-    },
-    profile_viewProfileText:{
-        color:"#975EF7",
-        opacity:0.6,
-        fontFamily:"Roboto-Regular", 
-        fontSize: 14,
-        justifyContent:"center"
-    },
-    profile_friendNameText:{
-        fontFamily:"Roboto-Medium", 
-        fontSize: 19,
-        color:"black",
-        minHeight:26,
-        maxHeight:26,
-    },
-    profile_friendFollowersText:{
-        fontFamily:"Roboto-Regular", 
-        fontSize: 13,
-        paddingTop:5,
-        color:"black",
-    },
-    profile_serverRow:{
-        flex:1, 
-        flexDirection:"row", 
-        maxHeight:76, 
-        paddingVertical:8
-    },
-    profile_tagRow:{
-        flex:1, 
-        flexDirection:"row",
-        maxHeight:20,
-        marginTop:30
-    },
-    profile_friendRow:{
-        flex:1, 
-        flexDirection:"row",
-        maxHeight:50,
-        marginTop:20
-    },
-    profile_serverTileText:{
-        fontFamily:"Roboto-Medium", 
-        fontSize:19,
-        alignSelf:"center", 
-        color:"white",
-    },
-    profile_friendImage:{
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignSelf:"center",
-        shadowOffset:{width:0, height:10},
-        shadowRadius:20,
-        shadowOpacity:0.8,
-        shadowColor:"#000"
-    },
-    profile_tagTileText:{
-        fontFamily:"Khula-SemiBold", 
-        fontSize: 19,
-        alignSelf:"center", 
-        color:"black",
-        opacity:0.7, 
-    },
     profile_serverTile:{
         flex:1, 
         flexDirection:"column", 
         marginHorizontal:18, 
+        marginVertical:8,
         borderRadius:5,
         minWidth:170, 
         maxWidth:170, 
@@ -1184,9 +1113,22 @@ const styles = StyleSheet.create({
         shadowRadius:5,
         shadowOpacity:0.25
     }, 
+    profile_serverTileText:{
+        fontFamily:"Roboto-Medium", 
+        fontSize:19,
+        alignSelf:"center", 
+        color:"white",
+    },
+    profile_tagTileText:{
+        fontFamily:"Khula-SemiBold", 
+        fontSize: 19,
+        alignSelf:"center", 
+        color:"black",
+        opacity:0.7, 
+    },
     profile_tagTile:{
-        flex:1, 
-        flexDirection:"column", 
+        flex:0.5,
+        paddingVertical:5,
         justifyContent:"center"
     }, 
     profile_name:{
