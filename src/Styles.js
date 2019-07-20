@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         minHeight:26,
         maxHeight:26,
     },
-    discover_friendFollowersText:{
+    discover_friendFriendsText:{
         fontFamily:"Roboto-Regular", 
         fontSize: 13,
         paddingTop:5,

@@ -1,12 +1,10 @@
 {
     "name":"Marshall Keagan",
-    "subName":"Biological Systems Engineering",
+    "sub_name":"Biological Systems Engineering",
     "alias": "@mkagan",
     "description": "Sed ut perspiciatis unde omnis iste natus error sit architecto beatae vitae dicta sunt exptur?",
-    "imageURI": "https://www.wilsoncenter.org/sites/default/files/styles/450x550-scale-crop/public/18457363298_3ac27e78fb_o.jpg?itok=9nrUxEfI",
-    "followers":12,
-    "following":29,
-    "lastLoggedIn":"",
+    "image_uri": "https://www.wilsoncenter.org/sites/default/files/styles/450x550-scale-crop/public/18457363298_3ac27e78fb_o.jpg?itok=9nrUxEfI",
+    "last_active":"",
     "sessionToken":"",
     "groups":[
         {"name":"UNL", "servers":[{"name":"@home", "followers": 12}, {"name":"@OS2G", "followers":40}]},

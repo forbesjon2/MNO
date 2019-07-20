@@ -29,6 +29,7 @@ export default class BareComponents extends React.PureComponent{
     * This component is used by 
     *       src/init/SchoolSearch.js as well as 
     *       src/Discover/Discover.js
+    *       
     * 
     * @argument width expects a number representing the image's width
     * @argument height expects a number representing the image's height
@@ -108,7 +109,7 @@ export default class BareComponents extends React.PureComponent{
                     <Text style={styles.discover_friendNameText}>{profileSearchData["name"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"row"}}>
-                    <Text style={styles.discover_friendFollowersText}>{profileSearchData["friends"]} friends</Text>
+                    <Text style={styles.discover_friendFriendsText}>{profileSearchData["friends"]} friends</Text>
                 </View>
             </View>
             <View style={{flex:1, flexDirection:"column"}}>

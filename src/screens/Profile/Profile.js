@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Image, ScrollView, TouchableWithoutFeedback, TouchableOpacity, FlatList} from 'react-native';
+import {Text, View, Image, TouchableWithoutFeedback, FlatList} from 'react-native';
 import {connect} from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
@@ -136,7 +136,7 @@ class Profile extends React.Component{
 
         {/* Profile image */}
         <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
-            <Image source={{uri:accountInfo["imageURI"]}} style={styles.profile_topViewImage}/>
+            <Image source={{uri:accountInfo["image_uri"]}} style={styles.profile_topViewImage}/>
         </View>
 
         {/* Name */}

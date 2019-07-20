@@ -26,10 +26,10 @@ class HomeComponent extends React.Component{
         
         {/* This is the styling for each of the headers date is not yet included*/}
         <View style={styles.homecomponent_headerView}>
-            <Image source={{uri:item.imageURI}} style={styles.homecomponent_headerImgView}/>
+            <Image source={{uri:item.image_uri}} style={styles.homecomponent_headerImgView}/>
             <View style={styles.homecomponent_headerTextView}>
                 <Text numberOfLines={1} style={styles.homecomponent_headerName}>{item.name}</Text>
-                <Text numberOfLines={1} style={styles.homecomponent_headerSubName}>{item.subName}</Text>
+                <Text numberOfLines={1} style={styles.homecomponent_headerSubName}>{item.sub_name}</Text>
             </View>
             {/* <Text style={{flex:1, minWidth:60, textAlign:"right", alignSelf:"flex-end", fontFamily:"Khula-Regular", fontSize:14}}>6 minutes ago</Text> */}
         </View>
@@ -48,9 +48,6 @@ class HomeComponent extends React.Component{
             </View>
             
         </TouchableWithoutFeedback>
-        {/* <TouchableWithoutFeedback style={{flex:1, flexDirection:"column"}}>
-            <Ionicons name="ios-at" style={{fontSize:21}} color={"#00B5E1"}/>
-        </TouchableWithoutFeedback> */}
             <View style={{flex:5, flexDirection:"column"}}></View>
         </View>    
         </View>

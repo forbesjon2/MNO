@@ -48,19 +48,15 @@ used by the profile & other pages.
 <br>
 _name:_ user's full name may be the same as another user's name. (Example: Marshall Keagan)
 <br>
-_subName:_ right now this will just be the user's degree since its used for university purposes. (Example: Biological Systems Engineering)
+_sub_name:_ right now this will just be the user's degree since its used for university purposes. (Example: Biological Systems Engineering)
 <br>
 _alias:_ the users tag. Begins with an '@' and has to be unique (Example: @mkagan)
 <br>
 _description:_ the user's description
 <br>
-_imageuri:_ The user's profile image link
+_image_uri:_ The user's profile image link
 <br>
-_followers:_ An integer representing how many followers that user has
-<br>
-_following:_ An integer representing how many people this user is following
-<br>
-_groups:_ A list of groups. For each group there will be a name and a list of at least one server. For each server there will be the server name and the number of followers. The unique tag will be < groupName> @ < server>
+_groups:_ A list of groups. For each group there will be a name and a list of at least one server. For each server there will be the server name and the number of friends. The unique tag will be < groupName> @ < server>
 <br>
 _schedule:_ TODO edit this. not sure if ill keep this but its useful for scheduling tutor stuff idk
 <br>
