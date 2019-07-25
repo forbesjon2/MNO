@@ -64,10 +64,11 @@ class AppContent extends React.Component{
                 <SafeAreaView style={{flex:1, backgroundColor:this.props.safeAreaBackground}}>
             <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
                 
-                <AppRoutes
+                {/* <AppRoutes
                 ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                 style={{flex: 1}}/>
-                <Nav />
+                <Nav /> */}
+                <SchoolSearch />
             {/* <ValidateEmail /> */}
             </KeyboardAvoidingView>
             
@@ -81,7 +82,7 @@ class AppContent extends React.Component{
                  ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                  style={{flex: 1}}/>
                  <Nav />
-                 {/* <SchoolSearch /> */}
+                 
                  {/* <ValidateEmail /> */}
             </KeyboardAvoidingView>
             </View>

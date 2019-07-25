@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} from "react-native";
+import { View, TouchableWithoutFeedback, AsyncStorage, Text , TouchableOpacity, TextInput} from "react-native";
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
@@ -16,6 +16,27 @@ class SignIn extends React.Component{
             email:"enter your email"
         }
     }
+
+    storeData = async () =>{
+        try{
+            await AsyncStorage.setItem("test", "testVal2ue");
+        }catch(e){
+            console.log(e);
+        }
+    }
+
+
+    getData = async() =>{
+        try{
+            const value = await AsyncStorage.getItem("test");
+            if(value != null){
+                console.log(value);
+            }
+        }catch(e){
+            console.log(e);
+        }
+    }
+
 
     render(){
     return(
@@ -44,14 +65,14 @@ class SignIn extends React.Component{
             clearTextOnFocus={true}
             maxLength={80}/>
 
-        <TouchableOpacity style={styles.validateemail_button} onPress={() => console.log("validate email")}>
+        <TouchableOpacity style={styles.validateemail_button} onPress={() => this.getData()}>
             <Text style={styles.validateemail_buttonText}>Validate</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.validateemail_buttonIcon}/>
         </TouchableOpacity>
         
 
         {/* Footer */}
-        <TouchableWithoutFeedback onPress={() => this.redirectSignUp()}>
+        <TouchableWithoutFeedback onPress={() => this.storeData()}>
             <Text style={[styles.validateemail_footerText, {color:"#CE2E7B"}]}>Validate later</Text>
         </TouchableWithoutFeedback>
     </View>

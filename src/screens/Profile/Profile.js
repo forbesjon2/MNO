@@ -96,20 +96,6 @@ class Profile extends React.Component{
                 numColumns={2}
                 renderItem={({item})=> this.serverTile(item)}/>);
             case 2:
-            return(
-            <FlatList
-                horizontal={false}
-                key={1}
-                data={this.state.tagData}
-                keyExtractor={this._keyExtractor}
-                style={{flex:1, flexDirection:"column"}}
-                numColumns={2}
-                renderItem={({item})=>
-                <View style={styles.profile_tagTile}>
-                    <Text style={styles.profile_tagTileText}>{item}</Text>
-                </View> }/>
-            );
-            default:
             return(<FlatList
                 horizontal={false}
                 key={2}
@@ -158,20 +144,12 @@ class Profile extends React.Component{
                     {this.dotGen(1)}
                 </View>
             </TouchableWithoutFeedback>
-            
-            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:2})}>
-                <View style={styles.profile_menuView}>
-                    <Text style={styles.profile_menuNumber}>192</Text>
-                    <Text style={styles.profile_menuText}>tags</Text>
-                    {this.dotGen(2)}
-                </View>
-            </TouchableWithoutFeedback>
 
-            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:3})}>
+            <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:2})}>
                 <View style={styles.profile_menuView}>
                     <Text style={styles.profile_menuNumber}>14</Text>
                     <Text style={styles.profile_menuText}>friends</Text>
-                    {this.dotGen(3)}
+                    {this.dotGen(2)}
                 </View>
             </TouchableWithoutFeedback>
         </View>
