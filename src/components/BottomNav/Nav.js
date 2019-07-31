@@ -153,20 +153,20 @@ class Nav extends React.Component{
                     expandable={true}
                     classInstance={this}/>
 
-                    <NavScrollButtons
+                    {/* <NavScrollButtons
                     buttonID={4}
                     buttonText={"messages"}
                     expandable={true}
-                    classInstance={this}/>
+                    classInstance={this}/> */}
 
                     <NavScrollButtons
-                    buttonID={5}
+                    buttonID={4}
                     buttonText={"profile"}
                     expandable={true}
                     classInstance={this}/>
 
                     <NavScrollButtons
-                    buttonID={6}
+                    buttonID={5}
                     buttonText={"settings"}
                     expandable={true}
                     classInstance={this}/>

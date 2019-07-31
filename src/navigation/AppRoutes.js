@@ -38,7 +38,7 @@ const AppRoutes = createSwitchNavigator({
     Home:{screen: homeRoutes},
     Events:{screen: EventRoutes},
     Discover:{screen: DiscoverScreen},
-    Messages:{screen: MessagesRoutes},
+    // Messages:{screen: MessagesRoutes},
     Profile:{screen: profileScreen},
     Settings:{screen: SettingsRoutes},
 }, {

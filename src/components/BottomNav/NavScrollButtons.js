@@ -80,29 +80,30 @@ function navItemPresed(currentID, thisInstance, classInstance){
          *  6 = settings
          */
         switch(currentID){
+            
             case 1:  //home
                 NavigationService.navigate("Home");
-                dispatch({type: "SET_PAGE", id:1});
+                dispatch({type: "SET_PAGE", id:currentID});    
                 break;
             case 2: //events
                 NavigationService.navigate("Events");
-                dispatch({type: "SET_PAGE", id:2});
+                dispatch({type: "SET_PAGE", id:currentID});
                 break;
             case 3:  //discover
                 NavigationService.navigate("Discover");
-                dispatch({type: "SET_PAGE", id:3});
+                dispatch({type: "SET_PAGE", id:currentID});
                 break;
-            case 4:  //messages
-                NavigationService.navigate("Messages");
-                dispatch({type: "SET_PAGE", id:4});
-                break;
-            case 5: //profile
+            // case 4:  //messages
+            //     NavigationService.navigate("Messages");
+            //     dispatch({type: "SET_PAGE", id:4});
+            //     break;
+            case 4: //profile
                 NavigationService.navigate("Profile");
-                dispatch({type: "SET_PAGE", id:5});
+                dispatch({type: "SET_PAGE", id:currentID});
                 break;
-            case 6: //settings
+            case 5: //settings
                 NavigationService.navigate("Settings");
-                dispatch({type: "SET_PAGE", id:6});
+                dispatch({type: "SET_PAGE", id:currentID});
                 break;
             default:
                 NavigationService.navigate("Home");

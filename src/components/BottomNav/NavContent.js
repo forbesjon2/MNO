@@ -209,7 +209,7 @@ class NavContent extends React.Component{
 
 
     //Note: this was wrapped in keyboardAvoidingView
-    //home = 1, events = 2, discover = 3, messages = 4, profile = 5, settings = 6
+    //home = 1, events = 2, discover = 3, (messages = 4), profile = 4, settings = 5
     render(){
         switch(this.props.pageID){
             case 1:  //home
@@ -218,7 +218,7 @@ class NavContent extends React.Component{
             return(this.eventSubNav());
             case 3:  //discover
             return(this.discoverSubNav());
-            case 6:
+            case 5:
             return(this.settingsSubNav());
             default:
                 return(

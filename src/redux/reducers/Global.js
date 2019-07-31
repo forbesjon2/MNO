@@ -10,7 +10,7 @@ export default function reducer(
         //nav
         pageID: 1,
         showNav: true,
-        navHeight: [0, 250, 600, 500, 60, 60, 400], //not zero indexed, the leading zero is filler
+        navHeight: [0, 250, 600, 500, 60, 400], //not zero indexed, the leading zero is filler
         colorInverse:"#FFFFFF",
         colorNormal: "#000000",
 
@@ -70,9 +70,9 @@ export default function reducer(
          *  1 = home
          *  2 = events
          *  3 = discover
-         *  4 = messages
-         *  5 = profile
-         *  6 = settings
+         *  (4 = messages)
+         *  4 = profile
+         *  5 = settings
          ******************************************************************/
         case SET_PAGE:
             return{...state, pageID: action.id};
