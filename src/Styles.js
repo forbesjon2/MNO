@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         maxHeight:50,
         marginTop:20
-    },    
+    },
     discover_friendImage:{
         width: 40,
         height: 40,
@@ -452,7 +452,34 @@ const styles = StyleSheet.create({
     },
 
 
-
+    //styles for the right nav bar
+    home_rightHeader:{
+        flexDirection:"row",
+        flex:1,
+        minWidth:350,
+    },
+    home_rightHeaderBold:{
+        fontFamily:"Khula-Bold",
+        fontSize:33,
+        color:"white",
+        alignSelf:"center",
+        marginTop:10
+    },
+    home_rightHeaderLight:{
+        fontFamily:"Khula-Light",
+        fontSize:33,
+        color:"white",
+        alignSelf:"center",
+        marginTop:10
+    },
+    home_rightHeaderDescription:{
+        fontFamily:"Roboto-Light", 
+        fontSize:15,
+        color:"white",
+        marginRight:10,
+        lineHeight:20,
+        marginBottom:15,
+    },
 
 
 
@@ -1254,6 +1281,72 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         flexDirection: "column",
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************************
+ * ######################################################################
+ * ######################################################################
+ * ######################################################################
+ *                          #################
+ *                          
+ *                          Components directory
+ *                          
+ *                          #################
+ * ######################################################################
+ * ######################################################################
+ * ######################################################################
+ * ######################################################################
+ *************************************************************************/
+
+ //___________________________BareComponents.js_________________________________________
+
+    bareComponents_profileRow:{
+        flex:1, 
+        flexDirection:"row",
+        maxHeight:50,
+        marginTop:10,
+        marginBottom:15
+    },
+    bareComponents_profileText:{
+        fontFamily:"DidactGothic-Regular", 
+        fontSize: 21,
+        color:"white",
+        minHeight:34,
+        maxHeight:34,
+        alignSelf:"center"
+    },
+    bareComponents_profileImage:{
+        width: 34,
+        height: 34,
+        borderRadius: 16,
+        alignSelf:"center",
+        shadowOffset:{width:0, height:10},
+        shadowRadius:20,
+        shadowOpacity:0.8,
+        shadowColor:"#000"
     },
 
 });

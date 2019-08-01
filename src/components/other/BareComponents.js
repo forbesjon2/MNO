@@ -94,6 +94,9 @@ export default class BareComponents extends React.PureComponent{
      * This generates the list of users that is being searched
      * array -> {"name":"<some name>", "friends":<some number>, "icon":"<image url>"}
      * 
+     * this component is used by
+     *      /src/Profile/Profile.js
+     *      /src/Discover/Discover.js
      * 
      * TODO I will eventually link this to the user profile screen
      *************************************************************************/
@@ -115,6 +118,38 @@ export default class BareComponents extends React.PureComponent{
             <View style={{flex:1, flexDirection:"column"}}>
                 <View style={styles.discover_viewProfileBorder}>
                     <Text style={styles.discover_viewProfileText}>view</Text>
+                </View>
+            </View>
+        </View>
+        );
+    }
+
+
+
+
+
+    /*************************************************************************
+     * This generates the list of users that is being searched. It is meant to
+     * be used on a black background
+     * array -> {"alias":"<some alias>", "icon":"<image url>", "uuid":"<user uuid>"}
+     * 
+     * this component is used by
+     *      /src/Home/Home.js
+     * 
+     * TODO I will eventually link this to the user profile screen
+     * @param profileSearchData requires an alias, icon url, and uuid (not shown)
+     *      {"alias":"<some alias>", "icon":"<image url>", "uuid":"<user uuid>"}
+     *************************************************************************/
+    profileViewLight(profileSearchData){
+        profileSearchData = JSON.parse(JSON.stringify(profileSearchData));
+        return(
+        <View style={styles.bareComponents_profileRow}>
+            <View style={{flex:1, flexDirection:"column", justifyContent:"center"}}>
+                <Image source={{uri:profileSearchData["icon"]}} style={styles.bareComponents_profileImage}/>
+            </View>
+            <View style={{flex:3, flexDirection:"column"}}>
+                <View style={{flex:1, flexDirection:"row"}}>
+                    <Text style={styles.bareComponents_profileText}>{profileSearchData["alias"]}</Text>
                 </View>
             </View>
         </View>
@@ -190,6 +225,29 @@ export default class BareComponents extends React.PureComponent{
             </TouchableOpacity>
         </View>
     </View>);
+    }
+
+
+
+
+    /**************************************************************************
+     * A simple function that returns the word 'menu' in one of 6 random 
+     * languages.
+     * 
+     * this component is used by
+     *      /src/Home/Home.js
+     **************************************************************************/
+    randomLanguage(){
+        switch(Math.floor(Math.random() * 6) + 1){    
+            case 1: return(<Text style={styles.home_sideLanguageMenu}>功能表</Text>);
+            case 2: return(<Text style={styles.home_sideLanguageMenu}>메뉴</Text>);
+            case 3: return(<Text style={styles.home_sideLanguageMenu}>菜单</Text>);
+            case 4: return(<Text style={styles.home_sideLanguageMenu}>Menú</Text>);
+            case 5: return(<Text style={styles.home_sideLanguageMenu}>Меню</Text>);
+            case 4: return(<Text style={styles.home_sideLanguageMenu}>Menü</Text>);
+            case 5: return(<Text style={styles.home_sideLanguageMenu}>منوی</Text>);
+            default: return(<Text style={styles.home_sideLanguageMenu}>メニュー</Text>);  
+        }
     }
 }
 

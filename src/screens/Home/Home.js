@@ -1,10 +1,11 @@
 import React from 'react';
-import {Text, View, Animated, Image, TouchableWithoutFeedback, ScrollView, Dimensions, PanResponder} from 'react-native';
+import {Text, View, Animated, Image, TouchableWithoutFeedback, ScrollView, FlatList, Dimensions, PanResponder} from 'react-native';
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import HomeComponent from './HomeComponent';
 import NavigationService from "../../navigation/NavigationService";
 import {styles} from "../../Styles";
+import BareComponents from "../../components/other/BareComponents";
 
 
 class Home extends React.Component{
@@ -94,6 +95,9 @@ class Home extends React.Component{
         });
 
         this.state = {
+            //bare component
+            components: new BareComponents(),
+            //animation state variables
             leftNavExpanded: false,
             rightNavExpanded: false,
             xReference: 0,
@@ -177,7 +181,7 @@ class Home extends React.Component{
         {/* LEFT SIDEBAR */}
         <Animated.View style={{width:250, left:this.state.leftContent, height:height, top:0, bottom:0, position:"absolute", backgroundColor:"#F8F8FA"}} elevation={0}>
         {/* This view shows general information about your account */}
-        {getAccountDetails(this.props.dispatch)}
+        {getAccountDetails(this.props.dispatch, this.props.accountInfo, this.state.components)}
         
 
         {/* This is a list that shows all of your subscribed to channels */}
@@ -188,7 +192,7 @@ class Home extends React.Component{
         
         {/* RIGHT SIDEBAR */}
         <Animated.View style={{left:this.state.rightContent, width:350, top:0, bottom:0, position:"absolute", backgroundColor:"black"}} elevation={0}>
-            <Text>Ttt</Text>
+            {getServerDetails(this.state.components)}
         </Animated.View>
 
     </View>
@@ -196,46 +200,66 @@ class Home extends React.Component{
     }
 };
 
+function getServerDetails(components){
+    let data = {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"};
+    let dataFL = [
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"},
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"},
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"},
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"},
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"},
+        {"alias":"jack", "icon":"https://www.bing.com/th?id=OIP.GRqL5ePJnJ8i-ohHBhQ5jQHaFH&pid=Api&rs=1&p=0", "uuid":"ass"}];
+    return(
+    <ScrollView style={{marginTop:20, flexDirection:"column", flex:1, marginLeft:15}}>
+        
+        <View style={styles.home_rightHeader}>
+            <Text style={styles.home_rightHeaderBold}>Sketch</Text>
+            <Text style={styles.home_rightHeaderLight}> / Description</Text>
+        </View>
+        
+        <Text style={styles.home_rightHeaderDescription}>Keep reaching for the heavens, and when you get there, be careful, as there is no oxygen in the heavens and the upper regions of the stratosphere and you will die, I promise you, you will die. Ommm. You cannot go to heaven as a human, you can only go to heaven as a damn angel! You hear me?</Text>
+        
+        <View style={styles.home_rightHeader}>
+            <Text style={styles.home_rightHeaderBold}>Founder</Text>
+            <Text style={styles.home_rightHeaderLight}> / Architect</Text>
+        </View>
+        {components.profileViewLight(data)}
+        <View style={styles.home_rightHeader}>
+            <Text style={styles.home_rightHeaderBold}>Arbiters</Text>
+            <Text style={styles.home_rightHeaderLight}> / Moderators</Text>
+        </View>
 
-function getAccountDetails(dispatch){
+        {components.profileViewLight(data)}
+        <View style={styles.home_rightHeader}>
+            <Text style={styles.home_rightHeaderBold}>Members</Text>
+            <Text style={styles.home_rightHeaderLight}> / Patrons</Text>
+        </View>
+        <FlatList
+            data={dataFL}
+            
+            keyExtractor={(item, index) => index.toString()}
+
+            renderItem={(item) => components.profileViewLight(item["item"])}/>
+    </ScrollView>
+    )
+}
+
+function getAccountDetails(dispatch, accountInfo, components){
     return(
         <TouchableWithoutFeedback onPress={() => {
             NavigationService.navigate("Profile");
-            dispatch({type: "SET_PAGE", id:5});
-        }}>
+            dispatch({type: "SET_PAGE", id:5});}}>
         <View style={{minHeight:180, borderBottomColor:"black"}}>
-            {randomLanguage()}
-            <Image source={{uri:'https://facebook.github.io/react-native/docs/assets/favicon.png'}} style={styles.home_topViewImage}/>
+            {components.randomLanguage()}
+            <Image source={{uri:accountInfo["image_uri"]}} style={styles.home_topViewImage}/>
             <Text style={styles.home_topViewName}>Hello,</Text>
-            <Text numberOfLines={1} style={[styles.home_topViewName, {marginBottom:20}]}>Marshall</Text>
+            <Text numberOfLines={1} style={[styles.home_topViewName, {marginBottom:20}]}>{accountInfo["name"].split(" ")[0]}</Text>
         </View>
         </TouchableWithoutFeedback>
     );
 }
 
-/**************************************************************************
- * returns the word menu in one of 6 random languages
- **************************************************************************/
-function randomLanguage(){
-    switch(Math.floor(Math.random() * 6) + 1){    
-        case 1:
-            return(<Text style={styles.home_sideLanguageMenu}>功能表</Text>);
-        case 2:
-            return(<Text style={styles.home_sideLanguageMenu}>메뉴</Text>);
-        case 3:
-            return(<Text style={styles.home_sideLanguageMenu}>菜单</Text>);
-        case 4:
-            return(<Text style={styles.home_sideLanguageMenu}>Menú</Text>);
-        case 5:
-            return(<Text style={styles.home_sideLanguageMenu}>Меню</Text>);
-        case 4:
-            return(<Text style={styles.home_sideLanguageMenu}>Menü</Text>);
-        case 5:
-            return(<Text style={styles.home_sideLanguageMenu}>منوی</Text>);
-        default:
-            return(<Text style={styles.home_sideLanguageMenu}>メニュー</Text>);  
-    }
-}
+
 
 /**************************************************************************
  * Gets the button list for the slide out menu. Returns an array with the
