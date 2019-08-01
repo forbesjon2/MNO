@@ -98,6 +98,8 @@ class Home extends React.Component{
             rightNavExpanded: false,
             xReference: 0,
             animatedContent: new Animated.Value(0),
+            leftContent: new Animated.Value(-250),
+            rightContent: new Animated.Value(Dimensions.get("window").width),
             panResponder
         }
         //set safe area background
@@ -107,28 +109,18 @@ class Home extends React.Component{
 
     //Handles the animation for the sidebar aka leftNav (specific to the homescreen)
     animateSidebar(distance, speed, isLeftSidebar){
-        const {leftNavExpanded, animatedContent, rightNavExpanded} = this.state;
+        const {leftNavExpanded, animatedContent, rightNavExpanded, leftContent, rightContent} = this.state;
         var toValue = 0;
         if(!isLeftSidebar){
             toValue = [rightNavExpanded ? 0 : distance][0];
-            Animated.timing(
-                animatedContent,{
-                    toValue: toValue,
-                    duration: speed,
-                }
-            ).start();
             this.setState({rightNavExpanded: !rightNavExpanded, leftNavExpanded:false, xReference: toValue});
-        }
-        else{
+        }else{
             toValue = [leftNavExpanded ? 0 : distance][0];
-            Animated.timing(
-                animatedContent,{
-                    toValue: toValue,
-                    duration: speed,
-                }
-            ).start();
             this.setState({leftNavExpanded: !leftNavExpanded, rightNavExpanded:false, xReference: toValue});   
         }
+        Animated.timing(animatedContent,{toValue: toValue, duration: speed}).start();
+        Animated.timing(leftContent,{toValue: -250 + toValue, duration: speed}).start();
+        Animated.timing(rightContent,{toValue: Dimensions.get("window").width + toValue, duration: speed}).start();
     }
 
     /*********************************************************************
@@ -145,16 +137,11 @@ class Home extends React.Component{
      * @param value the value that you want to animate the screen to
      **********************************************************************/
     moveSidebar(value){
-        const {animatedContent} = this.state;
+        const {animatedContent, leftContent, rightContent} = this.state;
         if(value >= 250 || value <= -350) return;
-        Animated.timing(
-          animatedContent,{
-              toValue: value,
-              duration:0
-          }
-        ).start();
-
-        
+        Animated.timing(animatedContent,{toValue: value, duration:0}).start();
+        Animated.timing(leftContent,{toValue: -250 + value, duration: 0}).start();
+        Animated.timing(rightContent,{toValue: Dimensions.get("window").width + value, duration: 0}).start();
     }
 
 
@@ -162,29 +149,33 @@ class Home extends React.Component{
     const {homeData, currentGroup}= this.props;
     const currentGroupContent = getHomeData(homeData, currentGroup);
     let handles = this.state.panResponder.panHandlers;
-    var leftCalc = Dimensions.get("window").width;
+    var height = Dimensions.get("window").height - 60;  //60 is the height of the nav
     return(
-    <Animated.View style={{flex:1,backgroundColor:"white", width:Dimensions.get("window").width, left:this.state.animatedContent, top:0, bottom:0}} {...handles}>
-    {/* The header with the (not yet functional) search and side menu feature */}
-        <View style={[styles.home_header, {width: Dimensions.get("window").width}]}>
-            <TouchableWithoutFeedback onPress={() => this.animateSidebar(250, 400, true)}>
-                <Ionicons name="ios-menu" style={[styles.home_headerIcon, {textAlign:"right", marginRight:8}]} color={"black"}/>
-            </TouchableWithoutFeedback>
-            <Text style={styles.home_headerText} numberOfLines={1}>{currentGroupContent["title"]}</Text>
-            <TouchableWithoutFeedback onPress={() => this.animateSidebar(-350, 400, false)}>
-                <Ionicons name="ios-information-circle-outline" style={[styles.home_headerIcon, {textAlign:"left", marginLeft:8}]} color={"black"}/>
-            </TouchableWithoutFeedback>
-        </View>
+    <View style={{flex:1,backgroundColor:"white", top:0, bottom:0}} {...handles}>
 
-        {/* The main view with all of the content */}
-        <View style={[styles.home_mainView]} elevation={3}>
-            <View style={{flex:1}}>
-            <HomeComponent />
+        <Animated.View style={{backgroundColor:"white", left:this.state.animatedContent, width:Dimensions.get("window").width, height: height}}>
+            {/* The header with the (not yet functional) search and side menu feature */}
+            <View style={[styles.home_header, {width: Dimensions.get("window").width}]}>
+                <TouchableWithoutFeedback onPress={() => this.animateSidebar(250, 400, true)}>
+                    <Ionicons name="ios-menu" style={[styles.home_headerIcon, {textAlign:"right", marginRight:8}]} color={"black"}/>
+                </TouchableWithoutFeedback>
+                <Text style={styles.home_headerText} numberOfLines={1}>{currentGroupContent["title"]}</Text>
+                <TouchableWithoutFeedback onPress={() => this.animateSidebar(-350, 400, false)}>
+                    <Ionicons name="ios-information-circle-outline" style={[styles.home_headerIcon, {textAlign:"left", marginLeft:8}]} color={"black"}/>
+                </TouchableWithoutFeedback>
             </View>
-        </View>
+
+            {/* The main view with all of the content */}
+            <View style={[styles.home_mainView]} elevation={3}>
+                <View style={{flex:1}}>
+                <HomeComponent />
+                </View>
+            </View>
+        </Animated.View>
+
 
         {/* LEFT SIDEBAR */}
-        <View style={{width:250, left:-250, top:0, bottom:0, position:"absolute", backgroundColor:"#F8F8FA"}} elevation={0}>
+        <Animated.View style={{width:250, left:this.state.leftContent, height:height, top:0, bottom:0, position:"absolute", backgroundColor:"#F8F8FA"}} elevation={0}>
         {/* This view shows general information about your account */}
         {getAccountDetails(this.props.dispatch)}
         
@@ -193,14 +184,14 @@ class Home extends React.Component{
         <ScrollView style={{flex:1}}>
         {getButtonList(homeData["data"], currentGroup, this.props.dispatch)}
         </ScrollView>
-        </View>
+        </Animated.View>
         
         {/* RIGHT SIDEBAR */}
-        <View style={{left:leftCalc, width:350, top:0, bottom:0, position:"absolute", backgroundColor:"black"}} elevation={0}>
+        <Animated.View style={{left:this.state.rightContent, width:350, top:0, bottom:0, position:"absolute", backgroundColor:"black"}} elevation={0}>
             <Text>Ttt</Text>
-        </View>
+        </Animated.View>
 
-    </Animated.View>
+    </View>
     );
     }
 };
