@@ -10,9 +10,6 @@ export default function reducer(
         //nav
         pageID: 1,
         showNav: true,
-        navHeight: [0, 250, 600, 500, 60, 400], //not zero indexed, the leading zero is filler
-        colorInverse:"#FFFFFF",
-        colorNormal: "#000000",
 
         //page data
         notifications: [],
@@ -22,7 +19,7 @@ export default function reducer(
         chats:{},
         homeData:{},
         messagesHome:{},
-        
+        butt:"fantastic",
         
         //home
         homeGroups: "",
@@ -40,7 +37,7 @@ export default function reducer(
     action
     
 ){
-    //console.log("GOOTT ", action);
+    // console.log("GOOTT ", action);
     switch(action.type){
         /*****************************************************************
          * GLOBAL VARIABLES
@@ -76,10 +73,7 @@ export default function reducer(
          ******************************************************************/
         case SET_PAGE:
             return{...state, pageID: action.id};
-        case "SET_COLOR_NORMAL":
-            return{...state, colorNormal: action.payload};
-        case "SET_COLOR_INVERSE":
-            return{...state, colorInverse: action.payload};
+
         /*****************************************************************
          * RANDOM EVENTS
          * 

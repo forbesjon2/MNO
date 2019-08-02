@@ -2,14 +2,20 @@ import React from 'react';
 import { View, InteractionManager, Text , Button} from "react-native";
 import { connect } from "react-redux";
 import MiniCalendar from "../../components/other/MiniCalendar";
-class Loading extends React.Component{
+import srcStore from "../../Store";
+
+
+export default class Loading extends React.Component{
     constructor(props){
         super(props);
         this.state={
         }
     }
+    testTestfucj(){
+        console.log("hi state " + srcStore.getState().Global.butt);
+    }
     componentDidMount(){
-        this.props.dispatch({type:"INIT"});
+        srcStore.dispatch({type:"INIT"});
     }
     render(){
     
@@ -22,10 +28,3 @@ class Loading extends React.Component{
     );        
 }
 }
-
-const mapStateToProps = (store) => ({
-    showNav: store.Global.loading,
-});
-
-const loadingScreen = connect(mapStateToProps)(Loading);
-export default loadingScreen;

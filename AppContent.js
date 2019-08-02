@@ -1,15 +1,17 @@
 import React from 'react';
 import { View, Platform, SafeAreaView, Text, KeyboardAvoidingView} from "react-native";
 import AppRoutes from "./src/navigation/AppRoutes";
-import { connect } from "react-redux";
-import Nav from "./src/components/BottomNav/Nav";
+import Nav from "./src/components/Nav";
 import Loading from "./src/screens/init/Loading";
 import NavigationService from "./src/navigation/NavigationService";
 import * as Font from 'expo-font';
 import SignUp from './src/screens/init/SchoolSearch';
 import ValidateEmail from "./src/screens/init/ValidateEmail";
 import SchoolSearch from "./src/screens/init/SchoolSearch";
-class AppContent extends React.Component{
+import Store from "./src/Store";
+
+
+export default class AppContent extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -59,23 +61,24 @@ class AppContent extends React.Component{
     if(loading){
         return(<Loading />);
     }else{
+        var safeAreaBackground = Store.getState().Global.safeAreaBackground;
         if(Platform.OS === 'ios'){
             return(
-                <SafeAreaView style={{flex:1, backgroundColor:this.props.safeAreaBackground}}>
+                <SafeAreaView style={{flex:1, backgroundColor:safeAreaBackground}}>
             <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
                 
-                <AppRoutes
+                {/* <AppRoutes
                 ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                 style={{flex: 1}}/>
-                <Nav />
+                <Nav /> */}
                 {/* <SchoolSearch /> */}
-            {/* <ValidateEmail /> */}
+            <ValidateEmail />
             </KeyboardAvoidingView>
             
             </SafeAreaView>);
         }else{
         return(
-            <View style={{flex: 1, paddingTop:30, backgroundColor:this.props.safeAreaBackground}}>
+            <View style={{flex: 1, paddingTop:30, backgroundColor:safeAreaBackground}}>
             <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
                  {/* View that holds all of the main screens + nav */}
                  <AppRoutes
@@ -92,12 +95,3 @@ class AppContent extends React.Component{
     }
     }
 }
-
-
-const mapStateToProps = (store) => ({
-    loading: store.Global.loading,
-    safeAreaBackground: store.Global.safeAreaBackground,
-});
-
-const apcScreen = connect(mapStateToProps)(AppContent);
-export default apcScreen;

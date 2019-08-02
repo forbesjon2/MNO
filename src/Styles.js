@@ -1349,6 +1349,88 @@ const styles = StyleSheet.create({
         shadowColor:"#000"
     },
 
+
+
+     //___________________________Nav.js_________________________________________
+    nav_navBar:{
+        flexDirection: "column",
+        maxHeight: 90,
+        minHeight: 90,
+    },
+    nav_scrollView:{
+        flexDirection:"row",
+        flex: 1,
+        maxHeight: 40,
+        minHeight: 40,
+    },
+    nav_dragLine:{
+        textAlign:"center", 
+        fontSize:34, 
+        minHeight: 20, 
+        maxHeight:20, 
+        lineHeight:32, 
+    },
+    nav_viewModule:{
+        minHeight: 35,
+        maxHeight: 35,
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 40,
+        marginHorizontal: 9,
+    },
+    nav_navButton:{
+        fontFamily: "DidactGothic-Regular", 
+        paddingTop: 2,
+        fontSize:24,
+    },
+
+    //___________________________NavContent.js_________________________________________
+    navContent_headerTextDiscover:{
+        backgroundColor: "black",
+        color: "white",
+        fontFamily: "Khula-Light",
+        fontSize: 45,
+        marginLeft: 10,
+        flex:1,
+        flexDirection:"row",
+        maxHeight:120
+    },
+    navContent_eventItemText:{
+        color: "white",
+        fontFamily: "Khula-Light",
+        marginLeft: 10,
+        marginTop: 25,
+    },
+    navContent_textInput:{
+        color:"white",
+        flex:9,
+        minWidth:270,
+        maxWidth:270,
+        flexDirection:"column",
+        fontFamily: "Khula-Light",
+        fontSize:19,
+        lineHeight:24,
+        padding:6,
+        maxHeight: 80,
+        minHeight: 80,
+        textAlignVertical:"bottom",
+        borderColor: 'gray', 
+        borderWidth: 1, 
+        borderRadius:5, 
+        textAlignVertical:"top", 
+    },
+    navContent_clipSendIcon:{
+        flex:1,
+        maxHeight:45,
+        flexDirection:"column",
+        fontSize:26,
+        maxWidth:50,
+        minWidth:50,
+        marginLeft:10,
+        marginRight:5,
+        textAlign:"center",
+        opacity:0.7,
+        color:"white",
+    },
 });
 
 export {styles};

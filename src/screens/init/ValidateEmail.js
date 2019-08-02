@@ -3,7 +3,7 @@ import { View, TouchableWithoutFeedback, AsyncStorage, Text , TouchableOpacity, 
 import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
-
+const {test} = require("../../Networking");
 
 /*************************************************************************
  * This is the sign in screen
@@ -23,6 +23,10 @@ class SignIn extends React.Component{
         }catch(e){
             console.log(e);
         }
+    }
+
+    ttest(){
+        test();
     }
 
 
@@ -65,7 +69,7 @@ class SignIn extends React.Component{
             clearTextOnFocus={true}
             maxLength={80}/>
 
-        <TouchableOpacity style={styles.validateemail_button} onPress={() => this.getData()}>
+        <TouchableOpacity style={styles.validateemail_button} onPress={() => this.ttest()}>
             <Text style={styles.validateemail_buttonText}>Validate</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.validateemail_buttonIcon}/>
         </TouchableOpacity>
