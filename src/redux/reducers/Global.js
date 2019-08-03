@@ -1,5 +1,3 @@
-import {SET_PAGE, SET_CURRENT_GROUP, SET_HOME_GROUPS, SET_GROUP_LAST_UPDATED, SET_CURRENT_DATE, SET_NOTIFICATIONS} from "../Actions";
-
 export default function reducer(
     state = {
         //Global variables
@@ -35,7 +33,7 @@ export default function reducer(
         /*****************************************************************
          * GLOBAL VARIABLES
          * 
-         *      SET_CURRENT_DATE (YYYY-MM-DD format)
+         *      SET_ACCOUNT_INFO Sets the user's account info
          * 
          *      SET_SAFE_AREA_BACKGROUND
          * This changes the safe area's background color. It's a component
@@ -48,10 +46,8 @@ export default function reducer(
          * 
          * This must be in hex form!
          ******************************************************************/
-        case "SET_ACCOUNT_INFO":
-            return{...state, accountInfo: action.payload};
-        case "SET_SAFE_AREA_BACKGROUND":
-            return{...state, safeAreaBackground: action.payload};
+        case "SET_ACCOUNT_INFO": return{...state, accountInfo: action.payload};
+        case "SET_SAFE_AREA_BACKGROUND": return{...state, safeAreaBackground: action.payload};
 
         /*****************************************************************
          * PAGE INDEX SUMMARY
@@ -64,14 +60,26 @@ export default function reducer(
          *  4 = profile
          *  5 = settings
          ******************************************************************/
-        case SET_PAGE:
+        case "SET_PAGE":
             return{...state, pageID: action.id};
 
         /*****************************************************************
-         * RANDOM EVENTS
+         * MAIN EVENTS
          * 
-         *      SET_A (through E)
-         * used by the init functions, these events are temporary
+         *      SET_CALENDAR_DATA
+         * 
+         *      SET_ACCOUNT_INFO
+         * 
+         *      SET_GROUP_DATA
+         * 
+         *      SET_CHATS
+         * 
+         *      SET_HOME_DATA
+         * 
+         *      SET_MESSAGES_HOME
+         * 
+         *      SET_SERVER_DATA
+         * 
          *      SHOW_NAV
          * can be used by pages listed inside appRoutes.js to show the navBar
          *      HIDE_NAV
@@ -79,44 +87,18 @@ export default function reducer(
          *      SET_LOADED
          * sets the page to loaded changing the loading screen to the actual content
          ******************************************************************/
-        case SET_NOTIFICATIONS:
-            return{...state}
-        case "SET_A":
-            return{...state, calendarData: action.payload};
-        case "SET_AI":
-            return{...state, accountInfo: action.payload};
-        case "SET_B":
-            return{...state, groupData: action.payload};
-        case "SET_C":
-            return{...state, chats: action.payload};
-        case "SET_D":
-            return{...state, homeData: action.payload};
-        case "SET_E":
-            return{...state, messagesHome: action.payload};
-        case "SET_R":
-            return{...state, serverData: action.payload};
-        case "SHOW_NAV":
-            return{...state, showNav: true};
-        case "HIDE_NAV":
-            return{...state, showNav: false};
-        case "SET_LOADED":
-            return{...state, loading:false};
+        case "SET_NOTIFICATIONS": return{...state};
+        case "SET_CALENDAR_DATA": return{...state, calendarData: action.payload};
+        case "SET_ACCOUNT_INFO": return{...state, accountInfo: action.payload};
+        case "SET_GROUP_DATA": return{...state, groupData: action.payload};
+        case "SET_CHATS": return{...state, chats: action.payload};
+        case "SET_HOME_DATA": return{...state, homeData: action.payload};
+        case "SET_MESSAGES_HOME": return{...state, messagesHome: action.payload};
+        case "SET_SERVER_DATA": return{...state, serverData: action.payload};
+        case "SHOW_NAV": return{...state, showNav: true};
+        case "HIDE_NAV": return{...state, showNav: false};
+        case "SET_LOADED": return{...state, loading:false};
 
-
-        /*****************************************************************
-         * HOME
-         * 
-         *      SET_HOME_GROUPS
-         * 
-         *      SET_CURRENT_GROUP
-         * 
-         *      SET_GROUP_LAST_UPDATED
-         * The format is hours since epoch. Its referenced by Scripts.js in
-         * the initHome class inside the scripts folder
-         * 
-         ******************************************************************/
-        case SET_HOME_GROUPS:
-            return{...state, homeGroups:"ab"};
 
 
         /*****************************************************************

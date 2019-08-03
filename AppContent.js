@@ -46,10 +46,11 @@ export default class AppContent extends React.Component{
         ]);
     }
 
+
     componentDidMount(){
         this.loadFontAsync().then(()=>{
             this.setState({loading: false});
-        })
+        });
     }
 
     render(){

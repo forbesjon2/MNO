@@ -194,10 +194,10 @@ export default class BareComponents extends React.PureComponent{
             <View style={{flex:1, maxHeight:80, minHeight:80, flexDirection:"row",  borderBottomColor:borderColor, borderBottomWidth:2}}>
                 <View style={{flex:1, flexDirection:"column"}}>
                     <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>epithet</Text>
-                    <Text numberOfLines={1} style={groupStyles.contentText}>{item["epithet"]}</Text>
+                    <Text numberOfLines={1} style={groupStyles.contentText}>{item["alias"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
-                    {this.returnImg(item["scale"].split("x")[0], item["scale"].split("x")[1], item["icon"])}
+                    {this.returnImg(item["scale"].split("x")[0], item["scale"].split("x")[1], item["image_uri"])}
                 </View>
             </View>
 
@@ -205,7 +205,7 @@ export default class BareComponents extends React.PureComponent{
             <View style={{flex:1, flexDirection:"row",  borderBottomColor:borderColor, borderBottomWidth:2, maxHeight:120, minHeight:120}}>
                 <View style={{flex:1, flexDirection:"column", borderRightColor:borderColor, borderRightWidth:2}}>
                 <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>members</Text>
-                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["members"]}</Text>
+                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["users"]}</Text>
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
                 <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>servers</Text>

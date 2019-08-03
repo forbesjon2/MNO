@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, AsyncStorage, Text , TouchableOpacity, TextInput} from "react-native";
+import { View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} from "react-native";
 import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
@@ -16,31 +16,6 @@ export default class SignIn extends React.Component{
             email:"enter your email"
         }
     }
-
-    storeData = async () =>{
-        try{
-            await AsyncStorage.setItem("test", "testVal2ue");
-        }catch(e){
-            console.log(e);
-        }
-    }
-
-    ttest(){
-        test();
-    }
-
-
-    getData = async() =>{
-        try{
-            const value = await AsyncStorage.getItem("test");
-            if(value != null){
-                console.log(value);
-            }
-        }catch(e){
-            console.log(e);
-        }
-    }
-
 
     render(){
     return(

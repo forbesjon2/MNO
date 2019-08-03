@@ -1,6 +1,6 @@
-
 const WebSocket = require('ws');
 import srcStore from "./Store";
+
 
 /*********************************************************************
  * This class handles all communications between the server and the
@@ -8,10 +8,16 @@ import srcStore from "./Store";
  *********************************************************************/
 module.exports = {
     
-    test:  function(){
-        console.log("test");
-        srcStore.dispatch({type:"AAA"});
+    test:  function(msg){
+        return msg;
     },
+
+
+    loadFromStore: async function(){
+        // const rs = await AsyncStorage.getItem("accountInfo");
+        // return rs;
+    },
+
 
     /*********************************************************************
      * Standard function for sending a payload to a particular server

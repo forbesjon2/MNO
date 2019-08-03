@@ -46,11 +46,11 @@ export default class SchoolSearch extends React.Component{
     * associates a key for every item in the flatlist. We use keyExtractor to 
     * preserve the naming of 'uuid' from the API
     *************************************************************************/
-    _keyExtractor = (item, index) => item.uuid;
+    _keyExtractor = (item, index) => item.unique_id;
     
     //implements BareComponents searchFunction() to perform a simple search
     search(){
-        let filterData = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "epithet"]);
+        let filterData = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "alias"]);
         this.setState({searchData: filterData});
     }
 
@@ -82,7 +82,7 @@ export default class SchoolSearch extends React.Component{
             data={this.state.searchData}
             keyExtractor={this._keyExtractor}
             showsHorizontalScrollIndicator={false}
-            renderItem={({item}) => 
+            renderItem={({item}) =>
             this.state.components.groupView(item, true)}
         />
         <View style={{flex:1, flexDirection:"row", maxHeight:20, marginHorizontal:10, marginBottom:5}}>

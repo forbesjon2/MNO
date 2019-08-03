@@ -11,12 +11,12 @@
   "dependencies": {
     "@expo/vector-icons": "^10.0.3",
     "@react-native-community/async-storage": "^1.6.1",
-    "expo": "^33.0.0",
-    "expo-font": "^5.0.1",
+    "expo": "^34.0.1",
+    "expo-font": "^6.0.1",
     "jest": "^24.8.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
     "react-native-calendars": "^1.195.0",
     "react-native-gesture-handler": "^1.2.2",
     "react-native-image-picker": "^0.28.1",
@@ -34,7 +34,10 @@
     "babel-preset-expo": "^5.1.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": [
+      "./test/jestSetupFile.js"
+    ]
   },
   "private": true
 }

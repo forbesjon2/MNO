@@ -50,7 +50,7 @@ export default class Discover extends React.Component{
     * associates a key for every item in the flatlist. We use keyExtractor to 
     * preserve the naming of 'uuid' from the API
     *************************************************************************/
-    _keyExtractor = (item, index) => item.uuid;
+    _keyExtractor = (item, index) => item.unique_id;
 
 
 
@@ -143,7 +143,7 @@ export default class Discover extends React.Component{
                 onSubmitEditing={() => {
                     switch(this.state.selectedListID){
                         case 1:
-                            let groupFiltered = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "epithet"]);
+                            let groupFiltered = this.state.components.searchFunction(this.state.groupData, this.state.text, ["name", "alias"]);
                             this.setState({groupSearchData: groupFiltered});
                             break;
                         case 2:

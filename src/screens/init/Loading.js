@@ -3,7 +3,8 @@ import { View, InteractionManager, Text , Button} from "react-native";
 import { connect } from "react-redux";
 import MiniCalendar from "../../components/other/MiniCalendar";
 import srcStore from "../../Store";
-
+const {test} = require("../../Networking");
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class Loading extends React.Component{
     constructor(props){
@@ -12,7 +13,7 @@ export default class Loading extends React.Component{
         }
     }
     testTestfucj(){
-        console.log("hi state " + srcStore.getState().Global.butt);
+        test("AB");
     }
     componentDidMount(){
         srcStore.dispatch({type:"INIT"});
