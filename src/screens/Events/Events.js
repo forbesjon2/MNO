@@ -56,8 +56,7 @@ export default class Events extends React.Component{
                         "start_time":calendarData["events"][i]["start_time"], 
                         "end_time":calendarData["events"][i]["end_time"], 
                         "description": calendarData["events"][i]["description"],
-                        "attending": calendarData["events"][i]["attending"],
-                        "date": currentDate});
+                        "attending": calendarData["events"][i]["attending"]});
                 }}>
                             <View style={[styles.events_eventView]}>
                     <View style={styles.events_eventTimeView}>
@@ -136,7 +135,7 @@ export default class Events extends React.Component{
                 // markedDates are important TODO add functionality for marked dates
                 markingType={"custom"}
                 markedDates={{
-                [currentDate]: {customStyles:{text:{color: "white",},
+                [this.state.currentDate.toISOString().split("T")[0]]: {customStyles:{text:{color: "white",},
                     container:{borderRadius: 0,elevation: 10,backgroundColor:"#0A60E2",shadowColor: "blue",shadowOffset:{width: 3, 
                         height: 3},shadowRadius: 2,}},selected: true,}}}/>
 
