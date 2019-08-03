@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View, Button, TouchableWithoutFeedback, ScrollView} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {styles} from "../../Styles";
 /**
  * This is the page that shows the individual event.
@@ -13,14 +13,14 @@ import {styles} from "../../Styles";
  * 
  * TODO fix the date & implement attending
  */
-class SingleEventView extends React.Component{
+export default class SingleEventView extends React.Component{
     static navigationOptions = ({navigation}) => ({
         header: null 
     });
     constructor(props){
         super(props);
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#5D75F7"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#5D75F7"});
     }
     render(){
         const {navigation} = this.props;
@@ -66,11 +66,3 @@ function dateToMonth(date){
     const monthArray = ["Janurary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return monthArray[Number(date.split("-")[1]-1)];
 }
-
-
-const mapStateToProps = (store) => ({
-    
-});
-
-const SingleEventViewScreen = connect(mapStateToProps)(SingleEventView);
-export default SingleEventViewScreen;

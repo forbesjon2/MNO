@@ -1,13 +1,12 @@
 import React from 'react';
 import {Text, View, TouchableWithoutFeedback, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {styles} from "../../Styles";
 
-class Chat extends React.Component{
+export default class Chat extends React.Component{
     static navigationOptions = ({navigation}) => ({
         header: null
-        
     });
     render(){
         const {navigation} = this.props;
@@ -64,11 +63,3 @@ function generateText(text, sender){
     </View>
     );
 }
-
-
-const mapStateToProps = (store) => ({
-    
-});
-
-const chatScreen = connect(mapStateToProps)(Chat);
-export default chatScreen;

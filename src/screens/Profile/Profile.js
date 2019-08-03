@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, Image, TouchableWithoutFeedback, FlatList} from 'react-native';
-import {connect} from "react-redux";
+import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 import BareComponents from '../../components/other/BareComponents';
@@ -19,7 +19,7 @@ import BareComponents from '../../components/other/BareComponents';
  * 
  * TODO: implement this
  *************************************************************************/
-class Profile extends React.Component{
+export default class Profile extends React.Component{
     constructor(props){
         super(props);
 
@@ -34,7 +34,7 @@ class Profile extends React.Component{
             isSelf: true,
         }
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     /*************************************************************************
@@ -69,12 +69,13 @@ class Profile extends React.Component{
     * preserve the naming of 'uuid' from the API
     *************************************************************************/
     componentWillMount(){
+        const {accountInfo} = Store.getState().Global;
         if(this.state.isSelf){
             var serverList = [];
-            this.props.accountInfo["groups"].map((item) => item.servers.map(
+            accountInfo["groups"].map((item) => item.servers.map(
                 (item2) => serverList.push(item["name"] + item2["name"])));
-            this.setState({friendData: this.props.accountInfo["friends"], 
-                        tagData: this.props.accountInfo["tags"], serverList: serverList});
+            this.setState({friendData: accountInfo["friends"], 
+                        tagData: accountInfo["tags"], serverList: serverList});
         }
     }
 
@@ -108,7 +109,7 @@ class Profile extends React.Component{
     }
 
     render(){
-    const {accountInfo} = this.props;
+    const {accountInfo} = Store.getState().Global;
     return(
     <View style={{flex: 1, flexDirection: "column", backgroundColor:"white"}}>
         
@@ -161,10 +162,3 @@ class Profile extends React.Component{
     </View>
     );
 }};
-
-const mapStateToProps = (store) => ({
-    accountInfo: store.Global.accountInfo,
-});
-
-const profileScreen  = connect(mapStateToProps)(Profile);
-export default profileScreen;

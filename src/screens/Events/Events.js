@@ -1,9 +1,10 @@
 import React from 'react';
 import {Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
-import { connect } from "react-redux";
 import {CalendarList} from "react-native-calendars";
 import NavigationService from "../../navigation/NavigationService";
 import {styles} from "../../Styles";
+import Store from "../../Store";
+
 
 /**
  * REFERENCES
@@ -12,7 +13,7 @@ import {styles} from "../../Styles";
  * 
  * snap calendar using react-native-snap-carousel
  */
-class Events extends React.Component{
+export default class Events extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: "Events",
         header: null,
@@ -22,17 +23,17 @@ class Events extends React.Component{
         this.state = {
         }
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
     render(){
-        const {currentDate, calendarData} = this.props;
+        var currentDate = Store.getState().Global.currentDate;
         return(
             <ScrollView style={{flex:1}}>
                 <CalendarList
                 // the generic style for the calendar
                 style={{flex:1, minHeight:360}}
                 // max amount of months allowed to scroll in the past
-                pastScrollRange={2}
+                pastScrollRange={1}
                 // max amount of months allowed to scroll in the future
                 futureScrollRange={3}
                 // use horizontal scrolling
@@ -70,9 +71,9 @@ class Events extends React.Component{
                 // the list of items that have to be displayed in agenda. If you want to render item as empty date
 
                 // handle event when date is pressed
-                onDayPress={(day) => this.props.dispatch({type: "DISPATCH_CURRENT_DATE", currentDate: day.dateString})}
+                onDayPress={(day) => Store.dispatch({type: "DISPATCH_CURRENT_DATE", currentDate: day.dateString})}
                 // this is the current day. Different from markedDates
-                current={currentDate}
+                current={Store.getState().Global.currentDate}
                 // markedDates are important TODO add functionality for marked dates
                 markingType={"custom"}
                 markedDates={{
@@ -80,7 +81,7 @@ class Events extends React.Component{
                     container:{borderRadius: 0,elevation: 10,backgroundColor:"#0A60E2",shadowColor: "blue",shadowOffset:{width: 3, 
                         height: 3},shadowRadius: 2,}},selected: true,}}}/>
 
-                {generateBasicEvents(calendarData, currentDate)}
+                {generateBasicEvents()}
             </ScrollView>
         );
     }
@@ -91,13 +92,13 @@ class Events extends React.Component{
  * This is used to show the list of events that are relevant to a certain
  * date in the events tab. Both are stored as variables in the redux store
  * 
- * @param {*} calendarData  the JSON array of calendar events. See 
- * CalendarData.json file or the readme in the data folder for format
- * information
+ * calendarData: the JSON array of calendar events. See CalendarData.json
+ *               file or the readme in the data folder for format info.
  * 
- * @param {*} currentDate   the current date in YYYY-MM-DD format
+ * currentDate: the current date in YYYY-MM-DD format
  *************************************************************************/
-function generateBasicEvents(calendarData, currentDate){
+function generateBasicEvents(){
+    const {calendarData, currentDate} = Store.getState().Global;
     let returnObj = [];
     let count = 0;
     for(let i in calendarData["dates"]){
@@ -136,12 +137,3 @@ function generateBasicEvents(calendarData, currentDate){
     //eventHeading, eventContent
     return(<Text style={[styles.events_eventHeading, {color:"black", marginLeft:12}]}>No events for today</Text>);
 }
-
-const mapStateToProps = (store) => ({
-    currentDate: store.Global.currentDate,
-    events: store.Global.events,
-    calendarData: store.Global.calendarData
-});
-
-const eventsScreen = connect(mapStateToProps)(Events);
-export default eventsScreen;

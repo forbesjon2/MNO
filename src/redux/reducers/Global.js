@@ -19,15 +19,11 @@ export default function reducer(
         chats:{},
         homeData:{},
         messagesHome:{},
-        butt:"fantastic",
         
         //home
         homeGroups: "",
-        currentGroup: "",
-        groupLastUpdated: "",
 
-        //events
-        events:{},
+        //discover page
         currentDate: "",
 
         //event subnav
@@ -124,10 +120,6 @@ export default function reducer(
          ******************************************************************/
         case SET_HOME_GROUPS:
             return{...state, homeGroups:"ab"};
-        case SET_CURRENT_GROUP:
-            return{...state, currentGroup: action.payload};
-        case SET_GROUP_LAST_UPDATED:
-            return{...state, groupLastUpdated: action.payload};
 
 
         /*****************************************************************

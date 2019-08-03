@@ -1,14 +1,14 @@
 import React from 'react';
 import {Text, View, Animated, Image, TouchableWithoutFeedback, ScrollView, FlatList, Dimensions, PanResponder} from 'react-native';
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
-import HomeComponent from './HomeComponent';
+import ContentView from "./ContentView";
 import NavigationService from "../../navigation/NavigationService";
 import {styles} from "../../Styles";
 import BareComponents from "../../components/other/BareComponents";
 
 
-class Home extends React.Component{
+export default class Home extends React.Component{
     constructor(props){
         super(props);
 
@@ -25,7 +25,8 @@ class Home extends React.Component{
              *************************************************************************/
             onStartShouldSetPanResponder: (evt, gesture) => {
                 if((Math.abs(gesture.dx) < 25)) return false;
-                else return true;            },
+                else return true;
+            },
             onMoveShouldSetPanResponder: (evt, gesture) => {
                 if((Math.abs(gesture.dx) < 25)) return false;
                 else return true;
@@ -104,11 +105,55 @@ class Home extends React.Component{
             animatedContent: new Animated.Value(0),
             leftContent: new Animated.Value(-250),
             rightContent: new Animated.Value(Dimensions.get("window").width),
+
+            homeData:Store.getState().Global.homeData,
+            accountInfo: Store.getState().Global.accountInfo,
+            currentGroup: "",
             panResponder
         }
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
         this.animateSidebar = this.animateSidebar.bind(this);
+    }
+
+    componentWillMount(){
+        let homeData = this.state.homeData["data"][0];
+        let groupName = homeData["name"] + homeData["servers"][0]["name"];
+        this.setState({currentGroup: groupName});
+    }
+
+    /**************************************************************************
+     * Gets the button list for the slide out menu. Returns an array with the
+     * (required) unique keys for every element
+     * 
+     * homeData:  the redux variable homeData which contains all of
+     *      the users subscribed to groups. For examples & a better description
+     *      of whats in the JSON see the data folder
+     * currentGroup:  a string representing the currently selected
+     *      group. This is <global>@<server>
+     **************************************************************************/
+    getButtonList(){
+        let homeData = this.state.homeData["data"];
+        let currentGroup = this.state.currentGroup;
+        let returnObj = [];
+        let current_group_view = currentGroup.split("@")[0];
+        let current_group_server = "@" + currentGroup.split("@")[1];
+        for(var i in homeData){
+            //generates the channel header
+            let view = homeData[i]["name"];
+            let isInGroup = view == current_group_view;
+            let iconOpacity = [isInGroup ? {opacity: 1, color: "black"} : {opacity:0.5, color:"black"}];
+            returnObj.push(<View key={"header" + i.toString()} style={[styles.home_sideHeaderView]}><Ionicons name="ios-globe" style={[styles.home_sideHeaderIcon, iconOpacity[0]]} color={"black"}/><Text style={[styles.home_sideHeaderText, iconOpacity[0]]}>{homeData[i]["name"]}</Text></View>);
+            //Generates header contents (each server)
+            for(var j in homeData[i]["servers"]){
+                let group = homeData[i]["servers"][j]["name"];
+                var elementStyle, viewStyle;
+                [group == current_group_server && isInGroup ? elementStyle = styles.home_sideElementSelected : elementStyle = styles.home_sideElementView];
+                [group == current_group_server && isInGroup ? viewStyle = styles.home_sideSelectedView : viewStyle = styles.home_sideNormalView];
+                returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {this.setState({currentGroup: "" + view + group})}}><View style={viewStyle}><Text style={[styles.home_sideElementText, elementStyle]}>{homeData[i]["servers"][j]["name"]}</Text></View></TouchableWithoutFeedback>);
+            }
+        }
+        return returnObj;
     }
 
     //Handles the animation for the sidebar aka leftNav (specific to the homescreen)
@@ -149,11 +194,34 @@ class Home extends React.Component{
     }
 
 
+
+    /*************************************************************************
+     * Checks the redux variable 'homeData' for data in what's stored as
+     * the redux variable 'currentGroup'. A similar instance of this is found
+     * in HomeComponent.js
+     * 
+     * homeData: see the readme in data for examples/description
+     * currentGroup: <home>@<group> format
+     **************************************************************************/
+    getHomeData(){
+        const {homeData, currentGroup}  = this.state;
+        let name = currentGroup.toString().split("@")[0];
+        let server = "@" + currentGroup.toString().split("@")[1];
+        for(let i in homeData["data"]){
+            if(name == homeData["data"][i]["name"]){
+                for(let j in homeData["data"][i]["servers"]) if(homeData["data"][i]["servers"][j]["name"] == server) return homeData["data"][i]["servers"][j];
+            }
+        }
+        return;
+    }
+
+
+
     render(){
-    const {homeData, currentGroup}= this.props;
-    const currentGroupContent = getHomeData(homeData, currentGroup);
+    const currentGroupContent = this.getHomeData();
     let handles = this.state.panResponder.panHandlers;
     var height = Dimensions.get("window").height - 60;  //60 is the height of the nav
+    const dataObj = this.getHomeData();
     return(
     <View style={{flex:1,backgroundColor:"white", top:0, bottom:0}} {...handles}>
 
@@ -172,7 +240,7 @@ class Home extends React.Component{
             {/* The main view with all of the content */}
             <View style={[styles.home_mainView]} elevation={3}>
                 <View style={{flex:1}}>
-                <HomeComponent />
+                {homeComponent(dataObj)}
                 </View>
             </View>
         </Animated.View>
@@ -181,12 +249,12 @@ class Home extends React.Component{
         {/* LEFT SIDEBAR */}
         <Animated.View style={{width:250, left:this.state.leftContent, height:height, top:0, bottom:0, position:"absolute", backgroundColor:"#F8F8FA"}} elevation={0}>
         {/* This view shows general information about your account */}
-        {getAccountDetails(this.props.dispatch, this.props.accountInfo, this.state.components)}
+        {getAccountDetails(this.state.accountInfo, this.state.components)}
         
 
         {/* This is a list that shows all of your subscribed to channels */}
         <ScrollView style={{flex:1}}>
-        {getButtonList(homeData["data"], currentGroup, this.props.dispatch)}
+        {this.getButtonList()}
         </ScrollView>
         </Animated.View>
         
@@ -244,11 +312,11 @@ function getServerDetails(components){
     )
 }
 
-function getAccountDetails(dispatch, accountInfo, components){
+function getAccountDetails(accountInfo, components){
     return(
         <TouchableWithoutFeedback onPress={() => {
             NavigationService.navigate("Profile");
-            dispatch({type: "SET_PAGE", id:5});}}>
+            Store.dispatch({type: "SET_PAGE", id:5});}}>
         <View style={{minHeight:180, borderBottomColor:"black"}}>
             {components.randomLanguage()}
             <Image source={{uri:accountInfo["image_uri"]}} style={styles.home_topViewImage}/>
@@ -260,68 +328,39 @@ function getAccountDetails(dispatch, accountInfo, components){
 }
 
 
+function homeComponent(dataObj){
+    return(
+    <FlatList style={styles.homecomponent_mainView}
+        data={dataObj["content"]}
+        renderItem={({item, separators}) =>(
+        <View style={styles.homecomponent_mainView}>
+        
+        {/* This is the styling for each of the headers date is not yet included*/}
+        <View style={styles.homecomponent_headerView}>
+            <Image source={{uri:item.image_uri}} style={styles.homecomponent_headerImgView}/>
+            <View style={styles.homecomponent_headerTextView}>
+                <Text numberOfLines={1} style={styles.homecomponent_headerName}>{item.name}</Text>
+                <Text numberOfLines={1} style={styles.homecomponent_headerSubName}>{item.sub_name}</Text>
+            </View>
+            {/* <Text style={{flex:1, minWidth:60, textAlign:"right", alignSelf:"flex-end", fontFamily:"Khula-Regular", fontSize:14}}>6 minutes ago</Text> */}
+        </View>
 
-/**************************************************************************
- * Gets the button list for the slide out menu. Returns an array with the
- * (required) unique keys for every element
- * 
- * @param {*} homeData  the redux variable homeData which contains all of
- *      the users subscribed to groups. For examples & a better description
- *      of whats in the JSON see the data folder
- * @param {*} currentGroup  a string representing the currently selected
- *      group. This is <global>@<server>
- * @param {*} dispatch  an instance of the 'this.props.dispatch' redux var
- **************************************************************************/
-function getButtonList(homeData, currentGroup, dispatch){
-    let returnObj = [];
-    let current_group_view = currentGroup.split("@")[0];
-    let current_group_server = "@" + currentGroup.split("@")[1];
-    for(var i in homeData){
-        //generates the channel header
-        let view = homeData[i]["name"];
-        let isInGroup = view == current_group_view;
-        let iconOpacity = [isInGroup ? {opacity: 1, color: "black"} : {opacity:0.5, color:"black"}];
-        returnObj.push(<View key={"header" + i.toString()} style={[styles.home_sideHeaderView]}><Ionicons name="ios-globe" style={[styles.home_sideHeaderIcon, iconOpacity[0]]} color={"black"}/><Text style={[styles.home_sideHeaderText, iconOpacity[0]]}>{homeData[i]["name"]}</Text></View>);
-        //Generates header contents (each server)
-        for(var j in homeData[i]["servers"]){
-            let group = homeData[i]["servers"][j]["name"];
-            var elementStyle, viewStyle;
-            [group == current_group_server && isInGroup ? elementStyle = styles.home_sideElementSelected : elementStyle = styles.home_sideElementView];
-            [group == current_group_server && isInGroup ? viewStyle = styles.home_sideSelectedView : viewStyle = styles.home_sideNormalView];
-            returnObj.push(<TouchableWithoutFeedback key={"item" + i.toString() + "element" + j} onPress={() => {dispatch({type:"SET_CURRENT_GROUP", payload: "" + view + group})}}><View style={viewStyle}><Text style={[styles.home_sideElementText, elementStyle]}>{homeData[i]["servers"][j]["name"]}</Text></View></TouchableWithoutFeedback>);
-        }
-    }
-    return returnObj;
+        {/* Text or image content (uses type property*/}
+        <View style={styles.homecomponent_contentView}>
+            <ContentView content={item.content} type={item.type} />
+        </View>
+
+        {/* Sub content view. This includes the heart icon & the to be implemented @ icon */}
+        <View style={styles.homecomponent_subContentView}>
+        <TouchableWithoutFeedback style={{flex:1, flexDirection:"column"}}>
+            <View style={{flex:1, flexDirection:"row"}}>
+                <Ionicons name="ios-heart-empty" style={{fontSize:21, flex:1, flexDirection:"column"}} color={"#ED1A7C"}/>  
+                <Text style={{fontFamily:"Khula-Regular", fontSize:12, flex:1, flexDirection:"column", textAlign:"left", alignSelf:"center"}}>17</Text> 
+            </View>
+            
+        </TouchableWithoutFeedback>
+            <View style={{flex:5, flexDirection:"column"}}></View>
+        </View>    
+        </View>
+        )}/>);
 }
-
-
-/*************************************************************************
- * Checks the redux variable 'homeData' for data in what's stored as
- * the redux variable 'currentGroup'. A similar instance of this is found
- * in HomeComponent.js
- * 
- * @param {*} homeData see the readme in data for examples/description
- * @param {*} currentGroup <home>@<group> format
- **************************************************************************/
-function getHomeData(homeData, currentGroup){
-    let name = currentGroup.toString().split("@")[0];
-    let server = "@" + currentGroup.toString().split("@")[1];
-    for(let i in homeData["data"]){
-        if(name == homeData["data"][i]["name"]){
-            for(let j in homeData["data"][i]["servers"]) if(homeData["data"][i]["servers"][j]["name"] == server) return homeData["data"][i]["servers"][j];
-        }
-    }
-    return;
-}
-
-
-
-const mapStateToProps = (store) => ({
-    homeData: store.Global.homeData,
-    currentGroup: store.Global.currentGroup,
-    groupLastUpdated: store.Global.groupLastUpdated,
-    accountInfo: store.Global.accountInfo,
-});
-
-const homeScreen = connect(mapStateToProps)(Home);
-export default homeScreen;

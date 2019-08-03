@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} from "react-native";
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 
@@ -8,7 +8,7 @@ import {styles} from "../../Styles";
  * This is the sign up screen
  * 
  *************************************************************************/
-class SignUp extends React.Component{
+export default class SignUp extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -18,7 +18,7 @@ class SignUp extends React.Component{
             confirmPassword:"Confirm Password",
         }
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     redirectSignUp(){
@@ -92,13 +92,3 @@ class SignUp extends React.Component{
     </View>
     );        
 }}
-
-
-
-
-
-const mapStateToProps = (store) => ({
-});
-
-const signUpScreen = connect(mapStateToProps)(SignUp);
-export default signUpScreen;

@@ -1,10 +1,9 @@
 import React from "react";
 import {View, Platform, Text, TouchableWithoutFeedback, TimePickerAndroid, DatePickerIOS} from 'react-native';
-import {connect} from 'react-redux';
+import Store from "../../Store";
 
 
-
-class TimePicker extends React.Component{
+export default class TimePicker extends React.Component{
     constructor(props){
         super(props);
         
@@ -24,9 +23,9 @@ class TimePicker extends React.Component{
             if (action !== TimePickerAndroid.dismissedAction) {
               // Selected hour (0-23), minute (0-59)
               if(isStartEvent){
-                this.props.dispatch({type:"SET_START_EVENT_TIME", payload: hour + ":" + minute});
+                Store.dispatch({type:"SET_START_EVENT_TIME", payload: hour + ":" + minute});
               }else{
-                this.props.dispatch({type:"SET_END_EVENT_TIME", payload: hour + ":" + minute});
+                Store.dispatch({type:"SET_END_EVENT_TIME", payload: hour + ":" + minute});
               }
             }
           } catch ({code, message}) {
@@ -35,7 +34,8 @@ class TimePicker extends React.Component{
         }
 
     render(){
-        const {isStart} = this.props;
+    const {isStart} = this.props;
+    const {startEventTime, endEventTime} = Store.getState().Global;
 
     if(Platform.OS === 'ios'){
     return(
@@ -54,7 +54,7 @@ class TimePicker extends React.Component{
             <TouchableWithoutFeedback onPress={() => this.openTimePicker(isStart)}>
                 <View style={{height: 35, borderColor: 'gray', borderWidth: 1, marginLeft:10, marginRight:30, borderRadius:5}}>
                     <Text style={{color:"white", flexDirection:"column", fontFamily: "Khula-Light", fontSize:21, textAlign:"center"}}>
-                    {[isStart ? this.props.startEventTime : this.props.endEventTime]}
+                    {[isStart ? startEventTime : endEventTime]}
                     </Text>
                 </View>
             </TouchableWithoutFeedback>
@@ -63,11 +63,3 @@ class TimePicker extends React.Component{
     }
     }
 }
-
-const mapStateToProps = (store) =>({
-    startEventTime: store.Global.startEventTime,
-    endEventTime: store.Global.endEventTime
-});
-
-const TimePickerScreen = connect(mapStateToProps)(TimePicker);
-export default TimePickerScreen;

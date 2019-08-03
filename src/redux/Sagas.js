@@ -20,7 +20,6 @@ const catchHomeUpdate = function* catchHomeUpdate(){
         console.log("AB K ", action);
         
 
-        // yield put({type: SET_GROUP_LAST_UPDATED, groupLastUpdated: action.groupLastUpdated});
     });
 }
 const updateHomeGroups = function* updateHomeGroups(){

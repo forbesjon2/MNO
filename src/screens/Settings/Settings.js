@@ -1,10 +1,10 @@
 import React from 'react';
 import {Text, View, ScrollView, TouchableWithoutFeedback} from 'react-native';
 import NavigationService from "../../navigation/NavigationService";
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {styles} from "../../Styles";
 
-class Settings extends React.Component{
+export default class Settings extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: "Settings",
         header: null,
@@ -12,7 +12,7 @@ class Settings extends React.Component{
     constructor(props){
         super(props);
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
     
     render(){
@@ -95,11 +95,3 @@ function generateButton(text, isBlue, navigateTo){
         );
     }
 }
-
-
-const mapStateToProps = (store) => ({
-    
-});
-
-const settingsScreen = connect(mapStateToProps)(Settings);
-export default settingsScreen;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Text , FlatList, TextInput} from "react-native";
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 import BareComponents from '../../components/other/BareComponents';
@@ -14,7 +14,7 @@ import BareComponents from '../../components/other/BareComponents';
  * the list is set up to be semi efficient using flatlist but it is a very 
  * simple implementation
  *************************************************************************/
-class SchoolSearch extends React.Component{
+export default class SchoolSearch extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -26,7 +26,7 @@ class SchoolSearch extends React.Component{
             components: new BareComponents(),
         }
         //sets the safe area background for iOS
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#42368A"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#42368A"});
     }
 
     /*************************************************************************
@@ -38,7 +38,7 @@ class SchoolSearch extends React.Component{
     * It then appends that to the state
     *************************************************************************/
     componentWillMount(){
-        let groupData = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
+        let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
         this.setState({searchData:groupData, groupData:groupData})
     }
 
@@ -93,10 +93,3 @@ class SchoolSearch extends React.Component{
     </View>
     );
 }}
-
-const mapStateToProps = (store) => ({
-    groupData: store.Global.groupData
-});
-
-const schoolSearchScreen = connect(mapStateToProps)(SchoolSearch);
-export default schoolSearchScreen;

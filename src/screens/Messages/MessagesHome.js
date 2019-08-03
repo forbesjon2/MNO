@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text, View, Button, StyleSheet, ScrollView, Image, TouchableWithoutFeedback} from 'react-native';
-import { connect } from "react-redux";
+import Store from "../../Store";
 import PropTypes from 'prop-types';
 import NavigationService from "../../navigation/NavigationService";
 var jsonData = require("../../../data/MessagesHome.json");
 
-class MessagesHome extends React.Component{
+export default class MessagesHome extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: "Messages", 
         header:null
@@ -13,7 +13,7 @@ class MessagesHome extends React.Component{
     constructor(props){
         super(props);
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
     render(){
         var content = [];
@@ -139,11 +139,4 @@ const scrollStyles = StyleSheet.create({
         flex: 3
     }
 
-})
-
-const mapStateToProps = (store) => ({
-    
 });
-
-const messagesHome = connect(mapStateToProps)(MessagesHome);
-export default messagesHome;

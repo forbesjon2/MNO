@@ -87,9 +87,6 @@ export default class BareComponents extends React.PureComponent{
 
 
 
-
-
-
     /*************************************************************************
      * This generates the list of users that is being searched
      * array -> {"name":"<some name>", "friends":<some number>, "icon":"<image url>"}

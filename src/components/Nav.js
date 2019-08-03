@@ -220,7 +220,7 @@ export default class Nav extends React.Component{
                     {this.createNavScrollButtons("discover", 3, true, "Discover")}
                     {/* {this.createNavScrollButtons("messages", 4, true, "Messages")} */}
                     {this.createNavScrollButtons("profile", 4, true, "Profile")}
-                    {this.createNavScrollButtons("Settings", 5, true, "Settings")}
+                    {this.createNavScrollButtons("settings", 5, true, "Settings")}
                 </ScrollView>
                 </View>
 

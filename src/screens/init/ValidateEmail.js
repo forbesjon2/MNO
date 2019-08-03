@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, AsyncStorage, Text , TouchableOpacity, TextInput} from "react-native";
-import { connect } from "react-redux";
+import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 const {test} = require("../../Networking");
@@ -9,7 +9,7 @@ const {test} = require("../../Networking");
  * This is the sign in screen
  * 
  *************************************************************************/
-class SignIn extends React.Component{
+export default class SignIn extends React.Component{
     constructor(props){
         super(props);
         this.state={
@@ -82,10 +82,3 @@ class SignIn extends React.Component{
     </View>
     );        
 }}
-
-
-const mapStateToProps = (store) => ({
-});
-
-const signInScreen = connect(mapStateToProps)(SignIn);
-export default signInScreen;

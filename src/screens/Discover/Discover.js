@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text, View, ScrollView, Image, TextInput, TouchableWithoutFeedback, Animated, Keyboard, FlatList} from 'react-native';
-import { connect } from "react-redux";
 import {Ionicons} from '@expo/vector-icons';
 import BareComponents from "../../components/other/BareComponents";
 import {styles} from "../../Styles";
+import Store from "../../Store";
 
-class Discover extends React.Component{
+export default class Discover extends React.Component{
     constructor(props){
         super(props);
         this.viewabilityConfig={viewAreaCoveragePercentThreshold:50}
@@ -26,7 +26,7 @@ class Discover extends React.Component{
 
         }
         //set safe area background
-        this.props.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
+        Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
 
@@ -41,7 +41,7 @@ class Discover extends React.Component{
     *************************************************************************/
    componentWillMount(){
         let profileData = JSON.stringify(require("../../../data/UsersData.json"));
-        let groupData = JSON.parse(JSON.stringify(this.props.groupData["groups"]));
+        let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
         profileData = JSON.parse(profileData)["users"];
         this.setState({groupData: groupData, groupSearchData:groupData, profileData:profileData, profileSearchData:profileData});
     }
@@ -167,11 +167,3 @@ class Discover extends React.Component{
     );
     }
 };
-
-
-const mapStateToProps = (store) => ({
-    groupData: store.Global.groupData
-});
-
-const discoverScreen  = connect(mapStateToProps)(Discover);
-export default discoverScreen;

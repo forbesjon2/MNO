@@ -67,12 +67,12 @@ export default class AppContent extends React.Component{
                 <SafeAreaView style={{flex:1, backgroundColor:safeAreaBackground}}>
             <KeyboardAvoidingView style={{flex: 1}} behavior={"height"}>
                 
-                {/* <AppRoutes
+                <AppRoutes
                 ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}
                 style={{flex: 1}}/>
-                <Nav /> */}
+                <Nav />
                 {/* <SchoolSearch /> */}
-            <ValidateEmail />
+            {/* <ValidateEmail /> */}
             </KeyboardAvoidingView>
             
             </SafeAreaView>);

@@ -82,11 +82,3 @@ module.exports = {
         return promise;
         },
 }
-
-
-// const mapStateToProps = (store) => ({
-//     pageID: store.Global.pageID,
-// });
-
-// const NetworkingClass = connect(mapStateToProps)(Networking);
-// export  {NetworkingClass}
