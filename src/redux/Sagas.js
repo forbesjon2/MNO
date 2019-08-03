@@ -28,11 +28,6 @@ const updateHomeGroups = function* updateHomeGroups(){
     });
 }
 
-const catchCurrentDate = function* catchCurrentDate(){
-    yield takeEvery("DISPATCH_CURRENT_DATE", function*(action){
-        yield put({type: SET_CURRENT_DATE, currentDate: action.currentDate});
-    });
-}
 
 
 //random functions called in the loading screen for initialization
@@ -72,7 +67,6 @@ const init = function* init(){
 
 const Sagas = function* Sagas(){
     yield all([
-        catchCurrentDate(),
         catchHomeUpdate(),
         updateHomeGroups(),
         init()

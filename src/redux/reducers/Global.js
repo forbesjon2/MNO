@@ -23,9 +23,6 @@ export default function reducer(
         //home
         homeGroups: "",
 
-        //discover page
-        currentDate: "",
-
         //event subnav
         startEventTime: "---",
         endEventTime: "---",
@@ -121,17 +118,6 @@ export default function reducer(
         case SET_HOME_GROUPS:
             return{...state, homeGroups:"ab"};
 
-
-        /*****************************************************************
-         * EVENTS (calendar page)
-         * 
-         *      SET_CURRENT_DATE (YYYY-MM-DD format)
-         * dispatched when the user clicks on a specific date on the calendar
-         * 
-         ******************************************************************/
-        case SET_CURRENT_DATE:
-            return{...state, currentDate: action.currentDate};
-        
 
         /*****************************************************************
          * EVENT SUBNAV

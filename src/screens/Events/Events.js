@@ -21,12 +21,71 @@ export default class Events extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            currentDate:new Date()
         }
         //set safe area background
         Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
+
+
+
+    /*************************************************************************
+     * This is used to show the list of events that are relevant to a certain
+     * date in the events tab. Both are stored as variables in the redux store
+     * 
+     * calendarData: the JSON array of calendar events. See CalendarData.json
+     *               file or the readme in the data folder for format info.
+     * 
+     * currentDate: the current date in YYYY-MM-DD format
+     *************************************************************************/
+    generateBasicEvents(){
+        const {calendarData} = Store.getState().Global;
+        const {currentDate} = this.state;
+        let returnObj = [];
+        let count = 0;
+        for(let i in calendarData["events"]){
+            let tempDate = new Date(calendarData["events"][i]["start_time"]);
+            if(this.state.currentDate.toLocaleDateString() == tempDate.toLocaleDateString()){
+                let startTime = tempDate.toLocaleTimeString()
+                let endTime = (new Date(calendarData["events"][i]["end_time"])).toLocaleTimeString();
+                returnObj.push(
+                <TouchableWithoutFeedback key={count} onPress={() =>{
+                    NavigationService.navigate("SingleEventView", {
+                        "heading":calendarData["events"][i]["heading"],
+                        "location":calendarData["events"][i]["location"], 
+                        "start_time":calendarData["events"][i]["start_time"], 
+                        "end_time":calendarData["events"][i]["end_time"], 
+                        "description": calendarData["events"][i]["description"],
+                        "attending": calendarData["events"][i]["attending"],
+                        "date": currentDate});
+                }}>
+                            <View style={[styles.events_eventView]}>
+                    <View style={styles.events_eventTimeView}>
+                        <Text style={styles.events_eventTimeViewText}>{startTime}</Text>
+                        <Text style={styles.events_eventTimeViewText}>{endTime}</Text>
+                    </View>
+                    <View style={styles.events_eventViewTwo}>
+                        <Text style={styles.events_eventHeading} numberOfLines={1}>{calendarData["events"][i]["heading"]}</Text>
+                        <Text style={styles.events_eventDescription} numberOfLines={1}>{calendarData["events"][i]["description"]}</Text>
+                    </View>
+                </View>
+                </TouchableWithoutFeedback>
+                );
+                ++count;
+                break;
+            }
+        }
+        if(count > 0) return returnObj;
+        
+        //eventHeading, eventContent
+        return(<Text style={[styles.events_eventHeading, {color:"black", marginLeft:12}]}>No events for today</Text>);
+    }
+
+
+
+
     render(){
-        var currentDate = Store.getState().Global.currentDate;
+        var currentDate = this.state.currentDate;
         return(
             <ScrollView style={{flex:1}}>
                 <CalendarList
@@ -71,9 +130,9 @@ export default class Events extends React.Component{
                 // the list of items that have to be displayed in agenda. If you want to render item as empty date
 
                 // handle event when date is pressed
-                onDayPress={(day) => Store.dispatch({type: "DISPATCH_CURRENT_DATE", currentDate: day.dateString})}
+                onDayPress={(day) => this.setState({currentDate: new Date(day.dateString)})}
                 // this is the current day. Different from markedDates
-                current={Store.getState().Global.currentDate}
+                current={this.state.currentDate}
                 // markedDates are important TODO add functionality for marked dates
                 markingType={"custom"}
                 markedDates={{
@@ -81,59 +140,8 @@ export default class Events extends React.Component{
                     container:{borderRadius: 0,elevation: 10,backgroundColor:"#0A60E2",shadowColor: "blue",shadowOffset:{width: 3, 
                         height: 3},shadowRadius: 2,}},selected: true,}}}/>
 
-                {generateBasicEvents()}
+                {this.generateBasicEvents()}
             </ScrollView>
         );
     }
 };
-
-
-/*************************************************************************
- * This is used to show the list of events that are relevant to a certain
- * date in the events tab. Both are stored as variables in the redux store
- * 
- * calendarData: the JSON array of calendar events. See CalendarData.json
- *               file or the readme in the data folder for format info.
- * 
- * currentDate: the current date in YYYY-MM-DD format
- *************************************************************************/
-function generateBasicEvents(){
-    const {calendarData, currentDate} = Store.getState().Global;
-    let returnObj = [];
-    let count = 0;
-    for(let i in calendarData["dates"]){
-        if(calendarData["dates"][i]["date"] == currentDate){
-            for(let j in calendarData["dates"][i]["events"]){    
-            returnObj.push(
-            <TouchableWithoutFeedback key={count} onPress={() =>{
-                NavigationService.navigate("SingleEventView", {
-                    "heading":calendarData["dates"][i]["events"][j]["heading"],
-                    "location":calendarData["dates"][i]["events"][j]["location"], 
-                    "start_time":calendarData["dates"][i]["events"][j]["start_time"], 
-                    "end_time":calendarData["dates"][i]["events"][j]["end_time"], 
-                    "description": calendarData["dates"][i]["events"][j]["description"],
-                    "attending": calendarData["dates"][i]["events"][j]["attending"],
-                    "date": currentDate});
-            }}>
-                        <View style={[styles.events_eventView]}>
-                <View style={styles.events_eventTimeView}>
-                    <Text style={styles.events_eventTimeViewText}>{calendarData["dates"][i]["events"][j]["start_time"]}</Text>
-                    <Text style={styles.events_eventTimeViewText}>{calendarData["dates"][i]["events"][j]["end_time"]}</Text>
-                </View>
-                <View style={styles.events_eventViewTwo}>
-                    <Text style={styles.events_eventHeading} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["heading"]}</Text>
-                    <Text style={styles.events_eventDescription} numberOfLines={1}>{calendarData["dates"][i]["events"][j]["description"]}</Text>
-                </View>
-            </View>
-            </TouchableWithoutFeedback>
-            );
-            ++count;
-            }
-            break;
-        }
-    }
-    if(count > 0) return returnObj;
-    
-    //eventHeading, eventContent
-    return(<Text style={[styles.events_eventHeading, {color:"black", marginLeft:12}]}>No events for today</Text>);
-}
