@@ -2,6 +2,8 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image, Keyboard} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
+import NavigationService from "../../navigation/NavigationService";
+
 
 /*************************************************************************
  * The BareComponents class's purpose is to include all redundant methods
@@ -215,7 +217,8 @@ export default class BareComponents extends React.PureComponent{
             </View>
             
             {/* Nav Button */}
-            <TouchableOpacity style={{borderRadius:12}}>
+            {/* <TouchableOpacity style={{borderRadius:12}} onPress={()=> NavigationService.navigate("SignUp", item["valid_mail_domains"])}> */}
+            <TouchableOpacity style={{borderRadius:12}} onPress={()=> console.log("OYYO")}>
                 <View style={{backgroundColor:buttonColor, width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45, flex:1, flexDirection:"row"}}>
                     <Text style={{color:'rgba(66,54,138,1)', paddingTop:9, paddingLeft:12, fontSize:18, flex:4, flexDirection:"column"}}>Select school.</Text>
                     <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, flex:1, flexDirection:"column", alignSelf:"center"}} />

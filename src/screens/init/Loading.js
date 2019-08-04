@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Button} from "react-native";
 import Store from "../../Store";
 import * as Font from 'expo-font';
-const {loadFromStore, ping, readAndPrint, nukeStore} = require("../../Networking");
+const {loadFromStore, initializeWebsocket, ping, readAndPrint, nukeStore, retrieveGroups} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
 
 
@@ -43,12 +43,18 @@ export default class Loading extends React.Component{
               })
         ]);
     }
-
     componentDidMount(){
         this.loadFontAsync().then(()=>{
             this.setState({text:"Loading fonts..."});
             return loadFromStore();
         }).then(() =>{
+             return retrieveGroups();
+        }).then(() =>{
+            return initializeWebsocket();
+        }).then((ws) =>{
+            Store.dispatch({type:"SET_WEBSOCKET", payload: ws});
+            Store.dispatch({type:"SET_CONNECTION_VIEW", payload:false});
+            Store.dispatch({type:"SET_CONNECTION_VIEW_CONNECTING", payload:false});
             this.setState({text:"Loading store..."});
             //if theres no token, navigate to the signIn page.
             if(Store.getState().Global.sessionToken == null){
@@ -57,7 +63,8 @@ export default class Loading extends React.Component{
             }else{
                 console.log("Actualtoken");
             }
-            
+        }).catch((err)=>{
+            console.log("TAX " + err);
         });
     }
 

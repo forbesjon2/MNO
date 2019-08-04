@@ -38,13 +38,8 @@ export default class SchoolSearch extends React.Component{
     * It then appends that to the state
     *************************************************************************/
     componentWillMount(){
-        if(Store.getState().Global.groupData == null){
-            this.setState({searchData:"", groupData:""});
-            return
-        }else{
-            let groupData = Store.getState().Global.groupData["groups"];
-            this.setState({searchData:groupData, groupData:groupData})
-        }
+        var groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
+        this.setState({searchData:groupData, groupData:groupData})
     }
 
     /*************************************************************************

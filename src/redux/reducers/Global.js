@@ -16,7 +16,7 @@ export default function reducer(
         //page data
         notifications: [],
         calendarData: null,
-        groupData: null,
+        groupData: {"groups":[]},
         serverData: null,
         chats: null,
         homeData: null,
@@ -127,7 +127,9 @@ export default function reducer(
         case "SHOW_NAV": return{...state, showNav: true};
         case "HIDE_NAV": return{...state, showNav: false};
         case "SET_LOADED": return{...state, loading:false};
-        case "SET_CONNECTION_VIEW": return{...state, connectionView:action.payload};
+        case "SET_CONNECTION_VIEW": return{...state, connectionView: action.payload};
+        case "SET_CONNECTION_VIEW_CONNECTING": return{...state, connectionViewConnecting: action.payload};
+        case "SET_WEBSOCKET": return{...state, webSocket:action.payload};
 
 
 

@@ -1,5 +1,3 @@
-const WebSocket = require('ws');
-
 function initWebsocket(existingWebsocket, URL) {
     var timeoutMs = 5000
     URL = [URL == null ? "ws://localhost:8080" : URL];
