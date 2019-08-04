@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text , FlatList, TextInput} from "react-native";
+import {View, TouchableWithoutFeedback, Text , FlatList, TextInput} from "react-native";
 import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
@@ -17,7 +17,7 @@ import BareComponents from '../../components/other/BareComponents';
 export default class SchoolSearch extends React.Component{
     constructor(props){
         super(props);
-        this.state={
+        this.state = {
             text:"",
             groupData:[],
             searchData:[],
@@ -38,8 +38,13 @@ export default class SchoolSearch extends React.Component{
     * It then appends that to the state
     *************************************************************************/
     componentWillMount(){
-        let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
-        this.setState({searchData:groupData, groupData:groupData})
+        if(Store.getState().Global.groupData == null){
+            this.setState({searchData:"", groupData:""});
+            return
+        }else{
+            let groupData = Store.getState().Global.groupData["groups"];
+            this.setState({searchData:groupData, groupData:groupData})
+        }
     }
 
     /*************************************************************************

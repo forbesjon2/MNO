@@ -2,8 +2,9 @@ import React from 'react';
 import {View, Text, Button} from "react-native";
 import Store from "../../Store";
 import * as Font from 'expo-font';
-const {loadFromStore, ping, readAndPrint} = require("../../Networking");
+const {loadFromStore, ping, readAndPrint, nukeStore} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
+
 
 
 
@@ -49,7 +50,14 @@ export default class Loading extends React.Component{
             return loadFromStore();
         }).then(() =>{
             this.setState({text:"Loading store..."});
-            NavigationService.navigate("SignIn");
+            //if theres no token, navigate to the signIn page.
+            if(Store.getState().Global.sessionToken == null){
+                nukeStore();
+                NavigationService.navigate("SignIn");
+            }else{
+                console.log("Actualtoken");
+            }
+            
         });
     }
 

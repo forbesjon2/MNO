@@ -2,21 +2,25 @@ export default function reducer(
     state = {
         //Global variables
         loading: true,
+        connectionView:false,
+        connectionViewConnecting:true,
         accountInfo: null,
         safeAreaBackground:"#ffffff",
         sessionToken: null,
+        webSocket: null,
+        
         //nav
         pageID: 1,
         showNav: false,
 
         //page data
         notifications: [],
-        calendarData:{},
-        groupData:{},
-        serverData:{},
-        chats:{},
-        homeData:{},
-        messagesHome:{},
+        calendarData: null,
+        groupData: null,
+        serverData: null,
+        chats: null,
+        homeData: null,
+        messagesHome: null,
         
         //home
         homeGroups: "",
@@ -123,6 +127,7 @@ export default function reducer(
         case "SHOW_NAV": return{...state, showNav: true};
         case "HIDE_NAV": return{...state, showNav: false};
         case "SET_LOADED": return{...state, loading:false};
+        case "SET_CONNECTION_VIEW": return{...state, connectionView:action.payload};
 
 
 

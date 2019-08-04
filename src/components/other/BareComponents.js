@@ -173,6 +173,7 @@ export default class BareComponents extends React.PureComponent{
     * 
     *************************************************************************/
     groupView(item, isLight){
+        if(item == null) return;
         item = JSON.parse(JSON.stringify(item));
         let buttonColor = 'rgba(66,54,138,0.2)';
         let backgroundColor = 'white';

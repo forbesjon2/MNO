@@ -3,7 +3,7 @@ import HomeScreen from "../screens/Home/Home";
 import EventRoutes from "../screens/Events/EventRoutes";
 import DiscoverScreen from "../screens/Discover/Discover";
 import SettingsRoutes from "../screens/Settings/SettingsRoutes";
-import MessagesRoutes from "../screens/Messages/MessagesRoutes";
+// import MessagesRoutes from "../screens/Messages/MessagesRoutes";
 import profileScreen from '../screens/Profile/Profile';
 import InitialRoutes from "../screens/init/InitialRoutes";
 import Loading from "../screens/init/Loading";

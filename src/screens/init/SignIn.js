@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} from "react-native";
+import {View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} from "react-native";
 import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
@@ -7,23 +7,30 @@ import NavigationService from "../../navigation/NavigationService";
 
 
 /*************************************************************************
- * This is the sign in screen
+ * Sign in screen that appears first if you're not signed in.
  * 
+ * if you don't have an account, it redirects you to the school search
+ * page which then redirects you to the sign up page
  *************************************************************************/
 export default class SignIn extends React.Component{
     constructor(props){
         super(props);
         this.state={
             login:"Login",
-            password:"Password"
+            password:"Password",
+            passwordEditing:false
         }
-        
         //set safe area background
         Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
     redirectSignUp(){
-        NavigationService.navigate("Home");
+        NavigationService.navigate("SchoolSearch");
+        
+    }
+
+    login(){
+        Store.dispatch({type:"SET_CONNECTION_VIEW", payload:true});
     }
 
     render(){
@@ -53,12 +60,12 @@ export default class SignIn extends React.Component{
             value={this.state.password} 
             textContentType={"password"}
             selectionColor={"black"}
-            secureTextEntry={true}
+            secureTextEntry={this.state.passwordEditing}
             numberOfLines={1}
-            onFocus={() =>{[this.state.password == "Password" ? this.setState({password:""}) :null]}}
+            onFocus={() =>{[this.state.password == "Password" ? this.setState({password:"", passwordEditing:true}) :null]}}
             clearTextOnFocus={true}
             maxLength={80}/>
-        <TouchableOpacity style={styles.signin_button}>
+        <TouchableOpacity style={styles.signin_button} onPress={() => this.login()}>
             <Text style={styles.signin_buttonText}>Login</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.signin_buttonIcon}/>
         </TouchableOpacity>

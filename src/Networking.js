@@ -43,6 +43,28 @@ module.exports = {
           });
     },
 
+    /*********************************************************************
+     * This deletes everything from the local storage. It is used in
+     * Loading.js
+     *********************************************************************/
+    nukeStore: async function(){
+        AsyncStorage.getAllKeys((err, keys) => {
+            AsyncStorage.multiGet(keys, (err, stores) => {
+              stores.map((result, i, store) => {
+                for(let i in keyList)  AsyncStorage.removeItem(store[i][0]);
+            });
+          });
+        });
+    },
+
+    /*********************************************************************
+     * This deletes everything from the local storage. It is used in
+     * Loading.js
+     *********************************************************************/
+    loadGroups: async function(){
+        
+        
+    },
 
     /*********************************************************************
      * this is supposed to be called frequently. It checks for outdated
@@ -107,15 +129,11 @@ module.exports = {
             if (!existingWebsocket || existingWebsocket.readyState != existingWebsocket.OPEN) {
                 //if a ws exists but it is not open, close it
                 if (existingWebsocket) existingWebsocket.close(); 
-                
                 //initialize a ws
                 var websocket = new WebSocket(URL);
-                websocket.onopen = function () {
-                    if(hasReturned) websocket.close();
-                    else resolve(websocket);
-                };
-                websocket.onclose = () => rejectInternal();
-                websocket.onerror = () => rejectInternal();
+                websocket.onopen = (ws) => [hasReturned ? websocket.close() : resolve(ws)];
+                websocket.on('close', ()=> rejectInternal());
+                websocket.on('error', () => rejectInternal());
             } else {
                 resolve(existingWebsocket);
             }
