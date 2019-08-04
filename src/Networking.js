@@ -1,5 +1,7 @@
 const WebSocket = require('ws');
-import srcStore from "./Store";
+import Store from "./Store";
+import {AsyncStorage} from 'react-native';
+
 
 
 /*********************************************************************
@@ -12,12 +14,55 @@ module.exports = {
         return msg;
     },
 
-
+    /*********************************************************************
+     * Performed at initialization to load from the storage saved on 
+     * the device and copies them to the redux variables.
+     * 
+     * Keys, dispatch variables, and time last pinged are tracked in the 
+     * redux variable 'keyList'.
+     * 
+     * If a key is found in AsyncStorage but not in 'keyList' than it
+     * deletes the key in AsyncStorage
+     *********************************************************************/
     loadFromStore: async function(){
-        // const rs = await AsyncStorage.getItem("accountInfo");
-        // return rs;
+        var keyList = Store.getState().Global.keyList;
+
+        AsyncStorage.getAllKeys((err, keys) => {
+            AsyncStorage.multiGet(keys, (err, stores) => {
+              stores.map((result, i, store) => {
+                for(let i in keyList){
+                    let key = store[i][0];
+                    if(keyList[i]["variable"] == key){
+                        let value = store[i][1];
+                        // keyList[i]["lastPinged"] = Date.now();
+                        Store.dispatch({action:keyList["dispatch"], payload: value});
+                    }else{AsyncStorage.removeItem(key);}
+                }
+              });
+            });
+          });
     },
 
+
+    /*********************************************************************
+     * this is supposed to be called frequently. It checks for outdated
+     * values and queries the server for those respective values
+     *********************************************************************/
+    ping: async function(){
+        Store.getState().Global.keyList.forEach((item) =>{
+            if(Date.now() >= (Number(item["lastPinged"]) + Number(item["maxTimeoutMs"]) || Number(item["lastPinged"] == 0))){
+                console.log("updating ", item);
+                //query server for data, update values
+            }
+        });
+    },
+
+    readAndPrint: async function(){
+        const {sessionToken, accountInfo} = Store.getState().Global;
+        console.log("SESSion token ", sessionToken);
+        console.log("account info ", accountInfo);
+
+    },
 
     /*********************************************************************
      * Standard function for sending a payload to a particular server

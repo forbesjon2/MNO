@@ -5,8 +5,8 @@ import DiscoverScreen from "../screens/Discover/Discover";
 import SettingsRoutes from "../screens/Settings/SettingsRoutes";
 import MessagesRoutes from "../screens/Messages/MessagesRoutes";
 import profileScreen from '../screens/Profile/Profile';
-
-
+import InitialRoutes from "../screens/init/InitialRoutes";
+import Loading from "../screens/init/Loading";
 /*************************************************************************
  * HOME ROUTES
  * 
@@ -41,8 +41,10 @@ const AppRoutes = createSwitchNavigator({
     // Messages:{screen: MessagesRoutes},
     Profile:{screen: profileScreen},
     Settings:{screen: SettingsRoutes},
+    InitialRoutes:{screen: InitialRoutes},
+    Loading:{screen:Loading}
 }, {
-    initialRouteName:"Home",
+    initialRouteName:"Loading",
     // mode: "card",
     // headerMode: "none",
     resetOnBlur: false,

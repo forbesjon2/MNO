@@ -13,7 +13,6 @@ describe('Loading renders correctly', () =>{
     it('Should render correctly.', () =>{    
         const LoadingData = renderer.create(<Loading />).getInstance();
         
-        // expect(LoadingData.testTestfucj()).toEqual(53);
         expect('a').toBe('a');
     });
     it('checks if Async Storage is properly imported', async () => {

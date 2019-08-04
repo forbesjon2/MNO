@@ -2,12 +2,12 @@ export default function reducer(
     state = {
         //Global variables
         loading: true,
-        accountInfo:{},
+        accountInfo: null,
         safeAreaBackground:"#ffffff",
-
+        sessionToken: null,
         //nav
         pageID: 1,
-        showNav: true,
+        showNav: false,
 
         //page data
         notifications: [],
@@ -24,6 +24,12 @@ export default function reducer(
         //event subnav
         startEventTime: "---",
         endEventTime: "---",
+
+        //ping keylist
+        keyList: [
+            {dispatch:"SET_SESSION_TOKEN", variable:"sessionToken", lastPinged:"", maxTimeoutMs:"31556952000"},
+            {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""}
+        ]
     },
     action
     
@@ -45,9 +51,28 @@ export default function reducer(
          * screen behind it
          * 
          * This must be in hex form!
+         * 
+         *      SET_SESSION_TOKEN
+         * Sets the user's session token. (expires in 1 year)
+         * 
+         *      SET_KEY_LIST
+         * this variable is used in Networking.js It basically defines what
+         * keys to look out for on initialization so it can load it from
+         * async storage.. 
+         *  dispatch: the dispatch var required in setting that key
+         *  variable: the redux variable name & the 'key' found in asyncstorage
+         *  lastPinged: time in ms since the epoch. Updated when it grabs
+         *              its value from the server
+         *  maxTimeoutMs: the max amount of time that this is allowed to
+         *                exist for without being labeled as 'outdated' and
+         *                updating in Networking.ping
+         *  
+         *  
          ******************************************************************/
         case "SET_ACCOUNT_INFO": return{...state, accountInfo: action.payload};
         case "SET_SAFE_AREA_BACKGROUND": return{...state, safeAreaBackground: action.payload};
+        case "SET_SESSION_TOKEN": return{...state, sessionToken: action.payload};
+        case "SET_KEY_LIST": return{...state, keylist: action.payload};
 
         /*****************************************************************
          * PAGE INDEX SUMMARY

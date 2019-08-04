@@ -3,6 +3,7 @@ import { View, TouchableWithoutFeedback, Text , TouchableOpacity, TextInput} fro
 import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
+import NavigationService from "../../navigation/NavigationService";
 
 
 /*************************************************************************
@@ -22,6 +23,7 @@ export default class SignIn extends React.Component{
     }
 
     redirectSignUp(){
+        NavigationService.navigate("Home");
     }
 
     render(){
