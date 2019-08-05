@@ -85,7 +85,38 @@ export default class BareComponents extends React.PureComponent{
     return filteredArray;
     }
 
+    /*************************************************************************
+     * This is a simple match implementation using javascript regex. 
+     * if the regex string is included in
+     *
+     * @argument regexStr 
+     * 
+     * @argument inputStr 
+     * 
+     * 
+    *************************************************************************/
+    simpleMatchFunction(regexStr, matchData){
+        var regex = new RegExp(regexStr.toLowerCase(), 'g');
+        if(matchData.match(regex) != null) return true;
+        else return false;
+    }
 
+    /*************************************************************************
+     * Checks for a valid password. It has to have a minimum of 8 characters
+     * and one or more numbers. 
+     * 
+     * Returns true if both 'check out' and false if at least one of the
+     * requirements dont match
+     *
+     * @argument matchData  the password that is being checked 
+    *************************************************************************/
+    passwordMatchFunction(matchData){
+        var eightChar = new RegExp(/[a-zA-Z0-9]{8,}/);
+        var digit = new RegExp(/\d/);
+        if(matchData.match(eightChar) != null && matchData.match(digit) != null) return true;
+        else return false;
+    }
+  
 
 
 
