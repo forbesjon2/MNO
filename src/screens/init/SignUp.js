@@ -38,7 +38,14 @@ export default class SignUp extends React.Component{
         Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
-
+    /*************************************************************************
+     * Run every time a character is typed into the 'Password' or 
+     * 'ConfirmPassword' text input fields. 
+     * 
+     * What it does is provide a better user experience by notifing the user
+     * (by means of a red border color) whether or not their passwords match
+     * or fulfill the minimum requirements of 8 char's w/ one letter
+     *************************************************************************/
     passwordLogic(text, isConfirmPassword){
         const {password, passwordEdited, components} = this.state;
         if(isConfirmPassword){
@@ -62,7 +69,7 @@ export default class SignUp extends React.Component{
      * Of course the server also performs most of these validations. It would 
      * be a very bad idea for it not to.
      * 
-     * It begins by checking that all forms have been edited 
+     * It begins by checking that all forms have been edited. Alerts if one isn't
      * 
      * Next it continues the validation process by checking that the email matches
      * any one of the list of valid mail domains
@@ -77,7 +84,7 @@ export default class SignUp extends React.Component{
         const {navigation} = this.props;
         if(!emailEdited || !usernameEdited || !passwordEdited || !confirmPassword) {
             Alert.alert("Validation error", "At least one field is not filled out",[{text:"ok"}]);
-            this.setState({emailValid:false, usernameValid:false, passwordValid:false});
+            return;
         }
 
 
@@ -85,16 +92,22 @@ export default class SignUp extends React.Component{
         var emailMatches = false;
         for(let i in emailArray) if(components.simpleMatchFunction(emailArray[i], email)) emailMatches = true;
         if(!emailMatches){
-            Alert.alert("Validation error", "Email does not match the list of valid mail domains");
+            Alert.alert("Validation error", "Email does not match the list of valid mail domains for this group");
             this.setState({emailValid:false});
+            return;
         }
 
         
         
         //if the password & confirmPassword don't match
-        if(password != confirmPassword) this.setState({passwordValid:false});
-        else if(components.passwordMatchFunction(password) == false || components.passwordMatchFunction(password) == false)
-        this.state.components.passwordMatchFunction(this.state.password)
+        if(password != confirmPassword){
+            Alert.alert("Validation error", "Passwords don't match", [{text:"ok"}]);
+            this.setState({passwordValid:false, confirmPasswordValid:false});
+            return;
+        }else if(components.passwordMatchFunction(password) == false || components.passwordMatchFunction(password) == false){
+            Alert.alert("Validation error", "Password doesn't meet the minimum requirements", [{text:"ok"}]);
+            return;
+        }
     }
 
     render(){
