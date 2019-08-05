@@ -193,7 +193,7 @@ export default class BareComponents extends React.PureComponent{
                 <Text numberOfLines={1} style={[groupStyles.contentText]}>{item["name"]}</Text>
             </View>
 
-            {/* Epithet & icon */}
+            
             <View style={{flex:1, maxHeight:80, minHeight:80, flexDirection:"row",  borderBottomColor:borderColor, borderBottomWidth:2}}>
                 <View style={{flex:1, flexDirection:"column"}}>
                     <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>epithet</Text>
@@ -204,7 +204,7 @@ export default class BareComponents extends React.PureComponent{
                 </View>
             </View>
 
-            {/* Members &  Groups*/}
+            
             <View style={{flex:1, flexDirection:"row",  borderBottomColor:borderColor, borderBottomWidth:2, maxHeight:120, minHeight:120}}>
                 <View style={{flex:1, flexDirection:"column", borderRightColor:borderColor, borderRightWidth:2}}>
                 <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>members</Text>
@@ -217,11 +217,10 @@ export default class BareComponents extends React.PureComponent{
             </View>
             
             {/* Nav Button */}
-            {/* <TouchableOpacity style={{borderRadius:12}} onPress={()=> NavigationService.navigate("SignUp", item["valid_mail_domains"])}> */}
-            <TouchableOpacity style={{borderRadius:12}} onPress={()=> console.log("OYYO")}>
-                <View style={{backgroundColor:buttonColor, width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45, flex:1, flexDirection:"row"}}>
+            <TouchableOpacity style={{borderRadius:12}} onPress={()=> NavigationService.navigate("SignUp", {valid_mail_domains:item["valid_mail_domains"]})}>
+                <View style={{backgroundColor:buttonColor, width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45}}>
                     <Text style={{color:'rgba(66,54,138,1)', paddingTop:9, paddingLeft:12, fontSize:18, flex:4, flexDirection:"column"}}>Select school.</Text>
-                    <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, flex:1, flexDirection:"column", alignSelf:"center"}} />
+                    <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, position:"absolute", alignSelf:"flex-end", paddingRight:15}} />
                 </View>
             </TouchableOpacity>
         </View>

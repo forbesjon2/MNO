@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
         fontFamily:"DidactGothic-Regular",
         fontSize:38,
         color:"white",
-        marginTop:40,
+        marginTop:10,
         marginBottom:8,
         paddingLeft:20,
         paddingTop:20
@@ -643,7 +643,7 @@ const styles = StyleSheet.create({
     schoolsearch_textInputView:{
         maxHeight:35,
         minHeight:35,
-        marginBottom:50,
+        marginBottom:60,
         paddingLeft:20,
         paddingRight:20
     },
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
         fontFamily:"DidactGothic-Regular",
         fontSize:38,
         color:"black",
-        marginTop:40,
+        marginTop:10,
         marginBottom:8
     },
     signin_subHeader:{
@@ -795,7 +795,7 @@ const styles = StyleSheet.create({
         fontFamily:"DidactGothic-Regular",
         fontSize:38,
         color:"black",
-        marginTop:40,
+        marginTop:10,
         marginBottom:8
     },
     signup_subHeader:{
@@ -805,7 +805,7 @@ const styles = StyleSheet.create({
         lineHeight:19,
     },
     signup_textInput:{
-        marginTop:40,
+        marginTop:20,
         minWidth:270,
         maxWidth:270,
         color: "black",
@@ -825,7 +825,7 @@ const styles = StyleSheet.create({
         backgroundColor:"#CE2E7B",
         marginLeft:20,
         marginTop:20,
-        marginBottom:70
+        marginBottom:60
     },
     signup_buttonText:{
         flex:1,
