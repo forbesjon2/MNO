@@ -12,6 +12,8 @@ import NavigationService from "../../navigation/NavigationService";
  * 
  * if you don't have an account, it redirects you to the school search
  * page which then redirects you to the sign up page
+ * 
+ * 5be70687e3@twitter.com
  *************************************************************************/
 export default class SignIn extends React.Component{
     constructor(props){

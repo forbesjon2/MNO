@@ -1,7 +1,6 @@
 import Store from "./Store";
 import {AsyncStorage} from 'react-native';
 
-
 /*********************************************************************
  * This class handles all communications between the server and the
  * instance of the app. 
@@ -143,16 +142,119 @@ async function retrieveGroups(){
     }
 }
 
+/**********************************************************************
+ * 
+ * 
+ * type: retrieve,
+ * action: login
+ * payload:
+ *    {
+ *      "email":"<user's email>",
+ *      "password":"<user's password>"
+ *    }
+ * 
+ * response (if successful):
+ *  {
+ *      "session_token":"<token>",
+ *      "alias":"<user's username>"
+ *  }
+**********************************************************************/
+async function login(email, password){
+    let ws = await initializeWebsocket();
+    await ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}');
+    ws.onmessage = (message) => {
+        if(message == "error"){
+            return "error"
+        }else{
+            let data = JSON.parse(message["data"]);
+            let accountInfo = Store.getState().Global.accountInfo;
+            accountInfo["alias"] = data["alias"];
+            //add that to the store
+            Store.dispatch({type:"SET_SESSION_TOKEN", payload:data["session_token"]});
+            Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountInfo});
+            //add that to asyncStorage
+            AsyncStorage.multiSet([['sessionToken', data["session_token"]], ['accountInfo', accountInfo]]).catch(() => null);
+            return "success";
+        }
+    }
+}
 
 
+/*********************************************************************
+ * Sends the request to create the user's account. Recieves and stores
+ * the user's uuid and their session token. 
+ * 
+ * 
+ * type: create,
+ * action: create_user
+ * payload:
+ *    {
+ *      "email": "<user's email>", "name":"<user's full name>", 
+ *      "name": "<user's name (can be blank)>",
+ *      "description":"<user description can be blank>",
+ *      "sub_name":"<user's degree (can be blank)>", 
+ *      "image_uri":"<image link can be blank>",
+ *      "alias":"<the username>", "password":"<user password>", 
+ *      "device_id":"<some id>"
+ *     }
+ * 
+ * full query example
+ * {"type":"create","action":"create_user", "payload":{"email":"jack@twitter.com", "name":"Jack TwitterDude", "sub_name":"Criminal justice", "description":"example description", "image_uri":"awebsite", "alias":"jack", "password":"iLoveSafeSpaces", "device_id":"woke"}}
+ * 
+ * response: (separated by two spaces)
+ * '<uuid>  <session_token>'
+ * 
+ * @argument email user's email
+ * @argument alias user's alias (separate from full name)
+ * @argument password user's password
+ **********************************************************************/
+async function createAccount(email, alias, password){
+    let ws = await initializeWebsocket();
+    await ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
+    + ', "description":"", "sub_name":"", "image_uri":"", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
+    ws.onmessage = (message) => {
+        if(message == "error"){
+            return "error"
+        }else{
+            let user_id = message.toString().split("  ")[0];
+            let session_token = message.toString().split("  ")[1];
+            let account_info = Store.getState().Global.accountInfo;
+            account_info["user_id"] = user_id;
+            account_info["email"] = email;
+            AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
+            Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
+            Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
+        }
+    }
+}
 
-
-
-
-
-
-
-
+/*********************************************************************
+ * Logic for following a group. Will return 'success' if the email
+ * was successfully sent or some error message otherwise. Regardless,
+ * this will return the message sent by the server 
+ * 
+ * type: update,
+ * action: follow_group
+ * payload:
+ *    {
+ *      "user_unique_id":"<group uuid>",
+ *      "group_unique_id":"<group uuid>",
+ *      "user_email":"<user_email>"
+ *    }
+ * 
+ * full query example
+ * {"type":"update","action":"follow_group", "payload":{"user_email":"jforbes@unl.edu", "group_unique_id":"0260732b-4e92-46c1-9a0c-0fd91d21491b", "user_unique_id":"41460d4c-8355-4653-bb23-37afc020fd8d"}}
+ * 
+ * @argument email user's email
+ * @argument group_id group's uuid
+ * @argument user_id user's uuid
+ **********************************************************************/
+async function groupSub(email, group_id, user_id){
+    let ws = await initializeWebsocket();
+    await ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
+                    + '"group_unique_id":"' + group_id + '", "user_id":"' + user_id + '"}}');
+    ws.onmessage = (message) => {return message};
+}
 
 
 
@@ -219,5 +321,8 @@ module.exports = {
     nukeStore: nukeStore,
     ping: ping,
     initializeWebsocket: initializeWebsocket,
-    retrieveGroups: retrieveGroups
+    retrieveGroups: retrieveGroups,
+    login: login,
+    createAccount: createAccount,
+    groupSub: groupSub,
 }

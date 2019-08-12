@@ -108,12 +108,12 @@ export default class BareComponents extends React.PureComponent{
      * Returns true if both 'check out' and false if at least one of the
      * requirements dont match
      *
-     * @argument matchData  the password that is being checked 
+     * @argument password  the password that is being checked 
     *************************************************************************/
-    passwordMatchFunction(matchData){
+    passwordMatchFunction(password){
         var eightChar = new RegExp(/[a-zA-Z0-9]{8,}/);
         var digit = new RegExp(/\d/);
-        if(matchData.match(eightChar) != null && matchData.match(digit) != null) return true;
+        if(password.match(eightChar) != null && password.match(digit) != null) return true;
         else return false;
     }
   
@@ -248,7 +248,7 @@ export default class BareComponents extends React.PureComponent{
             </View>
             
             {/* Nav Button */}
-            <TouchableOpacity style={{borderRadius:12}} onPress={()=> NavigationService.navigate("SignUp", {valid_mail_domains:item["valid_mail_domains"]})}>
+            <TouchableOpacity style={{borderRadius:12}} onPress={()=> NavigationService.navigate("SignUp", {valid_mail_domains:item["valid_mail_domains"], group_id:item["unique_id"]})}>
                 <View style={{backgroundColor:buttonColor, width:220, borderRadius:8, alignSelf:"center", marginTop:12, minHeight:45, maxHeight:45}}>
                     <Text style={{color:'rgba(66,54,138,1)', paddingTop:9, paddingLeft:12, fontSize:18, flex:4, flexDirection:"column"}}>Select school.</Text>
                     <Ionicons name={"ios-arrow-round-forward"} style={{color:'rgba(66,54,138,1)', fontSize:42, position:"absolute", alignSelf:"flex-end", paddingRight:15}} />

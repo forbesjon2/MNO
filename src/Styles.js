@@ -908,7 +908,7 @@ const styles = StyleSheet.create({
     },
     validateemail_button:{
         height:40,
-        width: 150,
+        width: 200,
         borderRadius: 10,
         flexDirection:"row",
         backgroundColor:"#CE2E7B",

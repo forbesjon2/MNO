@@ -4,6 +4,7 @@ import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 import BareComponents from "../../components/other/BareComponents";
+import {createAccount} from "../../Networking";
 
 /*************************************************************************
  * This is the sign up screen
@@ -108,6 +109,9 @@ export default class SignUp extends React.Component{
             Alert.alert("Validation error", "Password doesn't meet the minimum requirements", [{text:"ok"}]);
             return;
         }
+        createAccount(email, username, password);
+        var group_id = navigation.getParam("group_id").toString();
+        this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
     }
 
     render(){
