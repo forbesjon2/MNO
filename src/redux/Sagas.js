@@ -56,27 +56,3 @@ const Sagas = function* Sagas(){
 
 
 export default Sagas;
-
-// storeData = async () =>{
-//     try{
-//         await AsyncStorage.setItem("test", "testVal2ue");
-//     }catch(e){
-//         console.log(e);
-//     }
-// }
-
-// ttest(){
-//     test();
-// }
-
-
-// getData = async() =>{
-//     try{
-//         const value = await AsyncStorage.getItem("test");
-//         if(value != null){
-//             console.log(value);
-//         }
-//     }catch(e){
-//         console.log(e);
-//     }
-// }

@@ -109,8 +109,12 @@ export default class SignUp extends React.Component{
             Alert.alert("Validation error", "Password doesn't meet the minimum requirements", [{text:"ok"}]);
             return;
         }
-        createAccount(email, username, password);
         var group_id = navigation.getParam("group_id").toString();
+        if(navigation.getParam("group_id").toString().length < 3){
+            Alert.alert("Validation error", "invalid group id", [{text:"ok"}]);
+            return;
+        }
+        createAccount(email, username, group_id, password);
         this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
     }
 

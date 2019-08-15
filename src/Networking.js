@@ -182,8 +182,10 @@ async function login(email, password){
 
 /*********************************************************************
  * Sends the request to create the user's account. Recieves and stores
- * the user's uuid and their session token. 
+ * the user's uuid and their session token in redux & in the localstorage
  * 
+ * This will return 'success' if everything went well. If not it will
+ * alert the user. (It's used by SignUp.js)
  * 
  * type: create,
  * action: create_user
@@ -206,27 +208,23 @@ async function login(email, password){
  * 
  * @argument email user's email
  * @argument alias user's alias (separate from full name)
+ * @argument group_id the group's id
  * @argument password user's password
  **********************************************************************/
-async function createAccount(email, alias, password){
+async function createAccount(email, alias, group_id, password){
     let ws = await initializeWebsocket();
     await ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
-    + ', "description":"", "sub_name":"", "image_uri":"", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
+    + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
     ws.onmessage = (message) => {
-        if(message == "error"){
-            return "error"
-        }else{
-            console.log("create account message ", message["data"]);
-            let user_id = message["data"].toString().split("  ")[0];
-            let session_token = message["data"].toString().split("  ")[1];
-            let account_info = Store.getState().Global.accountInfo;
-            console.log("create account user id ", user_id);
-            account_info["user_id"] = user_id;
-            account_info["email"] = email;
-            AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
-            Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
-            Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
-        }
+        let user_id = message["data"].toString().split("  ")[0];
+        let session_token = message["data"].toString().split("  ")[1];
+        let account_info = Store.getState().Global.accountInfo;
+        account_info["user_id"] = user_id;
+        account_info["email"] = email;
+        AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
+        Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
+        Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
+        return "success";
     }
 }
 
@@ -253,8 +251,6 @@ async function createAccount(email, alias, password){
  **********************************************************************/
 async function groupSub(email, group_id, user_id){
     let ws = await initializeWebsocket();
-    console.log(user_id[0]);
-    // console.log('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '","group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
     await ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
                     + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
     ws.onmessage = (message) => {return message};
