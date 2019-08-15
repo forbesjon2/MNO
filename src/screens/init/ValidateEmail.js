@@ -51,7 +51,10 @@ export default class ValidateEmail extends React.Component{
         else return user_id;
     }
 
-
+    /*************************************************************************
+     * Runs when componentWillMount runs.. it sets the status message
+     * to different values dependent on the 
+     *************************************************************************/
     async validate(){
         let currentTime = new Date();
         let email = await this.getEmail();
@@ -69,12 +72,22 @@ export default class ValidateEmail extends React.Component{
             this.setState({statusMessage:user_id}); 
             return;
         }
+        console.log("user id is ", user_id);
         let msg = await groupSub(email, group_id, user_id);
         console.log(msg);
         this.setState({statusMessage:"Sent at " + currentTime.toLocaleTimeString()})
     }
 
-    componentWillMount(){this.validate();}
+    /*************************************************************************
+     * This is the sign in screen
+     * 
+     *************************************************************************/
+    sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+    componentWillMount(){
+        this.sleep(500).then(()=>{
+            this.validate();
+        }).catch(()=>{});
+    }
     
 
     render(){

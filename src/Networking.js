@@ -45,7 +45,7 @@ async function nukeStore(){
 function initializeWebsocket(){
 return new Promise(function(resolve, reject){
     var existingWebsocket = Store.getState().Global.webSocket;
-    var URL= "ws://134.209.2.86:8080";
+    var URL= "ws://159.65.180.85:8080";
     
     function rejectInternal(message){
         Store.dispatch({type:"SET_CONNECTION_VIEW", payload:true});
@@ -216,9 +216,11 @@ async function createAccount(email, alias, password){
         if(message == "error"){
             return "error"
         }else{
-            let user_id = message.toString().split("  ")[0];
-            let session_token = message.toString().split("  ")[1];
+            console.log("create account message ", message["data"]);
+            let user_id = message["data"].toString().split("  ")[0];
+            let session_token = message["data"].toString().split("  ")[1];
             let account_info = Store.getState().Global.accountInfo;
+            console.log("create account user id ", user_id);
             account_info["user_id"] = user_id;
             account_info["email"] = email;
             AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
@@ -251,8 +253,10 @@ async function createAccount(email, alias, password){
  **********************************************************************/
 async function groupSub(email, group_id, user_id){
     let ws = await initializeWebsocket();
+    console.log(user_id[0]);
+    // console.log('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '","group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
     await ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
-                    + '"group_unique_id":"' + group_id + '", "user_id":"' + user_id + '"}}');
+                    + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
     ws.onmessage = (message) => {return message};
 }
 
