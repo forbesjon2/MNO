@@ -79,14 +79,14 @@ export default class ValidateEmail extends React.Component{
     }
 
     /*************************************************************************
-     * This is the sign in screen
-     * 
+     * Runs when the screen is loaded. Theres a delay to account for the delay
+     * in storing the user's email from the last screen
      *************************************************************************/
-    sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+    // sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
     componentWillMount(){
-        this.sleep(500).then(()=>{
+        setTimeout(function(){
             this.validate();
-        }).catch(()=>{});
+        }, 800);
     }
     
 
@@ -103,7 +103,7 @@ export default class ValidateEmail extends React.Component{
         <Text style={[styles.validateemail_subHeader]}>The email should appear in less than 2 minutes. If you haven't recieved it, check your spam or ...</Text>
         <TouchableWithoutFeedback onPress={()=>this.resendEmail()}><Text style={[styles.validateemail_subHeader, {color:sendEmailColor, textDecorationLine:sendEmailLine}]}>send email again.</Text></TouchableWithoutFeedback>
 
-        <TouchableOpacity style={styles.validateemail_button} onPress={() => console.log("fuck")}>
+        <TouchableOpacity style={styles.validateemail_button} onPress={() => this.checkIfValid()}>
             <Text style={styles.validateemail_buttonText}>check if verified</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.validateemail_buttonIcon}/>
         </TouchableOpacity>

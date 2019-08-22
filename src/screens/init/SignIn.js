@@ -4,7 +4,7 @@ import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 import NavigationService from "../../navigation/NavigationService";
-
+import {login, initializeWebsocket} from "../../Networking";
 
 
 /*************************************************************************
@@ -30,18 +30,26 @@ export default class SignIn extends React.Component{
 
     redirectSignUp(){
         NavigationService.navigate("SchoolSearch");
-        
     }
 
     login(){
-        if(!this.state.passwordEdited || !this.state.emailEdited) Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}])
-        else console.log("SLATT");
+        if(!this.state.passwordEdited || !this.state.emailEdited){
+            Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}])
+        } else{
+            initializeWebsocket().then((ws) =>{
+                return login(this.state.email, this.state.password, ws);
+            }).then((resp) =>{
+                console.log("got response " + resp);
+            }).catch((err) =>{
+                console.log("caught error " + err);
+            });
+        } 
     }
 
     render(){
     return(
     <View style={styles.signin_main}>
-    <TouchableWithoutFeedback  onPress={()=> Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
         <View>
         {/* Header */}
         <Text style={styles.signin_header}>Welcome back.</Text>

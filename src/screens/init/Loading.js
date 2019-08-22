@@ -4,7 +4,7 @@ import Store from "../../Store";
 import * as Font from 'expo-font';
 const {loadFromStore, initializeWebsocket, ping, readAndPrint, nukeStore, retrieveGroups} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
-
+import {AsyncStorage} from 'react-native';
 
 
 
@@ -48,10 +48,13 @@ export default class Loading extends React.Component{
             this.setState({text:"Loading fonts..."});
             return loadFromStore();
         }).then(() =>{
-             return retrieveGroups();
+            this.setState({text:"Loading local storage..."});
+            return retrieveGroups();
         }).then(() =>{
+            this.setState({text:"Loading groups..."});
             return initializeWebsocket();
         }).then((ws) =>{
+            this.setState({text:"Connecting to server..."});
             Store.dispatch({type:"SET_WEBSOCKET", payload: ws});
             Store.dispatch({type:"SET_CONNECTION_VIEW", payload:false});
             Store.dispatch({type:"SET_CONNECTION_VIEW_CONNECTING", payload:false});
@@ -62,7 +65,11 @@ export default class Loading extends React.Component{
                 NavigationService.navigate("SignIn");
             }else{
                 console.log("Actualtoken");
+                NavigationService.navigate("SignIn");
             }
+        }).then(() =>{
+            this.setState({text:"Validating account..."});
+            return 
         }).catch((err)=>{
             console.log("TAX " + err);
         });
@@ -71,10 +78,10 @@ export default class Loading extends React.Component{
     
 
 
-    async af(){
+    async af(){;
+        await AsyncStorage.setItem("sessionToken", "token134");
         await loadFromStore();
-        await ping();
-        await readAndPrint();
+        
     }
 
     render(){

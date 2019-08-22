@@ -46,7 +46,6 @@ export default function reducer(
         ]
     },
     action
-    
 ){
     // console.log("GOOTT ", action);
     switch(action.type){
