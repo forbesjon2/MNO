@@ -99,76 +99,90 @@ async function createAccount(email, alias, group_id, password){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*********************************************************************
+ * Goes through the process of creating a post. 
+ * 
+ * Returns a promise with the message data (outlined below) if successful.
+ * The response will either be 'successful' or include an error message
+ * 
+ * 
+ * type: create,
+ * action: create_post
+ * payload:
+ *    {
+ *      "server_unique_id":"<uuid>", 
+ *      "user_unique_id":"<uuid>",
+ *      "content":"<text>", 
+ *      "type":"<data type>", 
+ *      "incog":"<bool>"
+ *    }
+ * 
+ * full query example
+ * {"type":"create", "action":"create_post", "payload":{"server_unique_id":"69e11007-5dcc-456b-a0c7-2d2371e20501", "user_unique_id":"69e11007-5dcc-456b-a0c7-2d2371e20501", "content":"Moving out party", "type":"text", "incog":"true"}}
+ * 
+ * @argument server_unique_id       uuid of the server you're posting to
+ * @argument user_unique_id         uuid of the user that's posting
+ * @argument content                the content of the post
+ * @argument type                   type of post
+ * @argument incog                  determines whether or not the user's
+ *      account info will appear to other users
+ **********************************************************************/
+async function createPost(server_unique_id, user_unique_id, content, type, incog){
+    return new Promise(function(resolve, reject){
+        let ws = await initializeWebsocket();
+        await ws.send('{"type":"create", "action":"create_post", "payload":{"server_unique_id":"' + 
+            server_unique_id + '", "user_unique_id":"' + user_unique_id + '", "content":"' + content 
+            + '", "type":"' + type + '", "incog":' + incog + '}}');
+        
+        ws.onmessage = (message) => {
+            if(message["data"].includes("error")) reject(message["data"]);
+            else resolve(JSON.parse(message["data"]));
+        }
+        ws.onerror = (err) => {reject(err)}
+    });
+}
+
+/*********************************************************************
+ * Goes through the process of creating an event. 
+ * 
+ * type: create,
+ * action: create_event
+ * payload:
+ *    {
+ *      "reference_unique_id":"<server, group, or user unique ID>",
+ *      "reference_type":"<'server', 'group', or 'user'",
+ *      "heading":"<>",
+ *      "description":"<description>", "location":"<no particular format>",
+ *      "start_time":"<ISO 8601 format>", "end_time":"<ISO 8601 format>",
+ *      "attending":["<uuid1>", "<uuid2>"]
+ *    }
+ * 
+ * 
+ * @argument reference_unique_id
+ * @argument reference_type
+ * @argument heading
+ * @argument description
+ * @argument location
+ * @argument start_time
+ * @argument end_time
+ * @argument attending
+ **********************************************************************/
+async function createEvent(reference_unique_id, reference_type, heading, description, location, start_time, end_time, attending){
+    return new Promise(function(resolve, reject){
+        let ws = await initializeWebsocket();
+        await ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
+            reference_unique_id + '", "reference_type":"' + reference_type 
+            + '", "heading":"' + heading + '", "description":"' + description 
+            + '", "location":"' + location + '", "start_time":' + start_time + ', "end_time":' + end_time 
+            + '}}');
+        
+        ws.onmessage = (message) => {
+            if(message["data"].includes("error")) reject(message["data"]);
+            else resolve(JSON.parse(message["data"]));
+        }
+        ws.onerror = (err) => {reject(err)}
+    });   
+}
 
 
 
