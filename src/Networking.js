@@ -49,56 +49,6 @@ import {AsyncStorage} from 'react-native';
  * ######################################################################
  *************************************************************************/
 
-
-/*********************************************************************
- * Sends the request to create the user's account. Recieves and stores
- * the user's uuid and their session token in redux & in the localstorage
- * 
- * This will return 'success' if everything went well. If not it will
- * alert the user. (It's used by SignUp.js)
- * 
- * type: create,
- * action: create_user
- * payload:
- *    {
- *      "email": "<user's email>", "name":"<user's full name>", 
- *      "name": "<user's name (can be blank)>",
- *      "description":"<user description can be blank>",
- *      "sub_name":"<user's degree (can be blank)>", 
- *      "image_uri":"<image link can be blank>",
- *      "alias":"<the username>", "password":"<user password>", 
- *      "device_id":"<some id>"
- *     }
- * 
- * full query example
- * {"type":"create","action":"create_user", "payload":{"email":"jack@twitter.com", "name":"Jack TwitterDude", "sub_name":"Criminal justice", "description":"example description", "image_uri":"awebsite", "alias":"jack", "password":"iLoveSafeSpaces", "device_id":"woke"}}
- * 
- * response: (separated by two spaces)
- * '<uuid>  <session_token>'
- * 
- * @argument email user's email
- * @argument alias user's alias (separate from full name)
- * @argument group_id the group's id
- * @argument password user's password
- **********************************************************************/
-async function createAccount(email, alias, group_id, password){
-    let ws = await initializeWebsocket();
-    await ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
-    + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
-    ws.onmessage = (message) => {
-        let user_id = message["data"].toString().split("  ")[0];
-        let session_token = message["data"].toString().split("  ")[1];
-        let account_info = Store.getState().Global.accountInfo;
-        account_info["user_id"] = user_id;
-        account_info["email"] = email;
-        AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
-        Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
-        Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
-        return "success";
-    }
-}
-
-
 /*********************************************************************
  * Goes through the process of creating a post. 
  * 
@@ -171,11 +121,10 @@ async function createEvent(reference_unique_id, reference_type, heading, descrip
     return new Promise(function(resolve, reject){
         let ws = await initializeWebsocket();
         await ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
-            reference_unique_id + '", "reference_type":"' + reference_type 
-            + '", "heading":"' + heading + '", "description":"' + description 
-            + '", "location":"' + location + '", "start_time":' + start_time + ', "end_time":' + end_time 
-            + '}}');
-        
+            reference_unique_id + '", "reference_type":"' + reference_type + '", "heading":"' 
+            + heading + '", "description":"' + description + '", "location":"' + location
+            + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}');
+            
         ws.onmessage = (message) => {
             if(message["data"].includes("error")) reject(message["data"]);
             else resolve(JSON.parse(message["data"]));
@@ -183,6 +132,125 @@ async function createEvent(reference_unique_id, reference_type, heading, descrip
         ws.onerror = (err) => {reject(err)}
     });   
 }
+
+/*********************************************************************
+ * Sends the request to create the user's account. Recieves and stores
+ * the user's uuid and their session token in redux & in the localstorage
+ * 
+ * The response is in the form of a promise. Will resolve if no 'error'
+ * string appears in the response message. Both the uuid & session token
+ * are scylla (cassandra like) generated uuid's. They would ideally have 
+ * no 'error' text, its likely but very improbable
+ * 
+ * type: create,
+ * action: create_user
+ * payload:
+ *    {
+ *      "email": "<user's email>", "name":"<user's full name>", 
+ *      "name": "<user's name (can be blank)>",
+ *      "description":"<user description can be blank>",
+ *      "sub_name":"<user's degree (can be blank)>", 
+ *      "image_uri":"<image link can be blank>",
+ *      "alias":"<the username>", "password":"<user password>", 
+ *      "device_id":"<some id>"
+ *     }
+ * 
+ * full query example
+ * {"type":"create","action":"create_user", "payload":{"email":"jack@twitter.com", "name":"Jack TwitterDude", "sub_name":"Criminal justice", "description":"example description", "image_uri":"awebsite", "alias":"jack", "password":"iLoveSafeSpaces", "device_id":"woke"}}
+ * 
+ * response: (separated by two spaces)
+ * '<uuid>  <session_token>'
+ * 
+ * @argument email user's email
+ * @argument alias user's alias (separate from full name)
+ * @argument group_id the group's id
+ * @argument password user's password
+ **********************************************************************/
+async function createAccount(email, alias, group_id, password){
+    return new Promise(function(resolve, reject){
+        let ws = await initializeWebsocket();
+        await ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
+        + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
+        ws.onmessage = (message) => {
+            if(message["data"].includes("error")) reject(message["data"]);
+            let user_id = message["data"].toString().split("  ")[0];
+            let session_token = message["data"].toString().split("  ")[1];
+            let account_info = Store.getState().Global.accountInfo;
+            account_info["user_id"] = user_id;
+            account_info["email"] = email;
+            AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
+            Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
+            Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
+            resolve("success");
+        }
+    });
+}
+
+/*********************************************************************
+ * Goes through the process of creating a server. This requires
+ * the corresponding group's uuid as well as the user who's creating
+ * the group's uuid (inside followers the creater is by default the
+ * owner)
+ * 
+ * TODO add client side validation, implement global_permission, implement 
+ *      alias max length check
+ * 
+ * If the user has position 1 of their individual permission string = 0 
+ * than they will not have access to this function. It uses 
+ * checkPermissionLogic to perform this task
+ * 
+ * type: create,
+ * action: create_server
+ * payload:
+ *    {
+ *      "user_id":"<uuid>",
+ *      "user_email":"<user's email>",
+ *      "name":"<server name (stored in to_primary_key)>",
+ *      "session_token":"<user token>",
+ *      "alias":"<alias w/o the '@'. Ex os2g>",
+ *      "description":"<server description>", 
+ *      "global_permission":"<server permission str>",
+ *      "group_unique_id":"<uuid of corresponding group>"
+ *    }
+ * 
+ * full query example
+ * {"type":"create", "action":"create_server", "payload":{"name":"Operating system open source group", "session_token": "2740b898-4798-4a86-9d5e-6f7272f978a1", "alias":"os2g", "description":"a computer club on campus", "global_permission":"---", "group_unique_id":"adf58ad8-70c7-4fbb-869d-a2d265d815fbr", "followers":["c90f77d9-6016-4450-b96c-5a0068a1bfad"], "user_id":"c90f77d9-6016-4450-b96c-5a0068a1bfad"}}
+ *
+ * response:
+ *      <uuid> of the server if successful
+ *      error message including the string 'error' if not successful
+ * 
+ * @argument server_name    the servers full name (separate from alias)
+ * @argument alias          alias (@XXXXXX). No limit so far
+ * @argument description    the server's description (not sure if this 
+ *           can be null... just keep it != null by default)
+ * (@not_argument global_permission not implemented yet)
+ * @argument group_unique_id       the server's parent group's ID
+ **********************************************************************/
+async function createServer(server_name, alias, description, group_unique_id){
+    return new Promise(function(resolve, reject){
+        var store = Store.getState().Global;
+        var user_id = store.accountInfo["user_id"];
+        var email = store.accountInfo["email"];
+        var session_token = store.sessionToken;
+        var global_permission = "---";
+
+        let ws = await initializeWebsocket();
+        await ws.send('{"type":"create", "action":"create_server", "payload":{"user_id":"' 
+            + user_id + '", "user_email":"' + email + '", "name":"' + server_name 
+            + '", "session_token":"' + session_token + '", "alias":"' + alias +'", "description":"' 
+            + description + '", "global_permission":"' + global_permission + '", "group_unique_id":"' 
+            + group_unique_id + '"}}');
+            
+        ws.onmessage = (message) => {
+            if(message["data"].includes("error")) reject(message["data"]);
+            resolve(message["data"]);
+        }
+    });
+}
+
+
+
 
 
 

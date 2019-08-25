@@ -114,8 +114,11 @@ export default class SignUp extends React.Component{
             Alert.alert("Validation error", "invalid group id", [{text:"ok"}]);
             return;
         }
-        createAccount(email, username, group_id, password);
-        this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
+        createAccount(email, username, group_id, password).then((message) =>{
+            this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
+        }).catch((err) =>{
+            Alert.alert("Create account error", err);
+        });
     }
 
     render(){
