@@ -36,14 +36,12 @@ export default class SignIn extends React.Component{
         if(!this.state.passwordEdited || !this.state.emailEdited){
             Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}])
         } else{
-            initializeWebsocket().then((ws) =>{
-                return login(this.state.email, this.state.password, ws);
-            }).then((resp) =>{
-                console.log("got response " + resp);
-            }).catch((err) =>{
-                console.log("caught error " + err);
-            });
-        } 
+            return login(this.state.email, this.state.password).then((resp) =>{
+                    console.log("got response " + resp);
+                }).catch((err) =>{
+                    console.log("caught error " + err);
+                });
+        }
     }
 
     render(){

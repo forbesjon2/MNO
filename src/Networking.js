@@ -77,18 +77,21 @@ import {AsyncStorage} from 'react-native';
  * @argument incog                  determines whether or not the user's
  *      account info will appear to other users
  **********************************************************************/
-async function createPost(server_unique_id, user_unique_id, content, type, incog){
-    return new Promise(function(resolve, reject){
-        let ws = await initializeWebsocket();
-        await ws.send('{"type":"create", "action":"create_post", "payload":{"server_unique_id":"' + 
-            server_unique_id + '", "user_unique_id":"' + user_unique_id + '", "content":"' + content 
-            + '", "type":"' + type + '", "incog":' + incog + '}}');
-        
-        ws.onmessage = (message) => {
-            if(message["data"].includes("error")) reject(message["data"]);
-            else resolve(JSON.parse(message["data"]));
-        }
-        ws.onerror = (err) => {reject(err)}
+function createPost(server_unique_id, user_unique_id, content, type, incog){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            return [ws.send('{"type":"create", "action":"create_post", "payload":{"server_unique_id":"' + 
+                server_unique_id + '", "user_unique_id":"' + user_unique_id + '", "content":"' + content 
+                + '", "type":"' + type + '", "incog":' + incog + '}}'), ws];
+        }).then((resp)=> {
+            resp[1].onmessage = (message) => {
+                if(message["data"].includes("error")) reject(message["data"]);
+                else resolve(JSON.parse(message["data"]));
+            }
+            resp[1].onerror = (err) => {reject(err)}
+        }).catch((err) =>{
+            reject(err);
+        });
     });
 }
 
@@ -117,19 +120,22 @@ async function createPost(server_unique_id, user_unique_id, content, type, incog
  * @argument end_time
  * @argument attending
  **********************************************************************/
-async function createEvent(reference_unique_id, reference_type, heading, description, location, start_time, end_time, attending){
-    return new Promise(function(resolve, reject){
-        let ws = await initializeWebsocket();
-        await ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
-            reference_unique_id + '", "reference_type":"' + reference_type + '", "heading":"' 
-            + heading + '", "description":"' + description + '", "location":"' + location
-            + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}');
-            
-        ws.onmessage = (message) => {
-            if(message["data"].includes("error")) reject(message["data"]);
-            else resolve(JSON.parse(message["data"]));
-        }
-        ws.onerror = (err) => {reject(err)}
+function createEvent(reference_unique_id, reference_type, heading, description, location, start_time, end_time, attending){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            return [ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
+                reference_unique_id + '", "reference_type":"' + reference_type + '", "heading":"' 
+                + heading + '", "description":"' + description + '", "location":"' + location
+                + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}'), ws];
+        }).then((resp) =>{
+            resp[1].onmessage = (message) => {
+                if(message["data"].includes("error")) reject(message["data"]);
+                else resolve(JSON.parse(message["data"]));
+            }
+            resp[1].onerror = (err) => {reject(err)}
+        }).catch((err) =>{
+            reject("execution error in createEvent " + err);
+        });
     });   
 }
 
@@ -166,23 +172,28 @@ async function createEvent(reference_unique_id, reference_type, heading, descrip
  * @argument group_id the group's id
  * @argument password user's password
  **********************************************************************/
-async function createAccount(email, alias, group_id, password){
-    return new Promise(function(resolve, reject){
-        let ws = await initializeWebsocket();
-        await ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
-        + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' + alias + '", "password":"' + password + '", "device_id":""}}');
-        ws.onmessage = (message) => {
-            if(message["data"].includes("error")) reject(message["data"]);
-            let user_id = message["data"].toString().split("  ")[0];
-            let session_token = message["data"].toString().split("  ")[1];
-            let account_info = Store.getState().Global.accountInfo;
-            account_info["user_id"] = user_id;
-            account_info["email"] = email;
-            AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
-            Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
-            Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
-            resolve("success");
-        }
+function createAccount(email, alias, group_id, password){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            return [ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
+                + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' 
+                + alias + '", "password":"' + password + '", "device_id":""}}'), ws];
+        }).then((resp) =>{
+            resp[1].onmessage = (message) => {
+                if(message["data"].includes("error")) reject(message["data"]);
+                let user_id = message["data"].toString().split("  ")[0];
+                let session_token = message["data"].toString().split("  ")[1];
+                let account_info = Store.getState().Global.accountInfo;
+                account_info["user_id"] = user_id;
+                account_info["email"] = email;
+                AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
+                Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
+                Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
+                resolve("success");
+            }
+            resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) =>{reject("internal error in createAccount " + err);});
+        
     });
 }
 
@@ -227,25 +238,29 @@ async function createAccount(email, alias, group_id, password){
  * (@not_argument global_permission not implemented yet)
  * @argument group_unique_id       the server's parent group's ID
  **********************************************************************/
-async function createServer(server_name, alias, description, group_unique_id){
-    return new Promise(function(resolve, reject){
+function createServer(server_name, alias, description, group_unique_id, ws){
+    return new Promise((resolve, reject) => {
         var store = Store.getState().Global;
         var user_id = store.accountInfo["user_id"];
         var email = store.accountInfo["email"];
         var session_token = store.sessionToken;
         var global_permission = "---";
 
-        let ws = await initializeWebsocket();
-        await ws.send('{"type":"create", "action":"create_server", "payload":{"user_id":"' 
-            + user_id + '", "user_email":"' + email + '", "name":"' + server_name 
-            + '", "session_token":"' + session_token + '", "alias":"' + alias +'", "description":"' 
-            + description + '", "global_permission":"' + global_permission + '", "group_unique_id":"' 
-            + group_unique_id + '"}}');
-            
-        ws.onmessage = (message) => {
-            if(message["data"].includes("error")) reject(message["data"]);
-            resolve(message["data"]);
-        }
+        initializeWebsocket().then((ws) =>{
+            return ws.send('{"type":"create", "action":"create_server", "payload":{"user_id":"' 
+                + user_id + '", "user_email":"' + email + '", "name":"' + server_name 
+                + '", "session_token":"' + session_token + '", "alias":"' + alias +'", "description":"' 
+                + description + '", "global_permission":"' + global_permission + '", "group_unique_id":"' 
+                + group_unique_id + '"}}');
+        }).then((resp) => {
+            resp[1].onmessage = (message) => {
+                if(message["data"].includes("error")) reject(message["data"]);
+                resolve(message["data"]);
+            }
+            resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) =>{
+            reject(err);
+        })
     });
 }
 
@@ -274,6 +289,10 @@ async function createServer(server_name, alias, description, group_unique_id){
  * ######################################################################
  *************************************************************************/
 
+// async function serverSub(){
+    
+// }
+
 
 /**********************************************************************
  * Logs the user in given an email address & the password. When done, 
@@ -294,28 +313,34 @@ async function createServer(server_name, alias, description, group_unique_id){
  *      "unique_id":"<user's unique id>"
  *  }
 **********************************************************************/
-function login(email, password, ws){
-    return new Promise(function(resolve, reject){
-        ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}');
-        ws.onmessage = (message) => {
-            if(message == "error"){
-                reject("error");
-            }else{
-                let data = JSON.parse(message["data"]);
-                let accountInfo = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
-                console.log("got data ", data);
-                accountInfo["email"] = email;
-                accountInfo["user_id"] = data["unique_id"];
+function login(email, password){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) => {
+            return [ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}'), ws];
+        }).then((resp) => {
+            resp[1].onmessage = (message) => {
+                if(message == "error"){
+                    reject("error");
+                }else{
+                    let data = JSON.parse(message["data"]);
+                    let accountInfo = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
+                    console.log("got data ", data);
+                    accountInfo["email"] = email;
+                    accountInfo["user_id"] = data["unique_id"];
 
-                //add that to the store
-                Store.dispatch({type:"SET_SESSION_TOKEN", payload:data["session_token"]});
-                Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountInfo});
+                    //add that to the store
+                    Store.dispatch({type:"SET_SESSION_TOKEN", payload:data["session_token"]});
+                    Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountInfo});
 
-                //add that to asyncStorage
-                AsyncStorage.multiSet([['sessionToken', data["session_token"]], ['accountInfo', accountInfo]]).catch(() => null);
-                resolve("success");
+                    //add that to asyncStorage
+                    AsyncStorage.multiSet([['sessionToken', data["session_token"]], ['accountInfo', accountInfo]]).catch(() => null);
+                    resolve("success");
+                }
             }
-        }
+            resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) => {
+            reject("internal error in login " + err);
+        });
     });
 }
 
@@ -341,11 +366,18 @@ function login(email, password, ws){
  * @argument group_id group's uuid
  * @argument user_id user's uuid
  **********************************************************************/
-async function groupSub(email, group_id, user_id){
-    let ws = await initializeWebsocket();
-    await ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
-                    + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
-    ws.onmessage = (message) => {return message};
+function groupSub(email, group_id, user_id){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) => {
+            return [ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
+                        + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}'), ws];
+        }).then((resp) => {
+            resp[1].onmessage = (message) => {resolve(message);}
+            resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) => {
+            reject("internal error in groupSub " + err);
+        });
+    })
 }
 
 
@@ -391,15 +423,23 @@ async function groupSub(email, group_id, user_id){
  * }
  * 
  **********************************************************************/
-async function retrieveGroups(){
-    let ws = await initializeWebsocket();
-    let groupData = Store.getState().Global.groupData;
-    await ws.send('{"type":"retrieve","action":"get_groups","payload":{}}');
-    ws.onmessage = (message) => {
-        groupData["groups"] = JSON.parse(message["data"]);
-        AsyncStorage.setItem("groupData", groupData).catch(()=>null);
-        Store.dispatch({type:"SET_GROUP_DATA", payload: groupData});
-    }
+function retrieveGroups(){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            return [ws.send('{"type":"retrieve","action":"get_groups","payload":{}}'), ws];
+        }).then((resp) =>{
+            resp[1].onmessage = (message) => {
+                let groupData = Store.getState().Global.groupData;
+                groupData["groups"] = JSON.parse(message["data"]);
+                AsyncStorage.setItem("groupData", groupData).catch(()=>null);
+                Store.dispatch({type:"SET_GROUP_DATA", payload: groupData});
+                resolve();
+            }
+            resp[1].onerror = (err) => {reject(err)}
+        }).catch((err) => {
+            reject("internal error in retrieveGroups " + err);
+        });
+    });
 }
 
 
@@ -429,12 +469,16 @@ async function retrieveGroups(){
  *  }
  * 
  **********************************************************************/
-async function retrieveAccountInfo(uuid){
-    return new Promise(function(resolve, reject){
-        let ws = await initializeWebsocket();
-        await ws.send('{"type":"retrieve","action":"get_user","payload":{"uuid":"' + uuid +'"}}');
-        ws.onmessage = (message) => {resolve(JSON.parse(message["data"]));}
-        ws.onerror = (err) => {reject(err)}
+function retrieveAccountInfo(uuid){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            return [ws.send('{"type":"retrieve","action":"get_user","payload":{"uuid":"' + uuid +'"}}'), ws];
+        }).then((resp) =>{
+            resp[1].onmessage = (message) => {resolve(JSON.parse(message["data"]));}
+            resp[1].onerror = (err) => {reject(err)}
+        }).catch((err) =>{
+            reject("internal error in retrieveAccountInfo " + err);
+        });
     });
 }
 
@@ -551,9 +595,9 @@ async function ping(){
  * https://stackoverflow.com/questions/29881957/websocket-connection-timeout
  ***********************************************************************/
 function initializeWebsocket(){
-return new Promise(function(resolve, reject){
+return new Promise((resolve, reject) => {
     var existingWebsocket = Store.getState().Global.webSocket;
-    var URL= "ws://159.65.180.85:8080";
+    var URL= Store.getState().Global.URL;
     
     function rejectInternal(message){
         Store.dispatch({type:"SET_CONNECTION_VIEW", payload:true});
@@ -577,6 +621,23 @@ return new Promise(function(resolve, reject){
 
 
 
+async function oldInit(){
+        const cd = require("../data/CalendarData.json");
+        const ct = require("../data/Chats.json");
+        const hd = require("../data/HomeData.json");
+        const mh = require("../data/MessagesHome.json");
+        const ai = require("../data/AccountInfo.json");
+        const ab = require("../data/GroupData.json");
+        const as = require("../data/ServerData.json");
+        Store.dispatch({type: "SET_CALENDAR_DATA", payload: cd});
+        Store.dispatch({type: "SET_CHATS", payload: ab});
+        Store.dispatch({type: "SET_CHATS", payload: ct});
+        Store.dispatch({type: "SET_HOME_DATA", payload: hd});
+        Store.dispatch({type: "SET_MESSAGES_HOME", payload: mh});
+        Store.dispatch({type: "SET_ACCOUNT_INFO", payload: ai});
+        Store.dispatch({type: "SET_SERVER_DATA", payload: as});
+        Store.dispatch({type: "SET_CURRENT_GROUP", payload: "" + hd["data"][0]["name"] + hd["data"][0]["servers"][0]["name"]});
+}
 
 
 
@@ -592,5 +653,6 @@ module.exports = {
     login: login,
     createAccount: createAccount,
     groupSub: groupSub,
-    retrieveAccountInfo,
+    retrieveAccountInfo: retrieveAccountInfo,
+    oldInit: oldInit,
 }
