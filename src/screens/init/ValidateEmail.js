@@ -84,8 +84,9 @@ export default class ValidateEmail extends React.Component{
      *************************************************************************/
     // sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
     componentWillMount(){
+        var validate = this.validate();
         setTimeout(function(){
-            this.validate();
+            validate();
         }, 800);
     }
     

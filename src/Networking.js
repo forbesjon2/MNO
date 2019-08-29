@@ -141,7 +141,8 @@ function createEvent(reference_unique_id, reference_type, heading, description, 
 
 /*********************************************************************
  * Sends the request to create the user's account. Recieves and stores
- * the user's uuid and their session token in redux & in the localstorage
+ * the user's uuid, email, and their session token in redux & in the 
+ * localstorage
  * 
  * The response is in the form of a promise. Will resolve if no 'error'
  * string appears in the response message. Both the uuid & session token
@@ -319,15 +320,16 @@ function login(email, password){
             return [ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}'), ws];
         }).then((resp) => {
             resp[1].onmessage = (message) => {
-                if(message == "error"){
+                if(message["data"] == "error"){
                     reject("error");
                 }else{
                     let data = JSON.parse(message["data"]);
                     let accountInfo = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
                     console.log("got data ", data);
                     accountInfo["email"] = email;
-                    accountInfo["user_id"] = data["unique_id"];
-
+                    accountInfo["user_id"] = data["user_unique_id"];
+                    accountInfo["groups"] = [data["group_unique_id"]];
+                    
                     //add that to the store
                     Store.dispatch({type:"SET_SESSION_TOKEN", payload:data["session_token"]});
                     Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountInfo});
@@ -644,7 +646,7 @@ async function oldInit(){
 
 
 module.exports = {
-    test:  function(msg){return msg;},
+    testt:  function(msg){return msg;},
     loadFromStore: loadFromStore,
     nukeStore: nukeStore,
     ping: ping,

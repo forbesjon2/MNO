@@ -6,14 +6,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "ava --verbose"
+    "test": "jest"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.3",
     "@react-native-community/async-storage": "^1.6.1",
-    "ava": "^2.3.0",
     "expo": "^34.0.3",
     "expo-font": "^6.0.1",
+    "jest": "^24.9.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
@@ -30,6 +30,12 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^5.1.1"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFiles": [
+      "./test/jestSetupFile.js"
+    ]
   },
   "private": true
 }

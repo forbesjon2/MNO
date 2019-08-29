@@ -22,6 +22,8 @@ export default class SignUp extends React.Component{
             username:"Username",
             password:"Password",
             confirmPassword:"Confirm Password",
+            signUpButtonText: "Sign up",
+            signUpButtonActive: true,
 
             //tracks whether or not the fields are edited (used for better UX principles)
             emailEdited: false,
@@ -83,8 +85,11 @@ export default class SignUp extends React.Component{
     redirectSignUp(){
         const {email, username, password, confirmPassword, components, emailEdited, usernameEdited, passwordEdited, confirmPasswordEdited} = this.state;
         const {navigation} = this.props;
+        this.setState({signUpButtonText: "Loading...", signUpButtonActive:false});
+
         if(!emailEdited || !usernameEdited || !passwordEdited || !confirmPassword) {
             Alert.alert("Validation error", "At least one field is not filled out",[{text:"ok"}]);
+            this.setState({signUpButtonText: "Sign up", signUpButtonActive:true});
             return;
         }
 
@@ -94,7 +99,7 @@ export default class SignUp extends React.Component{
         for(let i in emailArray) if(components.simpleMatchFunction(emailArray[i], email)) emailMatches = true;
         if(!emailMatches){
             Alert.alert("Validation error", "Email does not match the list of valid mail domains for this group");
-            this.setState({emailValid:false});
+            this.setState({emailValid:false, signUpButtonText: "Sign up", signUpButtonActive:true});
             return;
         }
 
@@ -103,32 +108,36 @@ export default class SignUp extends React.Component{
         //if the password & confirmPassword don't match
         if(password != confirmPassword){
             Alert.alert("Validation error", "Passwords don't match", [{text:"ok"}]);
-            this.setState({passwordValid:false, confirmPasswordValid:false});
+            this.setState({passwordValid:false, confirmPasswordValid:false, signUpButtonText: "Sign up", signUpButtonActive:true});
             return;
         }else if(components.passwordMatchFunction(password) == false || components.passwordMatchFunction(password) == false){
             Alert.alert("Validation error", "Password doesn't meet the minimum requirements", [{text:"ok"}]);
+            this.setState({signUpButtonText: "Sign up", signUpButtonActive:true});
             return;
         }
         var group_id = navigation.getParam("group_id").toString();
         if(navigation.getParam("group_id").toString().length < 3){
             Alert.alert("Validation error", "invalid group id", [{text:"ok"}]);
+            this.setState({signUpButtonText: "Sign up", signUpButtonActive:true});
             return;
         }
-        createAccount(email, username, group_id, password).then((message) =>{
+        //will set redux session token and account info
+        createAccount(email, username, group_id, password).then((message) => {
             this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
         }).catch((err) =>{
             Alert.alert("Create account error", err);
+            this.setState({signUpButtonText: "Sign up", signUpButtonActive:true});
         });
     }
 
     render(){
     const {navigation} = this.props;
-    const {emailValid, usernameValid, passwordValid, confirmPasswordValid} = this.state;
+    const {emailValid, usernameValid, passwordValid, confirmPasswordValid, signUpButtonText, signUpButtonActive} = this.state;
     var emailBorder = [emailValid ? "black" : "red"];
     var usernameBorder = [usernameValid ? "black" : "red"];
     var passwordBorder = [passwordValid ? "black" : "red"];
     var confirmPasswordBorder = [confirmPasswordValid ? "black" : "red"];
-
+    var signUpButtonOpacity = Number([signUpButtonActive ? 1.0 : 0.7]);
     var vmd = navigation.getParam("valid_mail_domains").toString().replace("@", "  @");
     return(
     <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()}>
@@ -186,7 +195,7 @@ export default class SignUp extends React.Component{
             maxLength={80}/>
             <Text style={[styles.signup_subHeader, {marginBottom:5}]}>Minimum length 8 characters, must include a number</Text>
         <TouchableOpacity style={styles.signup_button} onPress={() => this.redirectSignUp()}>
-            <Text style={styles.signup_buttonText}>Sign up</Text>
+            <Text style={[styles.signup_buttonText, {opacity: signUpButtonOpacity}]}>{signUpButtonText}</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.signup_buttonIcon}/>    
         </TouchableOpacity>
         

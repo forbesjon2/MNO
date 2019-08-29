@@ -67,9 +67,6 @@ export default class Loading extends React.Component{
                 console.log("Actualtoken");
                 NavigationService.navigate("SignIn");
             }
-        }).then(() =>{
-            this.setState({text:"Validating account..."});
-            return 
         }).catch((err)=>{
             console.log("TAX " + err);
         });

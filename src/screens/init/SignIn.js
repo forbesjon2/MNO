@@ -22,7 +22,9 @@ export default class SignIn extends React.Component{
             email:"Email",
             password:"Password",
             passwordEdited:false,
-            emailEdited: false
+            emailEdited: false,
+            enableLoginButton: true,
+            loginButtonText:"Login",
         }
         //set safe area background
         Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
@@ -36,15 +38,19 @@ export default class SignIn extends React.Component{
         if(!this.state.passwordEdited || !this.state.emailEdited){
             Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}])
         } else{
-            return login(this.state.email, this.state.password).then((resp) =>{
-                    console.log("got response " + resp);
-                }).catch((err) =>{
-                    console.log("caught error " + err);
-                });
+            this.setState({loginButtonText: "Loading...", enableLoginButton: false});
+            login(this.state.email, this.state.password).then((resp) =>{
+                this.setState({loginButtonText: "Success"});
+                console.log("got response " + resp);
+            }).catch((err) =>{
+                this.setState({loginButtonText: "Login", enableLoginButton: true});
+                console.log("caught error " + err);
+            });
         }
     }
 
     render(){
+        let loginButtonOpacity = Number([this.state.enableLoginButton ? 1.0 : 0.6]);
     return(
     <View style={styles.signin_main}>
     <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
@@ -77,8 +83,8 @@ export default class SignIn extends React.Component{
             onFocus={() =>{[this.state.passwordEdited ? null : this.setState({password:""})]}}
             clearTextOnFocus={true}
             maxLength={80}/>
-        <TouchableOpacity style={styles.signin_button} onPress={() => this.login()}>
-            <Text style={styles.signin_buttonText}>Login</Text>
+        <TouchableOpacity style={[styles.signin_button, {opacity: loginButtonOpacity}]} onPress={() => [this.state.enableLoginButton ? this.login() : null]}>
+            <Text style={styles.signin_buttonText}>{this.state.loginButtonText}</Text>
             <Ionicons name={"ios-arrow-round-forward"} style={styles.signin_buttonIcon}/>
         </TouchableOpacity>
         
