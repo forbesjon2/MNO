@@ -325,7 +325,6 @@ function login(email, password){
                 }else{
                     let data = JSON.parse(message["data"]);
                     let accountInfo = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
-                    console.log("got data ", data);
                     accountInfo["email"] = email;
                     accountInfo["user_id"] = data["user_unique_id"];
                     accountInfo["groups"] = [data["group_unique_id"]];
@@ -336,7 +335,10 @@ function login(email, password){
 
                     //add that to asyncStorage
                     AsyncStorage.multiSet([['sessionToken', data["session_token"]], ['accountInfo', accountInfo]]).catch(() => null);
-                    resolve("success");
+                    resolve({
+                        group_id: data["group_unique_id"],
+                        email_verified: data["email_verified"]
+                    });
                 }
             }
             resp[1].onerror = (err) => {reject(err);}
@@ -657,4 +659,7 @@ module.exports = {
     groupSub: groupSub,
     retrieveAccountInfo: retrieveAccountInfo,
     oldInit: oldInit,
+    createPost: createPost,
+    createEvent: createEvent,
+    createServer: createServer,
 }

@@ -69,25 +69,29 @@ export default class ValidateEmail extends React.Component{
         }
         let user_id = await this.getUserID();
         if(user_id.includes("Error")){
-            this.setState({statusMessage:user_id}); 
+            this.setState({statusMessage:user_id});
             return;
         }
-        console.log("user id is ", user_id);
-        let msg = await groupSub(email, group_id, user_id);
-        console.log(msg);
+        await groupSub(email, group_id, user_id);
+        // console.log(msg);
         this.setState({statusMessage:"Sent at " + currentTime.toLocaleTimeString()})
+    }
+
+    checkIfValid(){
+
     }
 
     /*************************************************************************
      * Runs when the screen is loaded. Theres a delay to account for the delay
      * in storing the user's email from the last screen
      *************************************************************************/
-    // sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+    sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
+    async init(){
+        await this.sleep(500);
+        this.validate();
+    }
     componentWillMount(){
-        var validate = this.validate();
-        setTimeout(function(){
-            validate();
-        }, 800);
+        this.init();
     }
     
 
