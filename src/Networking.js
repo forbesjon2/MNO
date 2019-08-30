@@ -187,7 +187,7 @@ function createAccount(email, alias, group_id, password){
                 let account_info = Store.getState().Global.accountInfo;
                 account_info["user_id"] = user_id;
                 account_info["email"] = email;
-                AsyncStorage.multiSet([["accountInfo", account_info], ["sessionToken", session_token]]).catch(()=> null);
+                AsyncStorage.multiSet([["accountInfo", JSON.stringify(account_info)], ["sessionToken", JSON.stringify(session_token)]]).catch(()=> null);
                 Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
                 Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
                 resolve("success");
@@ -334,7 +334,7 @@ function login(email, password){
                     Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountInfo});
 
                     //add that to asyncStorage
-                    AsyncStorage.multiSet([['sessionToken', data["session_token"]], ['accountInfo', accountInfo]]).catch(() => null);
+                    AsyncStorage.multiSet([['sessionToken', JSON.stringify(data["session_token"])], ['accountInfo', JSON.stringify(accountInfo)]]).catch((err) => null);
                     resolve({
                         group_id: data["group_unique_id"],
                         email_verified: data["email_verified"]
@@ -447,6 +447,61 @@ function retrieveGroups(){
 }
 
 
+/*********************************************************************
+ * Not to be confused with retrieveServer, this returns the list 
+ * of servers that belong to a group given the group's uuid
+ * 
+ * It checks if you have a valid session and that you are subscribed
+ * to that group before it returns anything
+ * 
+ * 
+ * type: retrieve,
+ * action: get_servers
+ * payload:
+ *    {
+ *      "unique_id":"<user's unique ID>",
+ *      "username":"<user's email>",
+ *      "session_token":"<user's session token>",
+ *      "group_unique_id":"<group's unique ID>",
+ *    }
+ * 
+ * response:
+ * [{
+ *      "unique_id":"<server's uuid>",
+ *      "name":"<server's name>",
+ *      "alias":"<server's alias>",
+ *      "users":"<number of users in server>"
+ * }]
+ * 
+ * full query example
+ * {"type":"retrieve","action":"get_servers", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
+ * 
+ **********************************************************************/
+function retrieveServers(){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            let accountData = JSON.parse(Store.getState().Global.accountInfo);
+            let sessionToken = Store.getState().Global.sessionToken;
+            return [ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
+                    + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
+                    + '", "group_unique_id":"' + accountData["groups"][0] + '"}}'), ws];
+        }).then((resp) =>{
+            resp[1].onmessage = (message) => {
+                if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    reject(message["data"]);
+                }else{
+                    console.log("retrieveServers got servers", message["data"]);
+                    resolve();
+                }
+            }
+            resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) => {
+            reject("internal error in retrieveServers " + err);
+        });
+    });
+}
+
+
 /***********************************************************************
  * Retrieves a particular user's data given a uuid. This can be used to
  * get a separate user's data or the current user's data. All it needs
@@ -541,9 +596,12 @@ async function loadFromStore(){
                 let key = store[i][0];
                 let location = keyListVariables.indexOf(key);
                 if(location != -1){
+                    let payload;
+                    try{payload = JSON.parse(store[i][1]);}catch(e){payload = store[i][1];}
+
                     console.log("dispatching " + keyList[location]["dispatch"]);
                     // keyList[location]["lastPinged"] = Date.now();
-                    Store.dispatch({type:keyList[location]["dispatch"], payload: store[i][1]});
+                    Store.dispatch({type:keyList[location]["dispatch"], payload: payload});
                 }else{AsyncStorage.removeItem(key);}
             });
         });
@@ -651,14 +709,18 @@ module.exports = {
     testt:  function(msg){return msg;},
     loadFromStore: loadFromStore,
     nukeStore: nukeStore,
-    ping: ping,
+    
     initializeWebsocket: initializeWebsocket,
     retrieveGroups: retrieveGroups,
+    retrieveServers: retrieveServers,
     login: login,
     createAccount: createAccount,
     groupSub: groupSub,
     retrieveAccountInfo: retrieveAccountInfo,
     oldInit: oldInit,
+    ping: ping,
+    
+    //create
     createPost: createPost,
     createEvent: createEvent,
     createServer: createServer,

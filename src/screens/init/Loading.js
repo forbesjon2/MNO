@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Button} from "react-native";
 import Store from "../../Store";
 import * as Font from 'expo-font';
-const {loadFromStore, initializeWebsocket, ping, readAndPrint, nukeStore, retrieveGroups} = require("../../Networking");
+const {loadFromStore, initializeWebsocket, retrieveServers, nukeStore, retrieveGroups} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
 import {AsyncStorage} from 'react-native';
 
@@ -43,7 +43,9 @@ export default class Loading extends React.Component{
               })
         ]);
     }
-    componentDidMount(){
+
+    /* Runs when the app is first open (called by componentDidMount) */
+    init() {
         this.loadFontAsync().then(()=>{
             this.setState({text:"Loading fonts..."});
             return loadFromStore();
@@ -59,17 +61,39 @@ export default class Loading extends React.Component{
             Store.dispatch({type:"SET_CONNECTION_VIEW", payload:false});
             Store.dispatch({type:"SET_CONNECTION_VIEW_CONNECTING", payload:false});
             this.setState({text:"Loading store..."});
+
+            console.log("token " + Store.getState().Global.sessionToken);
             //if theres no token, navigate to the signIn page.
             if(Store.getState().Global.sessionToken == null){
                 nukeStore();
                 NavigationService.navigate("SignIn");
             }else{
                 console.log("Actualtoken");
-                NavigationService.navigate("SignIn");
+                this.signIn();
             }
         }).catch((err)=>{
             console.log("TAX " + err);
         });
+    }
+
+    signIn(){
+        this.setState({text: "Signing in..."});
+        retrieveServers();
+    }
+
+    componentDidMount(){
+        try{
+        switch(this.props.navigation.getParam("source")){
+            //runs after signin and signup
+            case "signin":
+                this.signIn();
+                break;
+            default:
+                this.init();
+        }
+        }catch(e){
+
+        }
     }
 
     
@@ -78,7 +102,6 @@ export default class Loading extends React.Component{
     async af(){;
         await AsyncStorage.setItem("sessionToken", "token134");
         await loadFromStore();
-        
     }
 
     render(){

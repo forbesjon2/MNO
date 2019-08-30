@@ -124,7 +124,7 @@ export default class SignUp extends React.Component{
         //will set redux session token and account info
         createAccount(email, username, group_id, password).then((message) => {
             this.props.navigation.navigate("ValidateEmail", {group_id:group_id});
-        }).catch((err) =>{
+        }).catch((err) => {
             Alert.alert("Create account error", err);
             this.setState({signUpButtonText: "Sign up", signUpButtonActive:true});
         });

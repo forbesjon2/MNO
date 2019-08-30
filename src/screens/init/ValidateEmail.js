@@ -4,7 +4,7 @@ import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 
-const {groupSub} = require("../../Networking");
+const {groupSub, retrieveServers} = require("../../Networking");
 
 /*************************************************************************
  * This is the sign in screen
@@ -78,7 +78,11 @@ export default class ValidateEmail extends React.Component{
     }
 
     checkIfValid(){
-
+        retrieveServers().then(() =>{
+            console.log("checkIfValid in validate email successfully retrieved servers");
+        }).catch((err) =>{
+            console.log("error in checkIfValid ", err);
+        });
     }
 
     /*************************************************************************

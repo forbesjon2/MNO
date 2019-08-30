@@ -14,12 +14,13 @@ export default function reducer(
             description:"",
             image_uri:"",
             friends:[],
-            groups:[],
+            groups:[],  //limited to one group
         },
         safeAreaBackground:"#ffffff",
         sessionToken: null,
         webSocket: null,
-        
+        servers:[],     //complete list of servers
+
         //nav
         pageID: 1,
         showNav: false,
@@ -43,7 +44,9 @@ export default function reducer(
         //ping keylist
         keyList: [
             {dispatch:"SET_SESSION_TOKEN", variable:"sessionToken", lastPinged:"", maxTimeoutMs:"31556952000"},
-            {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""}
+            {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""},
+            {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""},
+            {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""}
         ]
     },
     action

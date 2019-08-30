@@ -40,7 +40,8 @@ export default class SignIn extends React.Component{
         } else{
             this.setState({loginButtonText: "Loading...", enableLoginButton: false});
             login(this.state.email, this.state.password).then((resp) =>{
-                if(resp["email_verified"]) console.log("verified email");
+                console.log("got resp signin ", resp);
+                if(resp["email_verified"]) this.props.navigation.navigate("Loading", {source: "signin"});
                 else this.props.navigation.navigate("ValidateEmail", {group_id:resp["group_id"]});
             }).catch((err) =>{
                 this.setState({loginButtonText: "Login", enableLoginButton: true});
