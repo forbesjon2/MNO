@@ -420,10 +420,14 @@ function groupSub(email, group_id, user_id){
  * response:
  * {
  *      "unique_id":"<group uuid>",
+ *      "name":"<group's name>",
+ *      "alias":"<group alias>",
+ *      "scale":"<image scale>",
  *      "image_uri":"<group image uri>",
  *      "servers": "<number of servers>",
  *      "users":"<number of users>",
- *      "alias":"<group alias"
+ *      "valid_mail_domains":"<the list of valid mail domains>"
+ *      
  * }
  * 
  **********************************************************************/
@@ -476,21 +480,23 @@ function retrieveGroups(){
  * full query example
  * {"type":"retrieve","action":"get_servers", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
  * 
+ * @argument group_id   the uuid of the group that you are retrieving 
+ *           servers for (og from accountData["groups"][0])
  **********************************************************************/
-function retrieveServers(){
+function retrieveServers(group_id){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
             let accountData = JSON.parse(Store.getState().Global.accountInfo);
             let sessionToken = Store.getState().Global.sessionToken;
             return [ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
                     + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
-                    + '", "group_unique_id":"' + accountData["groups"][0] + '"}}'), ws];
+                    + '", "group_unique_id":"' + group_id + '"}}'), ws];
         }).then((resp) =>{
             resp[1].onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
                     reject(message["data"]);
                 }else{
-                    console.log("retrieveServers got servers", message["data"]);
+                    console.log(JSON.stringify(message["data"]));
                     resolve();
                 }
             }
@@ -500,6 +506,153 @@ function retrieveServers(){
         });
     });
 }
+
+
+
+/*********************************************************************
+ * This gets and returns 80 posts that were posted before a certain
+ * date.. the date is used as a reference to allow paging. 
+ * 
+ * Filtering of incog content is done here but filtering of blocked 
+ * content is done on the client side. 
+ * 
+ * 
+ * It checks if you have a valid session and that you are subscribed
+ * to that group before it returns anything
+ * 
+ * type: retrieve,
+ * action: get_posts
+ * payload:
+ *    {
+ *      "unique_id":"<user's uuid>",
+ *      "username":"<user's email>",
+ *      "session_token":"<user's session token>",
+ *      "server_unique_id":"<server's uuid>",
+ *      "date_created":"<reference date to retrieve posts before>",
+ *    }
+ * 
+ * response:
+ * [{
+ *      "content":"<post content>",
+ *      "likes":["<user uuid1>", "<user uuid2>"],
+ *      "type":"<post type text/image>",
+ *      "incog":"<true/false>",
+ *      "date_created":"<ISO 8601 format>",
+ *      "unique_id":"<post's unique ID>",
+ *      "image_uri":"<link to image>",
+ *      "blocked":["user uuid1", "user uuid2"],
+ *      "alias":"<user's alias>"
+ * }]
+ * 
+ * full query example (requires valid data)
+ * {"type":"retrieve","action":"get_posts", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "server_unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "date_created":"2019-07-30 18:00:00"}}
+ * 
+ * @argument date posts returned from present -> past. current timestamp
+ *          gets the most recent posts
+ **********************************************************************/
+
+function retrievePosts(server_id, date){
+    return new Promise((resolve, reject) =>{
+        initializeWebsocket().then((ws) =>{
+            let accountInfo = Store.getState().Global.accountInfo;
+            let sessionToken = Store.getState().Global.sessionToken;
+
+            return ws.send('{"type":"retrieve", "action":"get_posts", '
+                + '"payload":{"unique_id":"' + accountInfo["user_id"] 
+                + '", "username":"' + accountInfo["email"] + '", "session_token":"'
+                + sessionToken + '", "server_unique_id":"' + server_id + '", "date_created":"'
+                + date + '"}}');
+        }).then((resp) =>{
+
+        })
+    });
+}
+
+
+/*********************************************************************
+ * Populates the homeData. See data/HomeData.json for an example
+ * 
+ * 
+ * type: retrieve,
+ * payload:
+ *    {
+ *      "unique_id":"<user's unique ID>",
+ *      "username":"<user's email>",
+ *      "session_token":"<user's session token>",
+ *    }
+ * 
+ * HomeData format:
+ * {
+ * "data":[{
+ *      "name":"<group name>",
+ *      "unique_id":"<group's unique id>",
+ *      "alias":"<group alias>",
+ *      "scale":"<group's icon scale>",
+ *      "image_uri":"<group's image uri>",
+ *      "users":"<group's number of users>",
+ *      "last_updated":"<iso 8601 last time the group info was updated>",
+ *      "unique_id":"<group uuid>",
+ *      "servers":{
+ *          "name":"<server's name>",
+ *          "title":"<server's title>",
+ *          "description":"<server's description>",
+ *          "last_updated":"<iso 8601, last time it sent a request to the server>",
+ *          "oldest_post":"<iso 8601, oldest post date (used for pagination)>",
+ *          "followers":"<number of followers (not uuid list?)>",
+ *          "content":[
+ *              {"key":"<post uuid>", 
+ *               "name":"<user's alias>",
+ *               "sub_name":"<user's sub name>",
+ *               "image_uri":"<user's profile image>",
+ *               "date":"<date of post ISO 8601 format>",
+ *               "likes":"<array of user uuid's>",
+ *               "type":"<post type either 'text' or the image's scale (WidthxHeight)>",
+ *               "content":"<link if image type, text if not>",
+ *               "incog":"<bool represents if post is incog or not>"
+ *           }
+ *          ],
+ *          }
+ *      }
+ *      ]
+ * }
+ * 
+ **********************************************************************/
+function retrieveHomeData(){
+
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            
+            var homeData = Store.getState().Global.homeData;
+            if(homeData == null){
+                console.log("homedata is null");
+                resolve("homedata is null");
+            }else{
+                console.log("get");
+                resolve("gat");
+            }
+        //     let accountData = JSON.parse(Store.getState().Global.accountInfo);
+        //     let sessionToken = Store.getState().Global.sessionToken;
+        //     return [ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
+        //             + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
+        //             + '", "group_unique_id":"' + accountData["groups"][0] + '"}}'), ws];
+        // }).then((resp) =>{
+        //     resp[1].onmessage = (message) => {
+        //         if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+        //             reject(message["data"]);
+        //         }else{
+        //             console.log(JSON.stringify(message["data"]));
+        //             resolve();
+        //         }
+        //     }
+        //     resp[1].onerror = (err) => {reject(err);}
+        }).catch((err) => {
+            reject("internal error in retrieveHomeData " + err);
+        });
+    });
+}
+
+
+
 
 
 /***********************************************************************
@@ -710,9 +863,11 @@ module.exports = {
     loadFromStore: loadFromStore,
     nukeStore: nukeStore,
     
+    //retrieve / init
     initializeWebsocket: initializeWebsocket,
     retrieveGroups: retrieveGroups,
     retrieveServers: retrieveServers,
+    retrieveHomeData: retrieveHomeData,
     login: login,
     createAccount: createAccount,
     groupSub: groupSub,
@@ -724,4 +879,6 @@ module.exports = {
     createPost: createPost,
     createEvent: createEvent,
     createServer: createServer,
+
+    
 }

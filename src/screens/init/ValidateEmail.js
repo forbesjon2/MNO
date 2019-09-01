@@ -23,6 +23,7 @@ export default class ValidateEmail extends React.Component{
     resendEmail(){
         if(!this.state.sendEmail) return;
         else this.validate();
+        console
         this.setState({sendEmail:false});
         setTimeout(() => {this.setState({sendEmail: true})}, 10000);
     }
@@ -78,7 +79,9 @@ export default class ValidateEmail extends React.Component{
     }
 
     checkIfValid(){
-        retrieveServers().then(() =>{
+        this.getGroupID().then((group_id) =>{
+            return retrieveServers(group_id);
+        }).then(() =>{
             console.log("checkIfValid in validate email successfully retrieved servers");
         }).catch((err) =>{
             console.log("error in checkIfValid ", err);

@@ -1,4 +1,4 @@
-const {test, loadFromStore, nukeStore} = require("../src/Networking");
+const {testt, loadFromStore, nukeStore, retrieveHomeData, retrieveServers} = require("../src/Networking");
 import AsyncStorage from '@react-native-community/async-storage';
 import Store from "../src/Store";
 
@@ -67,6 +67,5 @@ describe('describe inner 2', () =>{
                 expect(Store.getState().Global.accountInfo).toEqual('accountInfo144');
                 expect(Store.getState().Global.sessionToken).toEqual('sessionToken144');
             });
-        });
-    
+        });        
 })

@@ -14,12 +14,11 @@ export default function reducer(
             description:"",
             image_uri:"",
             friends:[],
-            groups:[],  //limited to one group
+            groups:[], 
         },
         safeAreaBackground:"#ffffff",
         sessionToken: null,
         webSocket: null,
-        servers:[],     //complete list of servers
 
         //nav
         pageID: 1,

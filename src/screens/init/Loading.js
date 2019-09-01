@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Button} from "react-native";
 import Store from "../../Store";
 import * as Font from 'expo-font';
-const {loadFromStore, initializeWebsocket, retrieveServers, nukeStore, retrieveGroups} = require("../../Networking");
+const {loadFromStore, initializeWebsocket, retrieveServers, nukeStore, retrieveGroups, retrieveHomeData} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
 import {AsyncStorage} from 'react-native';
 
@@ -78,7 +78,8 @@ export default class Loading extends React.Component{
 
     signIn(){
         this.setState({text: "Signing in..."});
-        retrieveServers();
+        // retrieveServers();
+        retrieveHomeData();
     }
 
     componentDidMount(){
