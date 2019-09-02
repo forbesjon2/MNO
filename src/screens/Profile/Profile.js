@@ -24,11 +24,10 @@ export default class Profile extends React.Component{
         super(props);
 
         this.state = {
-            //1 = servers, 2 = tags, 3 = friends
+            //1 = servers, 2 = friends
             selectedMenuIndex: 1,
             components: new BareComponents(),
             friendData:[],
-            tagData:[],
             serverList:[],
             //if you are the profile owner
             isSelf: true,
@@ -75,7 +74,7 @@ export default class Profile extends React.Component{
             accountInfo["groups"].map((item) => item.servers.map(
                 (item2) => serverList.push(item["name"] + item2["name"])));
             this.setState({friendData: accountInfo["friends"], 
-                        tagData: accountInfo["tags"], serverList: serverList});
+                        serverList: serverList});
         }
     }
 
@@ -136,7 +135,7 @@ export default class Profile extends React.Component{
             <Text style={styles.profile_subName}>Biological Engineering</Text>
         </View>
 
-        {/* servers/tags/friends tags */}
+        {/* servers/friends  */}
         <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
             <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:1})}>
                 <View style={styles.profile_menuView}>

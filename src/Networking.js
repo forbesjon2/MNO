@@ -424,28 +424,89 @@ function groupSub(email, group_id, user_id){
  *      "alias":"<group alias>",
  *      "scale":"<image scale>",
  *      "image_uri":"<group image uri>",
- *      "servers": "<number of servers>",
+ *      "servers": ["uuid1", "uuid2"], 
  *      "users":"<number of users>",
  *      "valid_mail_domains":"<the list of valid mail domains>"
- *      
  * }
  * 
  **********************************************************************/
 function retrieveGroups(){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
-            return [ws.send('{"type":"retrieve","action":"get_groups","payload":{}}'), ws];
-        }).then((resp) =>{
-            resp[1].onmessage = (message) => {
-                let groupData = Store.getState().Global.groupData;
+            ws.send('{"type":"retrieve","action":"get_groups","payload":{}}');
+            return ws;
+        }).then((ws) =>{
+            ws.onmessage = (message) => {
+                let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData));
                 groupData["groups"] = JSON.parse(message["data"]);
                 AsyncStorage.setItem("groupData", groupData).catch(()=>null);
                 Store.dispatch({type:"SET_GROUP_DATA", payload: groupData});
-                resolve();
+                resolve(JSON.parse(message["data"]));
             }
-            resp[1].onerror = (err) => {reject(err)}
+            ws.onerror = (err) => {reject(err)}
         }).catch((err) => {
             reject("internal error in retrieveGroups " + err);
+        });
+    });
+}
+
+
+/*********************************************************************
+ * Not to be confused with get_servers & getServersLogic, this returns
+ * more specific data for server given it's uuid
+ * 
+ * It requires a valid session and a check that you are subscribed
+ * to that group before it returns anything
+ * 
+ * resolves a stringified version of the response
+ * 
+ * type: retrieve,
+ * action: get_server
+ * payload:
+ *    {
+ *      "unique_id":"<user's unique ID>",
+ *      "username":"<user's email>",
+ *      "session_token":"<user's session token>",
+ *      "server_unique_id":"<server's unique ID>",
+ *      "group_unique_id":"<group's unique ID>"
+ *    }
+ * 
+ * response:
+ * {
+ *      "name":"<server name>",
+ *      "alias":"<server alias>",
+ *      "description":"<server description>",
+ *      "global_permission":"<server's global permission string>",
+ *      "followers":"<list of followers>",
+ *      "blocked_users":"<list of blocked users>",
+ *      "owner_id":"<server owner's uuid>",
+ *      "date_created":"<server created timestamp>"
+ * }
+ * 
+ * full query example
+ * {"type":"retrieve","action":"get_server", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "server_unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
+ * 
+ * @argument data is the payload
+ * @argument client is the instance of the cassandra-driver (connected to scylla)
+ **********************************************************************/
+function retrieveServer(server_id, group_id){
+    return new Promise((resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            const accountData = Store.getState().Global.accountInfo;
+            const sessionToken = Store.getState().Global.sessionToken;
+            ws.send('{"type":"retrieve","action":"get_server","payload":{"unique_id":"' + accountData["user_id"] + '",'
+                    + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
+                    + '", "server_unique_id":"' + server_id + '", "group_unique_id":"' + group_id + '"}}');
+            ws.onmessage = (message) => {
+                if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    reject(message["data"]);
+                }else{
+                    resolve(message["data"]);
+                }
+            }
+            ws.onerror = (err) => {reject(err);}
+        }).catch((err) => {
+            reject("internal error in retrieveServers " + err);
         });
     });
 }
@@ -458,6 +519,7 @@ function retrieveGroups(){
  * It checks if you have a valid session and that you are subscribed
  * to that group before it returns anything
  * 
+ * resolves a stringified version of the response
  * 
  * type: retrieve,
  * action: get_servers
@@ -478,7 +540,8 @@ function retrieveGroups(){
  * }]
  * 
  * full query example
- * {"type":"retrieve","action":"get_servers", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
+ * {"type":"retrieve","action":"get_servers", "payload":{"uniq
+            accountData["name"] = resp["name"];ue_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
  * 
  * @argument group_id   the uuid of the group that you are retrieving 
  *           servers for (og from accountData["groups"][0])
@@ -488,24 +551,27 @@ function retrieveServers(group_id){
         initializeWebsocket().then((ws) =>{
             let accountData = JSON.parse(Store.getState().Global.accountInfo);
             let sessionToken = Store.getState().Global.sessionToken;
-            return [ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
+            ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
                     + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
-                    + '", "group_unique_id":"' + group_id + '"}}'), ws];
-        }).then((resp) =>{
-            resp[1].onmessage = (message) => {
+                    + '", "group_unique_id":"' + group_id + '"}}');
+
+            ws.onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
                     reject(message["data"]);
                 }else{
-                    console.log(JSON.stringify(message["data"]));
-                    resolve();
+                    resolve(JSON.stringify(message["data"]));
                 }
             }
-            resp[1].onerror = (err) => {reject(err);}
+            ws.onerror = (err) => {reject(err);}
         }).catch((err) => {
             reject("internal error in retrieveServers " + err);
         });
     });
 }
+
+
+
+
 
 
 
@@ -572,6 +638,9 @@ function retrievePosts(server_id, date){
 /*********************************************************************
  * Populates the homeData. See data/HomeData.json for an example
  * 
+ * This begins by updating the user's account info. Then it gets all
+ * of the updated groups and retrieves all group data
+ * 
  * 
  * type: retrieve,
  * payload:
@@ -592,12 +661,17 @@ function retrievePosts(server_id, date){
  *      "users":"<group's number of users>",
  *      "last_updated":"<iso 8601 last time the group info was updated>",
  *      "unique_id":"<group uuid>",
- *      "servers":{
+ *      "servers":[{
  *          "name":"<server's name>",
+ *          "unique_id":"<server's unique id>",
+ *          "global_permission":"<global permission string>",
  *          "title":"<server's title>",
  *          "description":"<server's description>",
  *          "last_updated":"<iso 8601, last time it sent a request to the server>",
  *          "oldest_post":"<iso 8601, oldest post date (used for pagination)>",
+ *          "blocked_users":"<list of blocked users by uuid>",
+ *          "owner_id":"<server owner's uuid>",
+ *          "date_created":"<server created timestamp>",
  *          "followers":"<number of followers (not uuid list?)>",
  *          "content":[
  *              {"key":"<post uuid>", 
@@ -611,44 +685,50 @@ function retrievePosts(server_id, date){
  *               "incog":"<bool represents if post is incog or not>"
  *           }
  *          ],
- *          }
+ *          }]
  *      }
  *      ]
  * }
  * 
  **********************************************************************/
-function retrieveHomeData(){
-
-    return new Promise((resolve, reject) => {
-        initializeWebsocket().then((ws) =>{
-            
-            var homeData = Store.getState().Global.homeData;
-            if(homeData == null){
-                console.log("homedata is null");
-                resolve("homedata is null");
-            }else{
-                console.log("get");
-                resolve("gat");
-            }
-        //     let accountData = JSON.parse(Store.getState().Global.accountInfo);
-        //     let sessionToken = Store.getState().Global.sessionToken;
-        //     return [ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
-        //             + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
-        //             + '", "group_unique_id":"' + accountData["groups"][0] + '"}}'), ws];
-        // }).then((resp) =>{
-        //     resp[1].onmessage = (message) => {
-        //         if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
-        //             reject(message["data"]);
-        //         }else{
-        //             console.log(JSON.stringify(message["data"]));
-        //             resolve();
-        //         }
-        //     }
-        //     resp[1].onerror = (err) => {reject(err);}
-        }).catch((err) => {
-            reject("internal error in retrieveHomeData " + err);
-        });
-    });
+async function retrieveHomeData(){
+    
+    let uuid = await Store.getState().Global.accountInfo["user_id"];
+    var data = [];
+    let resp = await retrieveAccountInfo(uuid)
+    let accountData = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
+    accountData["name"] = resp["name"];
+    accountData["sub_name"] = resp["sub_name"];
+    accountData["description"] = resp["description"];
+    accountData["image_uri"] = resp["image_uri"];
+    accountData["friends"] = resp["friends"];
+    accountData["groups"] = [resp["group_unique_id"]];
+    accountData["servers"] = resp["servers"];
+        
+    //set asyncStorage to this and update the state. AsyncStorage will always be a string
+    AsyncStorage.setItem("accountInfo", JSON.stringify(accountData));
+    Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountData});
+        
+    var groupData = await retrieveGroups();
+    for(let j in groupData){
+        groupData[j]["last_updated"] = (new Date()).getTime();
+        if(accountData["groups"].indexOf(groupData[j]["unique_id"])  != -1){
+        let servers = [];
+        
+        for(let i in groupData[j]["servers"]){
+            var serverResp = await retrieveServer(groupData[j]["servers"][i], groupData[j]["unique_id"]);
+            serverResp = JSON.parse(serverResp);
+            serverResp["last_updated"] = (new Date()).getTime();
+            servers.push(serverResp);
+        }
+        groupData[j]["servers"] = servers;
+        data.push(groupData[j])
+        }
+        
+    }
+    console.log("data is ", JSON.stringify(data));
+        
+    
 }
 
 
@@ -676,18 +756,19 @@ function retrieveHomeData(){
  *      "description":"<user description>",
  *      "image_uri":"<image link>",
  *      "friends":["uuid1", "uuid2"],
- *      "groups":["uuid1", "uuid2"],
- *      "tags":["tag1", "tag2]
+ *      "group_unique_id":"<group uuid>",
+ *      "servers":["uuid1", "uuid2"],
  *  }
  * 
  **********************************************************************/
 function retrieveAccountInfo(uuid){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
-            return [ws.send('{"type":"retrieve","action":"get_user","payload":{"uuid":"' + uuid +'"}}'), ws];
-        }).then((resp) =>{
-            resp[1].onmessage = (message) => {resolve(JSON.parse(message["data"]));}
-            resp[1].onerror = (err) => {reject(err)}
+            ws.send('{"type":"retrieve","action":"get_user","payload":{"uuid":"' + uuid +'"}}');
+            return ws;
+        }).then((ws) => {
+            ws.onmessage = (message) => {resolve(JSON.parse(message["data"]));}
+            ws.onerror = (err) => {reject(err)}
         }).catch((err) =>{
             reject("internal error in retrieveAccountInfo " + err);
         });

@@ -14,7 +14,12 @@ export default function reducer(
             description:"",
             image_uri:"",
             friends:[],
-            groups:[], 
+
+            //appears as if a list of groups is possible but its not.
+            // Login logic is mostly to blame for this. Keeping it this
+            //way for easier future improvements
+            groups:[],      
+            servers: []
         },
         safeAreaBackground:"#ffffff",
         sessionToken: null,
