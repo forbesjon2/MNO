@@ -385,6 +385,37 @@ function groupSub(email, group_id, user_id){
 }
 
 
+/***********************************************************************
+ * Updates the current user's data. 
+ * 
+ * TODO test this
+ * 
+ * friends & groups format 
+ * 
+ * Returns a promise with a response detailed below.
+ **********************************************************************/
+function updateAccountInfo(){
+    return new Promise((resolve, reject) => {
+        var accountData = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
+        retrieveAccountInfo(accountData["user_id"]).then((resp) =>{
+            accountData["name"] = resp["name"];
+            accountData["alias"] = resp["alias"];
+            accountData["sub_name"] = resp["sub_name"];
+            accountData["description"] = resp["description"];
+            accountData["image_uri"] = resp["image_uri"];
+            accountData["friends"] = resp["friends"];
+            accountData["group_unique_id"] = resp["group_unique_id"];
+            accountData["servers"] = resp["servers"];
+            AsyncStorage.setItem("accountInfo", JSON.stringify(accountData));
+            return Store.dispatch({type:"SET_ACCOUNT_INFO", payload: accountData});
+        }).then(() => {resolve()
+        }).catch((err) => {reject("internal error in updateAccountInfo " + err)})
+    });
+}
+
+
+
+
 
 
 
@@ -692,7 +723,6 @@ function retrievePosts(server_id, date){
  * 
  **********************************************************************/
 async function retrieveHomeData(){
-    
     let uuid = await Store.getState().Global.accountInfo["user_id"];
     var data = [];
     let resp = await retrieveAccountInfo(uuid)
@@ -728,7 +758,6 @@ async function retrieveHomeData(){
     }
     console.log("data is ", JSON.stringify(data));
         
-    
 }
 
 
@@ -752,6 +781,7 @@ async function retrieveHomeData(){
  * response:
  *  {
  *      "name":"<user's name>",
+ *      "alias":"<user's alias>",
  *      "sub_name":"<user sub name>",
  *      "description":"<user description>",
  *      "image_uri":"<image link>",
@@ -774,6 +804,7 @@ function retrieveAccountInfo(uuid){
         });
     });
 }
+
 
 
 
