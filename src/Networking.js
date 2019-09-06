@@ -481,6 +481,65 @@ function retrieveGroups(){
     });
 }
 
+/*********************************************************************
+ * This gets and stores all events for a user by tracking the groups,
+ * servers, and user uuid's that are associated with a particular user
+ * 
+ * The user has to be apart of a particular group or server to view
+ * events associated by either of the two
+ * 
+ * It checks if you have a valid session
+ * 
+ * type: retrieve,
+ * action: get_events
+ * payload:
+ *    {
+ *      "username":"<user's email>",
+ *      "session_token":"<user's session token>",
+ *      "sub_list":["uuid1", "uuid2", ...],
+ *      "date_created":"<retrieve events before this date>",
+ *    }
+ * 
+ * response:
+ * [{
+ *      "heading":"<event's heading>",
+ *      "description":"<event's description>",
+ *      "location":"<event's location (in no particular format)>",
+ *      "start_time":"<start time in ISO 8601 format>",
+ *      "end_time":"<end time in ISO 8601 format>",
+ *      "attending":["<user uuid1>", "<user uuid2>"],
+ *      "unique_id":"<event's unique_id>",
+ *      "type":"<event type>"
+ * }]
+ * 
+ * full query example (requires valid data)
+ * {"type":"retrieve","action":"get_events", "payload":{"username":"jack@twitter.com", "session_token":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "sub_list":["91727e5b-6e21-4eed-8bbd-0303944f64ff", "91727e5b-6e21-4eed-8bbd-0303944f64ff"], "date_created":"2019-07-30 18:00:00"}}
+ **********************************************************************/
+function retrieveEvents(){
+    return new Promise(async (resolve, reject) => {
+        initializeWebsocket().then((ws) =>{
+            //need user email, 
+            var accountData = await Store.getState().Global.accountInfo;
+            
+            ws.send('{"type":"retrieve","action":"get_events", "payload":{"username":"' + accountData["email"] + '", "session_token":"' 
+            + session_token + '", "sub_list":["91727e5b-6e21-4eed-8bbd-0303944f64ff", "91727e5b-6e21-4eed-8bbd-0303944f64ff"], "date_created":"2019-07-30 18:00:00"}}')
+            ws.send('{"type":"retrieve","action":"get_groups","payload":{}}');
+            return ws;
+        }).then((ws) =>{
+            ws.onmessage = (message) => {
+                let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData));
+                groupData["groups"] = JSON.parse(message["data"]);
+                AsyncStorage.setItem("groupData", groupData).catch(()=>null);
+                Store.dispatch({type:"SET_GROUP_DATA", payload: groupData});
+                resolve(JSON.parse(message["data"]));
+            }
+            ws.onerror = (err) => {reject(err)}
+        }).catch((err) => {
+            reject("internal error in retrieveGroups " + err);
+        });
+    });
+}
+
 
 /*********************************************************************
  * Not to be confused with get_servers & getServersLogic, this returns
@@ -537,7 +596,7 @@ function retrieveServer(server_id, group_id){
             }
             ws.onerror = (err) => {reject(err);}
         }).catch((err) => {
-            reject("internal error in retrieveServers " + err);
+            reject("internal error in retrieveServer " + err);
         });
     });
 }
@@ -571,8 +630,7 @@ function retrieveServer(server_id, group_id){
  * }]
  * 
  * full query example
- * {"type":"retrieve","action":"get_servers", "payload":{"uniq
-            accountData["name"] = resp["name"];ue_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
+ * {"type":"retrieve","action":"get_servers", "payload":{"unique_id":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "username":"jack@twitter.com", "session_token":"23811e71-1a5d-40b9-8846-39ed39aeeb52", "group_unique_id": "4f6dc16d-2644-47f4-babd-92f1c5c71a1c"}}
  * 
  * @argument group_id   the uuid of the group that you are retrieving 
  *           servers for (og from accountData["groups"][0])
@@ -653,14 +711,17 @@ function retrievePosts(server_id, date){
         initializeWebsocket().then((ws) =>{
             let accountInfo = Store.getState().Global.accountInfo;
             let sessionToken = Store.getState().Global.sessionToken;
-
-            return ws.send('{"type":"retrieve", "action":"get_posts", '
-                + '"payload":{"unique_id":"' + accountInfo["user_id"] 
-                + '", "username":"' + accountInfo["email"] + '", "session_token":"'
-                + sessionToken + '", "server_unique_id":"' + server_id + '", "date_created":"'
-                + date + '"}}');
-        }).then((resp) =>{
-
+            ws.send('{"type":"retrieve", "action":"get_posts", '
+                + '"payload":{"unique_id":"' + accountInfo["user_id"] + '", "username":"'
+                + accountInfo["email"] + '", "session_token":"' + sessionToken 
+                + '", "server_unique_id":"' + server_id + '", "date_created":"' + date + '"}}');
+            return ws;
+        }).then((ws) =>{
+            ws.onmessage = (message) =>{
+                console.log("in networking get posts md " + message["data"]);
+                //handle errors & resp
+            }
+            ws.onerror = (err) => reject(err);
         })
     });
 }
@@ -670,7 +731,16 @@ function retrievePosts(server_id, date){
  * Populates the homeData. See data/HomeData.json for an example
  * 
  * This begins by updating the user's account info. Then it gets all
- * of the updated groups and retrieves all group data
+ * of the updated groups and retrieves all group data only for the
+ * groups and servers that the user is apart of. The list of groups
+ * and servers that the user is apart of can be found in the accountInfo
+ * redux variable
+ * 
+ * It will return a promise that will resolve/reject depending on the
+ * status of the retrieve functions. Reject will only be thrown when
+ * there is a data error (signals a destroy event so all of the user
+ * id's and tokens are reset) and not a network error
+ * 
  * 
  * 
  * type: retrieve,
@@ -723,41 +793,52 @@ function retrievePosts(server_id, date){
  * 
  **********************************************************************/
 async function retrieveHomeData(){
-    let uuid = await Store.getState().Global.accountInfo["user_id"];
-    var data = [];
-    let resp = await retrieveAccountInfo(uuid)
-    let accountData = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
-    accountData["name"] = resp["name"];
-    accountData["sub_name"] = resp["sub_name"];
-    accountData["description"] = resp["description"];
-    accountData["image_uri"] = resp["image_uri"];
-    accountData["friends"] = resp["friends"];
-    accountData["groups"] = [resp["group_unique_id"]];
-    accountData["servers"] = resp["servers"];
+    return new Promise(async (resolve, reject) =>{
+        let uuid = await Store.getState().Global.accountInfo["user_id"];
+        var data = [];
+        let resp = await retrieveAccountInfo(uuid).catch((err) => reject());
         
-    //set asyncStorage to this and update the state. AsyncStorage will always be a string
-    AsyncStorage.setItem("accountInfo", JSON.stringify(accountData));
-    Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountData});
+        let accountData = JSON.parse(JSON.stringify(Store.getState().Global.accountInfo));
+        accountData["name"] = resp["name"];
+        accountData["sub_name"] = resp["sub_name"];
+        accountData["description"] = resp["description"];
+        accountData["image_uri"] = resp["image_uri"];
+        accountData["friends"] = resp["friends"];
+        accountData["groups"] = [resp["group_unique_id"]];
+        accountData["servers"] = resp["servers"];
         
-    var groupData = await retrieveGroups();
-    for(let j in groupData){
-        groupData[j]["last_updated"] = (new Date()).getTime();
-        if(accountData["groups"].indexOf(groupData[j]["unique_id"])  != -1){
-        let servers = [];
+        //set asyncStorage to this and update the state. AsyncStorage will always be a string
+        AsyncStorage.setItem("accountInfo", JSON.stringify(accountData));
+        Store.dispatch({type:"SET_ACCOUNT_INFO", payload:accountData});
+        var currentDate = new Date();
+        var groupData = await retrieveGroups();
         
-        for(let i in groupData[j]["servers"]){
-            var serverResp = await retrieveServer(groupData[j]["servers"][i], groupData[j]["unique_id"]);
-            serverResp = JSON.parse(serverResp);
-            serverResp["last_updated"] = (new Date()).getTime();
-            servers.push(serverResp);
+        //refresh all groups & add a timestamp to the
+        for(let j in groupData){
+            groupData[j]["last_updated"] = currentDate.getTime();
+            
+            //if the user is subscribed to the group
+            if(accountData["groups"].indexOf(groupData[j]["unique_id"])  != -1){
+            let servers = [];
+            
+            for(let i in groupData[j]["servers"]){
+                if(accountData["servers"].indexOf(groupData[j]["servers"]["i"]) != -1){
+                    var serverResp = await retrieveServer(groupData[j]["servers"][i], groupData[j]["unique_id"]);
+                    serverResp = JSON.parse(serverResp);
+                    serverResp["last_updated"] = currentDate.getTime();
+                    serverResp["content"] = await retrievePosts(serverResp["unique_id"], currentDate.toISOString());
+                    servers.push(serverResp);
+                }
+            }
+            groupData[j]["servers"] = servers;
+            data.push(groupData[j])
+            }
         }
-        groupData[j]["servers"] = servers;
-        data.push(groupData[j])
-        }
-        
-    }
-    console.log("data is ", JSON.stringify(data));
-        
+        AsyncStorage.setItem("homeData", JSON.stringify(data));
+        Store.dispatch({type:"SET_HOME_DATA", payload:data});
+        resolve(JSON.stringify(data));
+        // console.log("data is ", JSON.stringify(data));
+    }); 
 }
 
 
@@ -797,8 +878,11 @@ function retrieveAccountInfo(uuid){
             ws.send('{"type":"retrieve","action":"get_user","payload":{"uuid":"' + uuid +'"}}');
             return ws;
         }).then((ws) => {
-            ws.onmessage = (message) => {resolve(JSON.parse(message["data"]));}
-            ws.onerror = (err) => {reject(err)}
+                ws.onmessage = (message) => {
+                    if(message["data"] == "error") reject("error");
+                    resolve(JSON.parse(message["data"]));
+                }
+                ws.onerror = (err) => {reject(err)}
         }).catch((err) =>{
             reject("internal error in retrieveAccountInfo " + err);
         });
@@ -948,23 +1032,23 @@ return new Promise((resolve, reject) => {
 
 
 
-async function oldInit(){
-        const cd = require("../data/CalendarData.json");
-        const ct = require("../data/Chats.json");
-        const hd = require("../data/HomeData.json");
-        const mh = require("../data/MessagesHome.json");
-        const ai = require("../data/AccountInfo.json");
-        const ab = require("../data/GroupData.json");
-        const as = require("../data/ServerData.json");
-        Store.dispatch({type: "SET_CALENDAR_DATA", payload: cd});
-        Store.dispatch({type: "SET_CHATS", payload: ab});
-        Store.dispatch({type: "SET_CHATS", payload: ct});
-        Store.dispatch({type: "SET_HOME_DATA", payload: hd});
-        Store.dispatch({type: "SET_MESSAGES_HOME", payload: mh});
-        Store.dispatch({type: "SET_ACCOUNT_INFO", payload: ai});
-        Store.dispatch({type: "SET_SERVER_DATA", payload: as});
-        Store.dispatch({type: "SET_CURRENT_GROUP", payload: "" + hd["data"][0]["name"] + hd["data"][0]["servers"][0]["name"]});
-}
+// async function oldInit(){
+//         const cd = require("../data/CalendarData.json");
+//         const ct = require("../data/Chats.json");
+//         const hd = require("../data/HomeData.json");
+//         const mh = require("../data/MessagesHome.json");
+//         const ai = require("../data/AccountInfo.json");
+//         const ab = require("../data/GroupData.json");
+//         const as = require("../data/ServerData.json");
+//         Store.dispatch({type: "SET_CALENDAR_DATA", payload: cd});
+//         Store.dispatch({type: "SET_CHATS", payload: ab});
+//         Store.dispatch({type: "SET_CHATS", payload: ct});
+//         Store.dispatch({type: "SET_HOME_DATA", payload: hd});
+//         Store.dispatch({type: "SET_MESSAGES_HOME", payload: mh});
+//         Store.dispatch({type: "SET_ACCOUNT_INFO", payload: ai});
+//         Store.dispatch({type: "SET_SERVER_DATA", payload: as});
+//         Store.dispatch({type: "SET_CURRENT_GROUP", payload: "" + hd["data"][0]["name"] + hd["data"][0]["servers"][0]["name"]});
+// }
 
 
 
@@ -984,7 +1068,6 @@ module.exports = {
     createAccount: createAccount,
     groupSub: groupSub,
     retrieveAccountInfo: retrieveAccountInfo,
-    oldInit: oldInit,
     ping: ping,
     
     //create

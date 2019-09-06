@@ -23,7 +23,6 @@ export default class ValidateEmail extends React.Component{
     resendEmail(){
         if(!this.state.sendEmail) return;
         else this.validate();
-        console
         this.setState({sendEmail:false});
         setTimeout(() => {this.setState({sendEmail: true})}, 10000);
     }
@@ -73,7 +72,7 @@ export default class ValidateEmail extends React.Component{
             this.setState({statusMessage:user_id});
             return;
         }
-        await groupSub(email, group_id, user_id);
+        await groupSub(email, group_id, user_id).catch((err) => Alert.alert("Request error", err, [{text:"Ok"}]));
         // console.log(msg);
         this.setState({statusMessage:"Sent at " + currentTime.toLocaleTimeString()})
     }

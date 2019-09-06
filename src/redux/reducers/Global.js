@@ -1,7 +1,7 @@
 export default function reducer(
     state = {
         //Global variables
-        URL: "ws://159.65.180.85:8080",
+        URL: "ws://216.171.62.161:8080",
         loading: true,
         connectionView:false,
         connectionViewConnecting:true,
@@ -50,7 +50,7 @@ export default function reducer(
             {dispatch:"SET_SESSION_TOKEN", variable:"sessionToken", lastPinged:"", maxTimeoutMs:"31556952000"},
             {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""},
-            {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""}
+            {dispatch:"SET_GROUP_DATA", variable:"groupData", lastPinged:"", maxTimeoutMs:""}
         ]
     },
     action

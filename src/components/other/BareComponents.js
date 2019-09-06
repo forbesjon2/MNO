@@ -243,7 +243,7 @@ export default class BareComponents extends React.PureComponent{
                 </View>
                 <View style={{flex:1, flexDirection:"column"}}>
                 <Text numberOfLines={1} style={[groupStyles.headerText, {color:'rgba(66,54,138,1)'}]}>servers</Text>
-                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["servers"]}</Text>
+                    <Text numberOfLines={1} style={[groupStyles.contentText, {alignSelf:"center", fontSize:48}]}>{item["servers"].length}</Text>
                 </View>
             </View>
             

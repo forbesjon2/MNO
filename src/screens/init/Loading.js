@@ -75,11 +75,14 @@ export default class Loading extends React.Component{
             console.log("TAX " + err);
         });
     }
+    async reset(){
+        await nukeStore();
+        this.init();
+    }
 
     signIn(){
         this.setState({text: "Signing in..."});
-        // retrieveServers();
-        retrieveHomeData();
+        retrieveHomeData().catch((err) =>{this.reset();});
     }
 
     componentDidMount(){
