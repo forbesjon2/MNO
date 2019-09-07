@@ -7,7 +7,9 @@ import NavigationService from "../../navigation/NavigationService";
 
 /*************************************************************************
  * The BareComponents class's purpose is to include all redundant methods
- * that dont require access to the parent class's state. 
+ * that dont require access to the parent class's state. There are a few
+ * pages here however that aren't redundant but are here for refactoring
+ * purposes
  * 
  * The purpose it serves is to keep some of the main classes organized.
  * 

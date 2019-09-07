@@ -4,13 +4,13 @@ import NavigationService from "../navigation/NavigationService";
 import {styles} from "../Styles";
 import NavContent from "./NavContent";
 import Store from "../Store";
-
+import {connect} from 'react-redux';
 
 /*************************************************************************
  * Nav provides the highest level approach to the bottom navBar
  * 
  *************************************************************************/
-export default class Nav extends React.Component{
+class Nav extends React.Component{
     constructor(props){
         super(props);
         const minHeight = 60;
@@ -26,7 +26,7 @@ export default class Nav extends React.Component{
             onStartShouldSetPanResponder: (evt, gesture) => true,
             onMoveShouldSetPanResponder: (evt, gestureState) => true,
             onPanResponderMove: (evt, gesture) => {
-                const {pageID} = Store.getState().Global;
+                const {pageID} = this.props;
                 let currentHeight = height - gesture.moveY;
                 if(navHeight[pageID] > currentHeight && currentHeight > minHeight){
                     let percent = (currentHeight - minHeight)/(navHeight[pageID]-minHeight);
@@ -36,7 +36,7 @@ export default class Nav extends React.Component{
                 }
             },
             onPanResponderRelease: (evt, gesture) => {
-                const {pageID} = Store.getState().Global;
+                const {pageID} = this.props;
                 let currentHeight = height - gesture.moveY;
                 if(navHeight[pageID] > currentHeight && currentHeight > minHeight){
                     let percent = (currentHeight - minHeight)/(navHeight[pageID]-minHeight);
@@ -103,7 +103,7 @@ export default class Nav extends React.Component{
      **************************************************************************/
     moveNav(value, transition){
         const {dist, navHeight} = this.state;
-        const {pageID} = Store.getState().Global;
+        const {pageID} = this.props;
         const minHeight = 60;
         if(transition){
             Animated.timing(
@@ -142,7 +142,7 @@ export default class Nav extends React.Component{
      *                      in the properties listed in /src/Navigation/AppRoutes
      **************************************************************************/
     createNavScrollButtons(buttonText, currentID, expandable, routeName){
-        const {pageID} = Store.getState().Global;
+        const {pageID} = this.props;
         var {colorInverse, colorNormal} = this.state;
         //checks if the button is selected
         var buttonSelected, textOpacity;
@@ -233,3 +233,10 @@ export default class Nav extends React.Component{
         }       
     }
 }
+
+const mapStateToProps = (store) =>({
+    pageID: store.Global.pageID
+});
+
+const NavScreen = connect(mapStateToProps)(Nav);
+export default NavScreen;

@@ -409,8 +409,8 @@ function updateAccountInfo(){
             accountData["group_unique_id"] = resp["group_unique_id"];
             accountData["servers"] = resp["servers"];
             AsyncStorage.setItem("accountInfo", JSON.stringify(accountData));
-            return Store.dispatch({type:"SET_ACCOUNT_INFO", payload: accountData});
-        }).then(() => {resolve()
+            Store.dispatch({type:"SET_ACCOUNT_INFO", payload: accountData});
+            resolve(accountData);
         }).catch((err) => {reject("internal error in updateAccountInfo " + err)})
     });
 }
@@ -1126,6 +1126,9 @@ module.exports = {
     retrieveAccountInfo: retrieveAccountInfo,
     ping: ping,
     
+    //update
+    updateAccountInfo: updateAccountInfo,
+
     //create
     createPost: createPost,
     createEvent: createEvent,

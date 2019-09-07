@@ -481,8 +481,45 @@ const styles = StyleSheet.create({
         marginBottom:15,
     },
 
-
-
+    //styles for the 404 page (found in bareComponents.js)
+    home_404Text:{
+        fontFamily:"Roboto-Thin",
+        fontSize:70,
+        color:"black"
+    },
+    home_404Header:{
+        fontFamily:"Khula-Bold",
+        color:"black",
+        fontSize: 30,
+    },
+    home_404HeaderUnderlined:{
+        fontFamily:"Khula-Bold",
+        color:"black",
+        fontSize: 30,
+        borderBottomColor: "#5D75F7",
+        borderBottomWidth:3,
+    },
+    home_404Content:{
+        marginTop:28,
+        fontFamily:"Roboto-Light",
+        fontSize:18,  
+    },
+    home_404Button:{
+         backgroundColor:"#5D75F7",
+         fontFamily:"Roboto-Regular",
+         fontSize:16,
+         color:"white",
+         width:140,
+         height:35,
+         borderRadius:10
+    },
+    home_404ButtonText:{
+         fontFamily:"Roboto-Regular",
+         fontSize:16,
+         color:"white",
+         marginLeft:23,
+         marginTop:6
+    },
 
 
 

@@ -4,6 +4,7 @@ import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from "../../Styles";
 import BareComponents from '../../components/other/BareComponents';
+import {updateAccountInfo} from "../../Networking";
 
 /*************************************************************************
  * This class is meant to be generic. It handles the profile view for two
@@ -68,13 +69,11 @@ export default class Profile extends React.Component{
     * preserve the naming of 'uuid' from the API
     *************************************************************************/
     componentWillMount(){
-        const {accountInfo} = Store.getState().Global;
         if(this.state.isSelf){
-            var serverList = [];
-            accountInfo["groups"].map((item) => item.servers.map(
-                (item2) => serverList.push(item["name"] + item2["name"])));
-            this.setState({friendData: accountInfo["friends"], 
-                        serverList: serverList});
+            updateAccountInfo().then((accountData) =>{
+                this.setState({serverList: accountData["servers"], 
+                    friendData:accountData["friends"]});
+            }).catch((err) =>{console.log("error in profile ", err)});
         }
     }
 
@@ -109,6 +108,12 @@ export default class Profile extends React.Component{
 
     render(){
     const {accountInfo} = Store.getState().Global;
+    var hasAccountName = accountInfo["name"].length == 0;
+    var hasAccountSubName = accountInfo["sub_name"].length == 0;
+    var hasAccountImage = accountInfo["image_uri"].length == 0;
+    var accountName = [hasAccountName ? "Null (set name in settings)" : accountInfo["name"]];
+    var accountSubName = [hasAccountSubName? "(Set degree in settings)" : accountInfo["sub_name"]];
+    var accountImage = [hasAccountImage ? "https://www.dropbox.com/s/6g39sciybmtk1pu/person.png?dl=1" : accountInfo["image_uri"]];
     return(
     <View style={{flex: 1, flexDirection: "column", backgroundColor:"white"}}>
         
@@ -122,24 +127,24 @@ export default class Profile extends React.Component{
 
         {/* Profile image */}
         <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
-            <Image source={{uri:accountInfo["image_uri"]}} style={styles.profile_topViewImage}/>
+            <Image source={{uri:accountImage.toString()}} style={styles.profile_topViewImage}/>
         </View>
 
         {/* Name */}
         <View style={{flex:1, flexDirection:"row", alignSelf:"center", maxHeight:30, marginTop:20}}>
-            <Text style={styles.profile_name}>Kennith Kaniff</Text>
+            <Text style={styles.profile_name}>{accountName}</Text>
         </View>
 
         {/* short description (subName)*/}
         <View style={{flex:1, flexDirection:"row", alignSelf:"center",  maxHeight:25, marginBottom:20}}>
-            <Text style={styles.profile_subName}>Biological Engineering</Text>
+            <Text style={styles.profile_subName}>{accountSubName}</Text>
         </View>
 
         {/* servers/friends  */}
         <View style={{flex:2, flexDirection:"row", alignSelf:"center"}}>
             <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:1})}>
                 <View style={styles.profile_menuView}>
-                    <Text style={styles.profile_menuNumber}>4</Text>
+                    <Text style={styles.profile_menuNumber}>{accountInfo["servers"].length}</Text>
                     <Text style={styles.profile_menuText}>servers</Text>
                     {this.dotGen(1)}
                 </View>
@@ -147,7 +152,7 @@ export default class Profile extends React.Component{
 
             <TouchableWithoutFeedback onPress={() => this.setState({selectedMenuIndex:2})}>
                 <View style={styles.profile_menuView}>
-                    <Text style={styles.profile_menuNumber}>14</Text>
+                    <Text style={styles.profile_menuNumber}>{accountInfo["friends"].length}</Text>
                     <Text style={styles.profile_menuText}>friends</Text>
                     {this.dotGen(2)}
                 </View>

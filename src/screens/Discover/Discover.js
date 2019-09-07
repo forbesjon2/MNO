@@ -115,7 +115,7 @@ export default class Discover extends React.Component{
 
     render(){
     return(
-    <View style={{flex:1, flexDirection:"column"}}>
+    <View style={{flex:1, flexDirection:"column", backgroundColor:"white"}}>
     <ScrollView style={{marginTop:50}}>
 
         {/* Header */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Animated, Image, TouchableWithoutFeedback, ScrollView, FlatList, Dimensions, PanResponder} from 'react-native';
+import {Text, View, Animated, Image, TouchableOpacity,TouchableWithoutFeedback, ScrollView, FlatList, Dimensions, PanResponder} from 'react-native';
 import Store from "../../Store";
 import {Ionicons} from '@expo/vector-icons';
 import ContentView from "./ContentView";
@@ -218,14 +218,40 @@ export default class Home extends React.Component{
         return;
     }
 
+    /*************************************************************************
+    * This is used by the 404 page to redirect to the discover page so the user
+    * can subscribe to servers
+    *************************************************************************/
+    redirectToDiscover(){
+        Store.dispatch({type:"SET_PAGE", payload:3});
+        NavigationService.navigate("Discover");
+    }
 
 
+
+    /*************************************************************************
+    * render method. Returns the page's content. It either returns the 404
+    * page or the content
+    * 
+    * The home page's 404 page will appear when the user has a valid email, 
+    * is subscribed to a group, but is not subscribed to any servers. If that
+    * is not the case, than the main content will appear.
+    *************************************************************************/
     render(){
-        let navOpen = Store.getState().Global.showNav;
-        console.log("navopen value ", navOpen);
-        Store.dispatch({type:"SHOW_NAV"});
+    Store.dispatch({type:"SHOW_NAV"});
+
     if(this.state.currentGroup == null){
-        return(<View style={{flex:1,backgroundColor:"blue", top:0, bottom:0}}></View>)
+        return(
+            <View style={{flex:1, flexDirection:"column", paddingHorizontal:20, backgroundColor:"white", top:0, bottom:0}}>
+                <View style={{flex:1}}></View>
+                <View style={{flex:2}}><Text style={styles.home_404Text}>404</Text></View>
+                <View style={{flex:1, flexDirection:"row"}}><Text style={styles.home_404HeaderUnderlined}>Something's</Text><Text style={styles.home_404Header}> missing...</Text></View>
+                <View style={{flex:2}}><Text style={styles.home_404Content}>There's nothing to display here because you're account isn't following any servers.</Text></View>
+                <View style={{flex:1}}><TouchableOpacity style={styles.home_404Button} onPress={() => this.redirectToDiscover()}><Text style={styles.home_404ButtonText}>Find servers</Text></TouchableOpacity></View>
+                <View style={{flex:5}}></View>
+            </View>);
+
+    //main content
     }else{
     const currentGroupContent = this.getHomeData();
     let handles = this.state.panResponder.panHandlers;
