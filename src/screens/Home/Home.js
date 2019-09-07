@@ -118,8 +118,11 @@ export default class Home extends React.Component{
 
     componentWillMount(){
         let homeData = this.state.homeData["data"][0];
-        let groupName = homeData["name"] + homeData["servers"][0]["name"];
+        var groupName;
+        if(homeData["servers"].length == 0) groupName = null;
+        else groupName = homeData["name"] + homeData["servers"][0]["name"];
         this.setState({currentGroup: groupName});
+        Store.dispatch({type:"SHOW_NAV"});
     }
 
     /**************************************************************************
@@ -218,6 +221,12 @@ export default class Home extends React.Component{
 
 
     render(){
+        let navOpen = Store.getState().Global.showNav;
+        console.log("navopen value ", navOpen);
+        Store.dispatch({type:"SHOW_NAV"});
+    if(this.state.currentGroup == null){
+        return(<View style={{flex:1,backgroundColor:"blue", top:0, bottom:0}}></View>)
+    }else{
     const currentGroupContent = this.getHomeData();
     let handles = this.state.panResponder.panHandlers;
     var height = Dimensions.get("window").height - 60;  //60 is the height of the nav
@@ -266,6 +275,7 @@ export default class Home extends React.Component{
     </View>
     );
     }
+}
 };
 
 function getServerDetails(components){

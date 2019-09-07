@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Button} from "react-native";
 import Store from "../../Store";
 import * as Font from 'expo-font';
-const {loadFromStore, initializeWebsocket, retrieveServers, nukeStore, retrieveGroups, retrieveHomeData} = require("../../Networking");
+const {loadFromStore, initializeWebsocket, retrieveServers, getStatus, nukeStore, retrieveGroups, retrieveHomeData} = require("../../Networking");
 import NavigationService from "../../navigation/NavigationService";
 import {AsyncStorage} from 'react-native';
 
@@ -17,7 +17,7 @@ export default class Loading extends React.Component{
         }
     }
     
-    async loadFontAsync (){
+    loadFontAsync (){
         return Promise.all([
             Font.loadAsync({
                 'DidactGothic-Regular': require('../../../assets/fonts/DidactGothic-Regular.ttf'),
@@ -82,7 +82,16 @@ export default class Loading extends React.Component{
 
     signIn(){
         this.setState({text: "Signing in..."});
-        retrieveHomeData().catch((err) =>{this.reset();});
+        var accountData = Store.getState().Global.accountInfo;
+        getStatus().then((isVerified)=>{
+            isVerified = JSON.parse(isVerified);
+            if(isVerified.email_verified){
+                retrieveHomeData();
+                NavigationService.navigate("Home");
+            }else{
+                NavigationService.navigate("ValidateEmail", {group_id: accountData["groups"][0]});    
+            }
+        }).catch((err) =>{this.reset();});
     }
 
     componentDidMount(){
@@ -95,9 +104,7 @@ export default class Loading extends React.Component{
             default:
                 this.init();
         }
-        }catch(e){
-
-        }
+        }catch(e){}
     }
 
     
@@ -109,6 +116,7 @@ export default class Loading extends React.Component{
     }
 
     render(){
+        // nukeStore();     //reset button
     return(
     <View style={{flex:1, backgroundColor:"black", marginTop:30}}>
         <Text style={{fontSize:24, color:"white"}}>{this.state.text}</Text>

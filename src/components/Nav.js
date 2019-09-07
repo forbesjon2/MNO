@@ -55,7 +55,6 @@ export default class Nav extends React.Component{
             colorInverse:"#FFFFFF",
             colorNormal: "#000000",
             navHeight: navHeight,
-            navExpanded: false, 
             panResponder,
             dist: new Animated.Value(60),
             distPercent
@@ -199,9 +198,8 @@ export default class Nav extends React.Component{
 
     render(){
         const {dist, colorNormal, colorInverse} = this.state;
-        const {showNav} = Store.getState().Global;
         let handles = this.state.panResponder.panHandlers;
-        if(showNav == true){
+        if(this.props.showNav){
         return(
         <TouchableWithoutFeedback onPressOut={() => Keyboard.dismiss()}>
         <Animated.View style={[{height: dist}]}>

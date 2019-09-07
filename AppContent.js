@@ -16,8 +16,8 @@ class AppContent extends React.Component{
         }
     }
 
-
     render(){
+        console.log("appcontent")
     //connection view logic
     const {connectionView, mainView} = this.state;
     var {isOpen, isConnecting} = this.props;
@@ -37,7 +37,7 @@ class AppContent extends React.Component{
             </Animated.View>
             <Animated.View style={{flex: 1, right:mainView}}>
                 <AppRoutes ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}/>
-                <Nav />
+                <Nav showNav={this.props.showNav}/>
             </Animated.View>
         </KeyboardAvoidingView>
     </SafeAreaView>);
@@ -50,7 +50,7 @@ class AppContent extends React.Component{
             </Animated.View>
             <Animated.View style={{flex: 1, right:mainView}}>
                 <AppRoutes ref={navigatorRef => {NavigationService.setTopLevelNavigator(navigatorRef);}}/>
-                <Nav />
+                <Nav showNav={this.props.showNav}/>
             </Animated.View>
         </KeyboardAvoidingView>
     </View>);}
@@ -60,7 +60,8 @@ class AppContent extends React.Component{
 const mapStateToProps = (store) =>({
     safeAreaBackground: store.Global.safeAreaBackground,
     isOpen: store.Global.connectionView,
-    isConnecting: store.Global.connectionViewConnecting
+    isConnecting: store.Global.connectionViewConnecting,
+    showNav: store.Global.showNav
 });
 
 const AppContentScreen = connect(mapStateToProps)(AppContent);

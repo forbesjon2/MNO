@@ -73,7 +73,6 @@ export default class ValidateEmail extends React.Component{
             return;
         }
         await groupSub(email, group_id, user_id).catch((err) => Alert.alert("Request error", err, [{text:"Ok"}]));
-        // console.log(msg);
         this.setState({statusMessage:"Sent at " + currentTime.toLocaleTimeString()})
     }
 
@@ -81,7 +80,7 @@ export default class ValidateEmail extends React.Component{
         this.getGroupID().then((group_id) =>{
             return retrieveServers(group_id);
         }).then(() =>{
-            console.log("checkIfValid in validate email successfully retrieved servers");
+            this.props.navigation.navigate("Loading", {source: "signin"});
         }).catch((err) =>{
             console.log("error in checkIfValid ", err);
         });
