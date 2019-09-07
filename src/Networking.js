@@ -523,18 +523,23 @@ function retrieveEvents(){
             //need user email, 
             const accountData = await Store.getState().Global.accountInfo;
             const session_token = await Store.getState().Global.sessionToken;
-            const eventIDs = await this.retrieveIDForEvents();
+            const eventIDs = await retrieveIDForEvents();
+            console.log("Event ids ", eventIDs);
             var currentDate = new Date();
             currentDate.setMonth(currentDate.getMonth() + 4);
-            console.log("Sending date ", currentDate.toISOString());
-            console.log("got the following id's to retrieve events... ", eventIDs);
             ws.send('{"type":"retrieve","action":"get_events", "payload":{"username":"' + accountData["email"] + '", "session_token":"' 
-                + session_token + '", "sub_list":' + eventIDs + ', "date_created":"' + currentDate.toISOString() + '"}}');
+                + session_token + '", "sub_list":' + JSON.stringify(eventIDs) + ', "date_created":"' + currentDate.toISOString() + '"}}');
             return ws;
         }).then((ws) =>{
             ws.onmessage = (message) => {
-                console.log("retrieved message from server in getevents ", message["data"]);
-                resolve(JSON.parse(message["data"]));
+                if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    reject(message["data"]);
+                }else{
+                    console.log("retrieved message from server in getevents ", message["data"]);
+                    Store.dispatch({type:"SET_CALENDAR_DATA", payload:{"events":message["data"]}});
+                    AsyncStorage.setItem("calendarData", JSON.stringify({"events":message["data"]}));
+                    resolve(JSON.parse(message["data"]));
+                }
             }
             ws.onerror = (err) => {reject(err)}
         }).catch((err) => {
@@ -1068,18 +1073,14 @@ return new Promise((resolve, reject) => {
  * (add friends?)
  * 
  * response:
- * [
- *  {uuid:"<uuid of group/user/server>", type:"<type>"},
- *  {uuid:"<uuid of group/user/server>", type:"<type>"},
- *  ...
- * ]
+ * ["<uuid of group/user/server>", "<uuid of group/user/server>"...]
  ***********************************************************************/
 function retrieveIDForEvents(){
     const accountData = Store.getState().Global.accountInfo;
     var idList = [];
-    for(let i in accountData["groups"]) idList.push({uuid:accountData["groups"][i], type:"group"});
-    for(let i in accountData["servers"]) idList.push({uuid:accountData["servers"][i], type:"server"});
-    idList.push({uuid:accountData["user_id"][i], type:"user"});
+    for(let i in accountData["groups"]) idList.push(accountData["groups"][i]);
+    for(let i in accountData["servers"]) idList.push(accountData["servers"][i]);
+    idList.push(accountData["user_id"]);
     return idList;
 }
 

@@ -4,6 +4,8 @@ import {CalendarList} from "react-native-calendars";
 import NavigationService from "../../navigation/NavigationService";
 import {styles} from "../../Styles";
 import Store from "../../Store";
+import {connect} from 'react-redux';
+import {retrieveEvents} from "../../Networking";
 
 
 /**
@@ -13,7 +15,7 @@ import Store from "../../Store";
  * 
  * snap calendar using react-native-snap-carousel
  */
-export default class Events extends React.Component{
+class Events extends React.Component{
     static navigationOptions = ({navigation}) => ({
         title: "Events",
         header: null,
@@ -27,7 +29,9 @@ export default class Events extends React.Component{
         Store.dispatch({type:"SET_SAFE_AREA_BACKGROUND", payload:"#ffffff"});
     }
 
-
+    componentWillMount(){
+        if(Store.getState().Global.calendarData == null) retrieveEvents();
+    }
 
     /*************************************************************************
      * This is used to show the list of events that are relevant to a certain
@@ -85,6 +89,9 @@ export default class Events extends React.Component{
 
     render(){
         var currentDate = this.state.currentDate;
+        if(Store.getState().Global.calendarData == null){
+            return(<View style={{flex:1,backgroundColor:"blue", top:0, bottom:0}}></View>);
+        }else{
         return(
             <ScrollView style={{flex:1}}>
                 <CalendarList
@@ -143,4 +150,12 @@ export default class Events extends React.Component{
             </ScrollView>
         );
     }
+    }
 };
+
+const mapStateToProps = (store) =>({
+    calendarData: store.Global.calendarData,
+});
+
+const EventsScreen = connect(mapStateToProps)(Events);
+export default EventsScreen;

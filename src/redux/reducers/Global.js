@@ -50,7 +50,8 @@ export default function reducer(
             {dispatch:"SET_SESSION_TOKEN", variable:"sessionToken", lastPinged:"", maxTimeoutMs:"31556952000"},
             {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""},
-            {dispatch:"SET_GROUP_DATA", variable:"groupData", lastPinged:"", maxTimeoutMs:""}
+            {dispatch:"SET_GROUP_DATA", variable:"groupData", lastPinged:"", maxTimeoutMs:""},
+            {dispatch:"SET_CALENDAR_DATA", variable:"calendarData", lastPinged:"", maxTimeoutMs:""}
         ]
     },
     action

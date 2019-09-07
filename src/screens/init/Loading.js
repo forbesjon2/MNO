@@ -86,8 +86,9 @@ export default class Loading extends React.Component{
         getStatus().then((isVerified)=>{
             isVerified = JSON.parse(isVerified);
             if(isVerified.email_verified){
-                retrieveHomeData();
-                NavigationService.navigate("Home");
+                retrieveHomeData().then(() =>{
+                    NavigationService.navigate("Home");
+                })
             }else{
                 NavigationService.navigate("ValidateEmail", {group_id: accountData["groups"][0]});    
             }

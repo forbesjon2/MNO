@@ -36,11 +36,12 @@ export default class SignIn extends React.Component{
 
     login(){
         if(!this.state.passwordEdited || !this.state.emailEdited){
-            Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}])
+            Alert.alert("Validation error", "Not all fields are filled out", [{text:"Ok"}]);
         } else{
             this.setState({loginButtonText: "Loading...", enableLoginButton: false});
             login(this.state.email, this.state.password).then((resp) =>{
                 console.log("got resp signin ", resp);
+                console.log("REV "+ resp["email_verified"])
                 if(resp["email_verified"]) this.props.navigation.navigate("Loading", {source: "signin"});
                 else this.props.navigation.navigate("ValidateEmail", {group_id:resp["group_id"]});
             }).catch((err) =>{
