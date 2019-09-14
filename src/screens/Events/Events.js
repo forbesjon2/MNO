@@ -47,29 +47,30 @@ class Events extends React.Component{
         const {currentDate} = this.state;
         let returnObj = [];
         let count = 0;
-        for(let i in calendarData["events"]){
-            let tempDate = new Date(calendarData["events"][i]["start_time"]);
+        var calendarEvents = JSON.parse(calendarData["events"])
+        for(let i in calendarEvents){
+            let tempDate = new Date(calendarEvents[i]["start_time"]);
             if(this.state.currentDate.toLocaleDateString() == tempDate.toLocaleDateString()){
                 let startTime = tempDate.toLocaleTimeString()
-                let endTime = (new Date(calendarData["events"][i]["end_time"])).toLocaleTimeString();
+                let endTime = (new Date(calendarEvents[i]["end_time"])).toLocaleTimeString();
                 returnObj.push(
                 <TouchableWithoutFeedback key={count} onPress={() =>{
                     NavigationService.navigate("SingleEventView", {
-                        "heading":calendarData["events"][i]["heading"],
-                        "location":calendarData["events"][i]["location"], 
-                        "start_time":calendarData["events"][i]["start_time"], 
-                        "end_time":calendarData["events"][i]["end_time"], 
-                        "description": calendarData["events"][i]["description"],
-                        "attending": calendarData["events"][i]["attending"]});
-                }}>
+                        "heading":calendarEvents[i]["heading"],
+                        "location":calendarEvents[i]["location"], 
+                        "start_time":calendarEvents[i]["start_time"], 
+                        "end_time":calendarEvents[i]["end_time"], 
+                        "description": calendarEvents[i]["description"],
+                        "attending": calendarEvents[i]["attending"]});
+}}>
                             <View style={[styles.events_eventView]}>
                     <View style={styles.events_eventTimeView}>
                         <Text style={styles.events_eventTimeViewText}>{startTime}</Text>
                         <Text style={styles.events_eventTimeViewText}>{endTime}</Text>
                     </View>
                     <View style={styles.events_eventViewTwo}>
-                        <Text style={styles.events_eventHeading} numberOfLines={1}>{calendarData["events"][i]["heading"]}</Text>
-                        <Text style={styles.events_eventDescription} numberOfLines={1}>{calendarData["events"][i]["description"]}</Text>
+                        <Text style={styles.events_eventHeading} numberOfLines={1}>{calendarEvents[i]["heading"]}</Text>
+                        <Text style={styles.events_eventDescription} numberOfLines={1}>{calendarEvents[i]["description"]}</Text>
                     </View>
                 </View>
                 </TouchableWithoutFeedback>
@@ -136,7 +137,7 @@ class Events extends React.Component{
                 // the list of items that have to be displayed in agenda. If you want to render item as empty date
 
                 // handle event when date is pressed
-                onDayPress={(day) => this.setState({currentDate: new Date(day.dateString)})}
+                onDayPress={(day) => {this.setState({currentDate: new Date(day.dateString)});}}
                 // this is the current day. Different from markedDates
                 current={this.state.currentDate}
                 // markedDates are important TODO add functionality for marked dates

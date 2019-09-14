@@ -244,8 +244,8 @@ export default class Home extends React.Component{
         return(
             <View style={{flex:1, flexDirection:"column", paddingHorizontal:20, backgroundColor:"white", top:0, bottom:0}}>
                 <View style={{flex:1}}></View>
-                <View style={{flex:2}}><Text style={styles.home_404Text}>404</Text></View>
-                <View style={{flex:1, flexDirection:"row"}}><Text style={styles.home_404HeaderUnderlined}>Something's</Text><Text style={styles.home_404Header}> missing...</Text></View>
+                <View style={{flex:2}}><Text style={styles.home_404Text}>Hi there!</Text></View>
+                <View style={{flex:1, flexDirection:"row"}}><Text style={styles.home_404HeaderUnderlined}>Let's</Text><Text style={styles.home_404Header}> get started...</Text></View>
                 <View style={{flex:2}}><Text style={styles.home_404Content}>There's nothing to display here because you're account isn't following any servers.</Text></View>
                 <View style={{flex:1}}><TouchableOpacity style={styles.home_404Button} onPress={() => this.redirectToDiscover()}><Text style={styles.home_404ButtonText}>Find servers</Text></TouchableOpacity></View>
                 <View style={{flex:5}}></View>

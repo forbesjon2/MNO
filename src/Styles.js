@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
     //styles for the 404 page (found in bareComponents.js)
     home_404Text:{
         fontFamily:"Roboto-Thin",
-        fontSize:70,
+        fontSize:60,
         color:"black"
     },
     home_404Header:{
