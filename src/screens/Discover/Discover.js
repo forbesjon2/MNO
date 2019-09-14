@@ -45,11 +45,25 @@ export default class Discover extends React.Component{
     * data
     *************************************************************************/
    componentWillMount(){
-        let profileData = JSON.stringify(require("../../../data/UsersData.json"));
-        let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
-        let serverData = 
-        profileData = JSON.parse(profileData)["users"];
-        this.setState({groupData: groupData, groupSearchData:groupData, profileData:profileData, profileSearchData:profileData});
+        retrieveUsers().then(() =>{
+            console.log("ret events in discover");
+            return retrieveEvents();
+        }).then(() =>{
+            console.log("servers in discover");
+            //FIXME edit this to support multiple servers
+            return retrieveServers(Store.getState().Global.accountInfo["groups"][0]);
+        }).then(() => {
+            console.log("Done. Parsin");
+            let profileData = JSON.parse(JSON.stringify(Store.getState().Global.usersData));
+            let serverData = JSON.parse(JSON.stringify(Store.getState().Global.serverData));
+            let eventData = JSON.parse(JSON.stringify(Store.getState().Global.calendarData));
+            this.setState({ profileData:profileData, profileSearchData:profileData, 
+                serverData: serverData, serverSearchData: serverData, 
+                eventData: eventData, eventSearchData: eventData});
+        }).catch((err) =>{
+            console.log("got error ", err);
+        })
+        
     }
 
     /*************************************************************************

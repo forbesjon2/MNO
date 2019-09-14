@@ -712,7 +712,9 @@ function getStatus(){
  * payload:
  *    {
  *      "uuid":"<user's uuid>",
- *      "group_uuid":"<group's uuid>"
+ *      "group_uuid":"<group's uuid>",
+ *      "session_token":"<user's session token>",
+ *      "username":"<user's email>"
  *    }
  * 
  * response:
@@ -724,7 +726,7 @@ function getStatus(){
  *      "image_uri":"<user profile image link>"
  *  }]
  * full query example
- * {"type":"retrieve","action":"get_group_users", "payload":{"uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "group_uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff"}}
+ * {"type":"retrieve","action":"get_group_users", "payload":{"uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "group_uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "session_token":"3ofi4i-43ifo-f3inio3", "username":"jack@twitter.com"}}
  * 
  * @argument data is the payload
  * @argument client is the instance of the cassandra-driver (connected to scylla)
@@ -733,11 +735,11 @@ function retrieveUsers(){
     return new Promise((resolve, reject) =>{
         initializeWebsocket().then((ws) =>{
             let accountData = Store.getState().Global.accountInfo;
-            let groupData = Store.getState().Global.groupData["groups"];
-            let groupList = [];
-            groupData.forEach((element) => {groupList.push(element["unique_id"])})
+            let sessionToken = Store.getState().Global.sessionToken;
             ws.send('{"type":"retrieve","action":"get_group_users", "payload":{"uuid":"' + accountData["user_id"] 
-                    + '", "group_uuid":"' + groupList[0] + '"}}');
+                    + '", "group_uuid":"' + accountData["groups"][0] + '", "session_token":"' + sessionToken 
+                    + '", "username":"' + accountData["email"] + '"}}');
+            return ws;
         }).then((ws) =>{
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 40 && message["data"].toString().includes("error")){

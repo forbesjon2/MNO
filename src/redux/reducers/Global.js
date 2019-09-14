@@ -16,8 +16,9 @@ export default function reducer(
             friends:[],
 
             //appears as if a list of groups is possible but its not.
-            // Login logic is mostly to blame for this. Keeping it this
-            //way for easier future improvements
+            // Login logic is mostly to blame for this as well as some
+            //functions in Networking.js, Discover.js (look for FIXME messages). 
+            //Keeping it this way for easier future improvements
             groups:[],      
             servers: []
         },
