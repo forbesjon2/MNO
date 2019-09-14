@@ -34,6 +34,7 @@ export default function reducer(
         calendarData: null,
         groupData: {groups:[]},
         serverData: null,
+        usersData: null,
         chats: null,
         homeData: null,
         messagesHome: null,
@@ -51,7 +52,8 @@ export default function reducer(
             {dispatch:"SET_ACCOUNT_INFO", variable:"accountInfo", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_GROUP_DATA", variable:"groupData", lastPinged:"", maxTimeoutMs:""},
-            {dispatch:"SET_CALENDAR_DATA", variable:"calendarData", lastPinged:"", maxTimeoutMs:""}
+            {dispatch:"SET_CALENDAR_DATA", variable:"calendarData", lastPinged:"", maxTimeoutMs:""},
+            {dispatch:"SET_USERS_DATA", variable:"usersData", lastPinged:"", maxTimeoutMs:""}
         ]
     },
     action
@@ -127,6 +129,8 @@ export default function reducer(
          * 
          *      SET_SERVER_DATA
          * 
+         *      SET_USERS_DATA
+         * 
          *      SHOW_NAV
          * can be used by pages listed inside appRoutes.js to show the navBar
          *      HIDE_NAV
@@ -142,6 +146,7 @@ export default function reducer(
         case "SET_HOME_DATA": return{...state, homeData: action.payload};
         case "SET_MESSAGES_HOME": return{...state, messagesHome: action.payload};
         case "SET_SERVER_DATA": return{...state, serverData: action.payload};
+        case "SET_USERS_DATA": return{...state, usersData: action.payload};
         case "SHOW_NAV": return{...state, showNav: true};
         case "HIDE_NAV": return{...state, showNav: false};
         case "SET_LOADED": return{...state, loading:false};

@@ -28,10 +28,12 @@ import NavigationService from "../../navigation/NavigationService";
 *************************************************************************/
 export default class BareComponents extends React.PureComponent{
     /*************************************************************************
-    * 
+    * Given an image and a defined max width (stored as 'width' in this function)
+    * scale the image such that it doesn't exceed the 'width' variable while 
+    * keeping its integrity (no stretching or shrinking on the height side)
     * 
     * This component is used by 
-    *       src/init/SchoolSearch.js as well as 
+    *       src/init/SchoolSearch.js
     *       src/Discover/Discover.js
     *       
     * 
@@ -46,8 +48,27 @@ export default class BareComponents extends React.PureComponent{
 
 
 
+    /*************************************************************************
+    * This returns a single element in the list of events to display in discover
+    * 
+    * This component is used by 
+    *       src/Discover/Discover.js
+    *************************************************************************/
+    eventTile(){
+        return(<Text>Event Tile</Text>);
+    }
 
 
+    /*************************************************************************
+    * This returns a single element in the list of servers to display in 
+    * discover
+    * 
+    * This component is used by 
+    *       src/Discover/Discover.js
+    *************************************************************************/
+    serverTile(){
+        return(<Text>Server Tile</Text>);
+    }
 
 
 
@@ -94,7 +115,6 @@ export default class BareComponents extends React.PureComponent{
      * @argument regexStr 
      * 
      * @argument inputStr 
-     * 
      * 
     *************************************************************************/
     simpleMatchFunction(regexStr, matchData){
@@ -168,7 +188,6 @@ export default class BareComponents extends React.PureComponent{
      * this component is used by
      *      /src/Home/Home.js
      * 
-     * TODO I will eventually link this to the user profile screen
      * @param profileSearchData requires an alias, icon url, and uuid (not shown)
      *      {"alias":"<some alias>", "icon":"<image url>", "uuid":"<user uuid>"}
      *************************************************************************/
@@ -195,7 +214,7 @@ export default class BareComponents extends React.PureComponent{
     * of the expected format of the input data can be found in GroupData.json
     * 
     * This component is used by 
-    *       src/init/SchoolSearch.js as well as 
+    *       src/init/SchoolSearch.js
     *       src/Discover/Discover.js
     * 
     * @argument item expects the following format (uuid is used elsewhere)

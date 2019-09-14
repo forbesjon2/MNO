@@ -700,6 +700,58 @@ function getStatus(){
 }
 
 
+/*********************************************************************
+ * Returns a list of users that belong to a particular group given 
+ * that groups uuid. This is then stored in the usersData redux
+ * variable (and asyncStorage item)
+ * 
+ * FIXME modify this to add multi group support
+ * 
+ * type: retrieve,
+ * action: get_group_users
+ * payload:
+ *    {
+ *      "uuid":"<user's uuid>",
+ *      "group_uuid":"<group's uuid>"
+ *    }
+ * 
+ * response:
+ *  [{
+ *      "name":"<user's name>",
+ *      "unique_id":"<user's uuid'>",
+ *      "sub_name":"<user's sub name>",
+ *      "friends": ["uuid1", "uuid2"],
+ *      "image_uri":"<user profile image link>"
+ *  }]
+ * full query example
+ * {"type":"retrieve","action":"get_group_users", "payload":{"uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff", "group_uuid":"91727e5b-6e21-4eed-8bbd-0303944f64ff"}}
+ * 
+ * @argument data is the payload
+ * @argument client is the instance of the cassandra-driver (connected to scylla)
+ **********************************************************************/
+function retrieveUsers(){
+    return new Promise((resolve, reject) =>{
+        initializeWebsocket().then((ws) =>{
+            let accountData = Store.getState().Global.accountInfo;
+            let groupData = Store.getState().Global.groupData["groups"];
+            let groupList = [];
+            groupData.forEach((element) => {groupList.push(element["unique_id"])})
+            ws.send('{"type":"retrieve","action":"get_group_users", "payload":{"uuid":"' + accountData["user_id"] 
+                    + '", "group_uuid":"' + groupList[0] + '"}}');
+        }).then((ws) =>{
+            ws.onmessage = (message) => {
+                if(message["data"].toString().length < 40 && message["data"].toString().includes("error")){
+                    reject(message["data"]);
+                }else{
+                    AsyncStorage.setItem("usersData", JSON.stringify(message["data"]));
+                    Store.dispatch({type:"SET_USERS_DATA", payload: message["data"]});
+                    resolve(message["data"]);
+                }
+            }
+            ws.onerror = (err) => {reject(err)}
+        }).catch((err) =>{reject(err);});
+    });
+}
 
 
 
@@ -761,7 +813,9 @@ function retrievePosts(server_id, date){
                 //handle errors & resp
             }
             ws.onerror = (err) => reject(err);
-        })
+        }).catch((err) =>{
+            reject(err);
+        });
     });
 }
 
@@ -1086,26 +1140,6 @@ function retrieveIDForEvents(){
 
 
 
-// async function oldInit(){
-//         const cd = require("../data/CalendarData.json");
-//         const ct = require("../data/Chats.json");
-//         const hd = require("../data/HomeData.json");
-//         const mh = require("../data/MessagesHome.json");
-//         const ai = require("../data/AccountInfo.json");
-//         const ab = require("../data/GroupData.json");
-//         const as = require("../data/ServerData.json");
-//         Store.dispatch({type: "SET_CALENDAR_DATA", payload: cd});
-//         Store.dispatch({type: "SET_CHATS", payload: ab});
-//         Store.dispatch({type: "SET_CHATS", payload: ct});
-//         Store.dispatch({type: "SET_HOME_DATA", payload: hd});
-//         Store.dispatch({type: "SET_MESSAGES_HOME", payload: mh});
-//         Store.dispatch({type: "SET_ACCOUNT_INFO", payload: ai});
-//         Store.dispatch({type: "SET_SERVER_DATA", payload: as});
-//         Store.dispatch({type: "SET_CURRENT_GROUP", payload: "" + hd["data"][0]["name"] + hd["data"][0]["servers"][0]["name"]});
-// }
-
-
-
 
 
 module.exports = {
@@ -1117,6 +1151,8 @@ module.exports = {
     initializeWebsocket: initializeWebsocket,
     retrieveGroups: retrieveGroups,
     retrieveServers: retrieveServers,
+    retrieveServer: retrieveServer,
+    retrieveUsers: retrieveUsers,
     retrieveHomeData: retrieveHomeData,
     retrieveEvents: retrieveEvents,
     login: login,

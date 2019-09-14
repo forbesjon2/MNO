@@ -4,6 +4,7 @@ import {Ionicons} from '@expo/vector-icons';
 import BareComponents from "../../components/other/BareComponents";
 import {styles} from "../../Styles";
 import Store from "../../Store";
+import {retrieveUsers, retrieveEvents, retrieveServers} from "../../Networking";
 
 export default class Discover extends React.Component{
     constructor(props){
@@ -20,6 +21,14 @@ export default class Discover extends React.Component{
             groupData:[],
             groupSearchData:[],
 
+            //events page
+            eventData:[],
+            eventSearchData:[],
+
+            //servers page
+            serverData:[],
+            serverSearchData:[],
+
             //profile page
             profileData:[],
             profileSearchData:[],
@@ -32,16 +41,13 @@ export default class Discover extends React.Component{
 
 
     /*************************************************************************
-    * This performs operations essential for icon sizing. 
-    * 
-    * For every Group (or school) it recieves from the API, it gets & calculates 
-    * the correct dimensions for the icon.
-    * 
-    * It then appends that to the state
+    * This performs operations essential for retrieving users, events, & server
+    * data
     *************************************************************************/
    componentWillMount(){
         let profileData = JSON.stringify(require("../../../data/UsersData.json"));
         let groupData = JSON.parse(JSON.stringify(Store.getState().Global.groupData["groups"]));
+        let serverData = 
         profileData = JSON.parse(profileData)["users"];
         this.setState({groupData: groupData, groupSearchData:groupData, profileData:profileData, profileSearchData:profileData});
     }
@@ -68,7 +74,7 @@ export default class Discover extends React.Component{
             if(this.state.selectedListID == infiniteList[i][1]) infList = infiniteList[i];
         }
 
-        const textArray = ["Servers", "Groups", "Profiles"];
+        const textArray = ["Servers", "Events", "Profiles"];
         if(selectedButton){
             return(
             <View>
@@ -86,20 +92,25 @@ export default class Discover extends React.Component{
 
 
     /*************************************************************************
-     * This is run every time an item (groups/profile/servers) on tripleList 
+     * This is run every time an item (events/profile/servers) on tripleList 
      * is selected
      *************************************************************************/
     itemSwitch(){
         switch(this.state.selectedListID){
+            case 0:
+                return(<Text>Servers page</Text>)
             case 1:
-                return(<FlatList 
-                    horizontal={true}
-                    data={this.state.groupSearchData}
-                    keyExtractor={this._keyExtractor}
-                    showsHorizontalScrollIndicator={false}
-                    style={{marginTop:40}}
-                    renderItem={({item}) => 
-                this.state.components.groupView(item, false)}/>);
+                return(<Text>Events page</Text>);
+                // return(<FlatList 
+                //     horizontal={true}
+                //     data={this.state.groupSearchData}
+                //     keyExtractor={this._keyExtractor}
+                //     showsHorizontalScrollIndicator={false}
+                //     style={{marginTop:40}}
+                //     renderItem={({item}) => 
+                // this.state.components.groupView(item, false)}/>);
+
+            
             case 2:
                 return(<FlatList
                     horizontal={false}
