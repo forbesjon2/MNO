@@ -1,6 +1,6 @@
 import Store from "./Store";
 import {AsyncStorage} from 'react-native';
-
+import NavigationService from "./navigation/NavigationService";
 
 /*********************************************************************
  * This class handles all communications between the server and the
@@ -85,11 +85,20 @@ function createPost(server_unique_id, user_unique_id, content, type, incog){
                 + '", "type":"' + type + '", "incog":' + incog + '}}'), ws];
         }).then((resp)=> {
             resp[1].onmessage = (message) => {
-                if(message["data"].includes("error")) reject(message["data"]);
-                else resolve(JSON.parse(message["data"]));
+                if(message["data"].includes("error")) {
+                    reject(message["data"]);
+                    errorEventHandler(message["data"]);
+                }
+                else {
+                    resolve(JSON.parse(message["data"]));
+                }
             }
-            resp[1].onerror = (err) => {reject(err)}
+            resp[1].onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) =>{
+            errorEventHandler(err);
             reject(err);
         });
     });
@@ -129,11 +138,18 @@ function createEvent(reference_unique_id, reference_type, heading, description, 
                 + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}'), ws];
         }).then((resp) =>{
             resp[1].onmessage = (message) => {
-                if(message["data"].includes("error")) reject(message["data"]);
+                if(message["data"].includes("error")){
+                    errorEventHandler(message["data"]);
+                    reject(message["data"]);
+                }
                 else resolve(JSON.parse(message["data"]));
             }
-            resp[1].onerror = (err) => {reject(err)}
+            resp[1].onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) =>{
+            errorEventHandler(err);
             reject("execution error in createEvent " + err);
         });
     });   
@@ -181,7 +197,10 @@ function createAccount(email, alias, group_id, password){
                 + alias + '", "password":"' + password + '", "device_id":""}}'), ws];
         }).then((resp) =>{
             resp[1].onmessage = (message) => {
-                if(message["data"].includes("error")) reject(message["data"]);
+                if(message["data"].includes("error")) {
+                    errorEventHandler(message["data"]);
+                    reject(message["data"]);
+                }
                 let user_id = message["data"].toString().split("  ")[0];
                 let session_token = message["data"].toString().split("  ")[1];
                 let account_info = Store.getState().Global.accountInfo;
@@ -194,8 +213,14 @@ function createAccount(email, alias, group_id, password){
                 Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
                 resolve("success");
             }
-            resp[1].onerror = (err) => {reject(err);}
-        }).catch((err) =>{reject("internal error in createAccount " + err);});
+            resp[1].onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
+        }).catch((err) =>{
+            errorEventHandler(err);
+            reject("internal error in createAccount " + err);
+        });
         
     });
 }
@@ -257,11 +282,18 @@ function createServer(server_name, alias, description, group_unique_id, ws){
                 + group_unique_id + '"}}');
         }).then((resp) => {
             resp[1].onmessage = (message) => {
-                if(message["data"].includes("error")) reject(message["data"]);
+                if(message["data"].includes("error")){
+                    errorEventHandler(message["data"]);
+                    reject(message["data"]);
+                }
                 resolve(message["data"]);
             }
-            resp[1].onerror = (err) => {reject(err);}
+            resp[1].onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) =>{
+            errorEventHandler(err);
             reject(err);
         })
     });
@@ -323,6 +355,7 @@ function login(email, password){
         }).then((resp) => {
             resp[1].onmessage = (message) => {
                 if(message["data"] == "error"){
+                    errorEventHandler(message["data"]);
                     reject("error");
                 }else{
                     let data = JSON.parse(message["data"]);
@@ -343,8 +376,12 @@ function login(email, password){
                     });
                 }
             }
-            resp[1].onerror = (err) => {reject(err);}
+            resp[1].onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in login " + err);
         });
     });
@@ -375,12 +412,18 @@ function login(email, password){
 function groupSub(email, group_id, user_id){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) => {
-            return [ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
-                        + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}'), ws];
-        }).then((resp) => {
-            resp[1].onmessage = (message) => {resolve(message);}
-            resp[1].onerror = (err) => {reject(err);}
+            ws.send('{"type":"update", "action":"follow_group", "payload":{"user_email":"' + email + '", '
+                        + '"group_unique_id":"' + group_id + '", "user_unique_id":"' + user_id + '"}}');
+            return ws;
+        }).then((ws) => {
+            //edit this to add error handling
+            ws.onmessage = (message) => {resolve(message);}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in groupSub " + err);
         });
     })
@@ -476,8 +519,12 @@ function retrieveGroups(){
                 Store.dispatch({type:"SET_GROUP_DATA", payload: groupData});
                 resolve(JSON.parse(message["data"]));
             }
-            ws.onerror = (err) => {reject(err)}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err)
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in retrieveGroups " + err);
         });
     });
@@ -524,7 +571,6 @@ function retrieveEvents(){
             const accountData = await Store.getState().Global.accountInfo;
             const session_token = await Store.getState().Global.sessionToken;
             const eventIDs = await retrieveIDForEvents();
-            console.log("Event ids ", eventIDs);
             var currentDate = new Date();
             currentDate.setMonth(currentDate.getMonth() + 4);
             ws.send('{"type":"retrieve","action":"get_events", "payload":{"username":"' + accountData["email"] + '", "session_token":"' 
@@ -533,16 +579,20 @@ function retrieveEvents(){
         }).then((ws) =>{
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }else{
-                    console.log("retrieved message from server in getevents ", message["data"]);
                     Store.dispatch({type:"SET_CALENDAR_DATA", payload:{"events":message["data"]}});
                     AsyncStorage.setItem("calendarData", JSON.stringify({"events":message["data"]}));
                     resolve(JSON.parse(message["data"]));
                 }
             }
-            ws.onerror = (err) => {reject(err)}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in retrieveEvents " + err);
         });
     });
@@ -597,13 +647,18 @@ function retrieveServer(server_id, group_id){
                     + '", "server_unique_id":"' + server_id + '", "group_unique_id":"' + group_id + '"}}');
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }else{
                     resolve(message["data"]);
                 }
             }
-            ws.onerror = (err) => {reject(err);}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in retrieveServer " + err);
         });
     });
@@ -651,16 +706,22 @@ function retrieveServers(group_id){
             ws.send('{"type":"retrieve","action":"get_servers","payload":{"unique_id":"' + accountData["user_id"] + '",'
                     + '"username":"' + accountData["email"] + '", "session_token":"' + sessionToken 
                     + '", "group_unique_id":"' + group_id + '"}}');
-
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }else{
+                    Store.dispatch({type:"SET_SERVER_DATA", payload:message["data"]});
+                    AsyncStorage.setItem("serverData", JSON.stringify(message["data"]));
                     resolve(JSON.stringify(message["data"]));
                 }
             }
-            ws.onerror = (err) => {reject(err);}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in retrieveServers " + err);
         });
     });
@@ -687,13 +748,18 @@ function getStatus(){
 
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 50 && message["data"].toString().includes("error")){
+                    errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }else{
                     resolve(JSON.parse(JSON.stringify(message["data"])));
                 }
             }
-            ws.onerror = (err) => {reject(err);}
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) => {
+            errorEventHandler(err);
             reject("internal error in getStatus " + err);
         });
     })
@@ -743,6 +809,7 @@ function retrieveUsers(){
         }).then((ws) =>{
             ws.onmessage = (message) => {
                 if(message["data"].toString().length < 40 && message["data"].toString().includes("error")){
+                    errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }else{
                     AsyncStorage.setItem("usersData", JSON.stringify(message["data"]));
@@ -750,8 +817,14 @@ function retrieveUsers(){
                     resolve(message["data"]);
                 }
             }
-            ws.onerror = (err) => {reject(err)}
-        }).catch((err) =>{reject(err);});
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
+        }).catch((err) =>{
+            errorEventHandler(err);
+            reject(err);
+        });
     });
 }
 
@@ -814,8 +887,12 @@ function retrievePosts(server_id, date){
                 console.log("in networking get posts md " + message["data"]);
                 //handle errors & resp
             }
-            ws.onerror = (err) => reject(err);
+            ws.onerror = (err) => {
+                errorEventHandler(err);
+                reject(err);
+            }
         }).catch((err) =>{
+            errorEventHandler(err);
             reject(err);
         });
     });
@@ -977,11 +1054,18 @@ function retrieveAccountInfo(uuid){
             return ws;
         }).then((ws) => {
                 ws.onmessage = (message) => {
-                    if(message["data"] == "error") reject("error");
+                    if(message["data"] == "error") {
+                        errorEventHandler(message["data"]);
+                        reject("error");
+                    }
                     else resolve(JSON.parse(message["data"]));
                 }
-                ws.onerror = (err) => {reject(err)}
+                ws.onerror = (err) => {
+                    errorEventHandler(err);
+                    reject(err);
+                }
         }).catch((err) =>{
+            errorEventHandler(err);
             reject("internal error in retrieveAccountInfo " + err);
         });
     });
@@ -1138,6 +1222,29 @@ function retrieveIDForEvents(){
     for(let i in accountData["servers"]) idList.push(accountData["servers"][i]);
     idList.push(accountData["user_id"]);
     return idList;
+}
+
+
+
+/***********************************************************************
+ * Handles different errors that can be thrown by functions in this class.
+ * 
+ * The purpose of this function is to perform specific actions tailored
+ * to certain errors that are thrown.
+ * 
+ * Here is what is implemented right now
+ *      "error - invalid session": nukes the store and logs you out
+ * 
+ * @argument errorMessage   the error message returned by the server
+ ***********************************************************************/
+function errorEventHandler(errorMessage){
+    switch(errorMessage){
+        case "error - invalid session":
+            nukeStore();
+            NavigationService.navigate("Loading", {source:"signin"});
+            break;
+        
+    }
 }
 
 

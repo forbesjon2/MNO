@@ -133,6 +133,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         justifyContent:"center"
     },
+    discover_serverTileList:{
+        marginTop:40,
+        marginHorizontal:20,
+    },
 
 
 
@@ -1384,6 +1388,51 @@ const styles = StyleSheet.create({
         shadowRadius:20,
         shadowOpacity:0.8,
         shadowColor:"#000"
+    },
+
+    bareComponents_eventTile:{
+        borderBottomColor:"black",
+        height:140,
+        marginHorizontal:20,
+        borderBottomWidth:1,
+        flex:1,
+        flexDirection:"column",
+    },
+    bareComponents_eventHeading:{
+        fontFamily:"Khula-SemiBold",
+        fontSize:21,
+        marginTop:10,
+        color:"black"
+    },
+    bareComponents_eventDate:{
+        fontFamily:"Khula-Regular",
+        marginTop:4,
+        fontSize:16,
+        color:"black",
+    },
+    bareComponents_eventDescription:{
+        fontFamily:"Khula-Light",
+        marginTop:8,
+        fontSize:14,
+        color:"black",
+    },
+
+    bareComponents_serverTile:{
+        height:140,
+        flex:1,
+        padding:10,
+        marginVertical:6,
+        flexDirection:"column",
+        backgroundColor:"#EEEEEE",
+        borderRadius: 8
+    },
+    bareComponents_serverAttr:{
+        fontFamily:"Khula-Regular",
+        fontSize: 18,
+    },
+    bareComponents_serverHeader:{
+        fontFamily:"Khula-SemiBold",
+        fontSize:16,
     },
 
 

@@ -34,7 +34,7 @@ export default function reducer(
         notifications: [],
         calendarData: null,
         groupData: {groups:[]},
-        serverData: null,
+        serverData: null, //all servers in all groups that the user is apart of
         usersData: null,
         chats: null,
         homeData: null,
@@ -54,7 +54,9 @@ export default function reducer(
             {dispatch:"SET_HOME_DATA", variable:"homeData", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_GROUP_DATA", variable:"groupData", lastPinged:"", maxTimeoutMs:""},
             {dispatch:"SET_CALENDAR_DATA", variable:"calendarData", lastPinged:"", maxTimeoutMs:""},
-            {dispatch:"SET_USERS_DATA", variable:"usersData", lastPinged:"", maxTimeoutMs:""}
+            {dispatch:"SET_USERS_DATA", variable:"usersData", lastPinged:"", maxTimeoutMs:""},
+            {dispatch:"SET_SERVER_DATA", variable:"serverData", lastPinged:"", maxTimeoutMs:""},
+
         ]
     },
     action

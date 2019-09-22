@@ -53,10 +53,30 @@ export default class BareComponents extends React.PureComponent{
     * 
     * This component is used by 
     *       src/Discover/Discover.js
+    * {
+    * "index": 0,
+    * "item": {"attending":["55d9b392-732b-4ec4-92a5-1ee214d80ded",],
+    *   "description": "i've spent four years here and i should have a doctorates in coming up with creative excuses to get drunk",
+    *   "end_time": "2019-10-03T05:00:00.000Z",
+    *   "heading": "Moving out party",
+    *   "location": "UNL police department",
+    *   "start_time": "2019-09-22T05:43:39.035Z",
+    *   "type": "group",
+    *   "unique_id": "c677a5df-61aa-475e-af81-87a545eb4bef",
+    * },}
     *************************************************************************/
-    eventTile(item){
-        console.log("got item", item);
-        return(<Text>Event Tile</Text>);
+    eventTile(eventData){
+        eventData = eventData["item"];
+        let eventDate = new Date(eventData["start_time"]).toDateString();
+        return(
+            <TouchableOpacity onPress={() => console.log("Will redirect to event with uniqueID" + eventData["unique_id"])}>
+                <View style={styles.bareComponents_eventTile}>
+                    <Text style={styles.bareComponents_eventHeading}>{eventData["heading"]}</Text>
+                    <Text style={styles.bareComponents_eventDate}>{eventDate}</Text>
+                    <Text style={styles.bareComponents_eventDescription}>{eventData["description"]}</Text>
+                </View>
+            </TouchableOpacity>
+        );
     }
 
 
@@ -66,9 +86,27 @@ export default class BareComponents extends React.PureComponent{
     * 
     * This component is used by 
     *       src/Discover/Discover.js
+    * 
+    * [{"unique_id":"<uuid>","name":"<name>","alias":"<alias>","users":<num users>}]
     *************************************************************************/
-    serverTile(){
-        return(<Text>Server Tile</Text>);
+    serverTile(serverData){
+        return(<View>
+            <TouchableOpacity onPress={() => console.log("server tile redirect button")}>
+                <View style={styles.bareComponents_serverTile}>
+                    <Text numberOfLines={1} style={styles.bareComponents_serverAttr}>Alias: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>os2g</Text></Text>
+                    <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {marginBottom:10}]}>Followers: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>1</Text></Text>
+                    <Text numberOfLines={2} style={styles.bareComponents_serverHeader}>Operating system and open source group three point 0</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => console.log("server tile redirect button")}>
+                <View style={styles.bareComponents_serverTile}>
+                    <Text numberOfLines={1} style={styles.bareComponents_serverAttr}>Alias: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>os2g</Text></Text>
+                    <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {marginBottom:10}]}>Followers: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>1</Text></Text>
+                    <Text numberOfLines={2} style={styles.bareComponents_serverHeader}>Operating system and open source group three point 0</Text>
+                </View>
+            </TouchableOpacity>
+            </View>
+        );
     }
 
 
@@ -154,7 +192,6 @@ export default class BareComponents extends React.PureComponent{
      * TODO I will eventually link this to the user profile screen
      *************************************************************************/
     profileView(profileSearchData){
-        profileSearchData = JSON.parse(JSON.stringify(profileSearchData));
         return(
         <View style={styles.discover_friendRow}>
             <View style={{flex:1, flexDirection:"column", justifyContent:"center"}}>
@@ -168,11 +205,13 @@ export default class BareComponents extends React.PureComponent{
                     <Text style={styles.discover_friendFriendsText}>{profileSearchData["friends"]} friends</Text>
                 </View>
             </View>
+            <TouchableOpacity onPress={() => console.log("Would navigate to profile")}>
             <View style={{flex:1, flexDirection:"column"}}>
                 <View style={styles.discover_viewProfileBorder}>
                     <Text style={styles.discover_viewProfileText}>view</Text>
                 </View>
             </View>
+            </TouchableOpacity>
         </View>
         );
     }

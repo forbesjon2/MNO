@@ -50,7 +50,7 @@ export default class Discover extends React.Component{
             return retrieveEvents();
         }).then(() =>{
             console.log("servers in discover");
-            //FIXME edit this to support multiple servers
+            //FIXME edit this to support multiple servers (groups?)
             return retrieveServers(Store.getState().Global.accountInfo["groups"][0]);
         }).then(() => {
             console.log("Done. Parsin");
@@ -112,25 +112,30 @@ export default class Discover extends React.Component{
     itemSwitch(){
         switch(this.state.selectedListID){
             case 0:
-                return(<Text>Servers page</Text>)
+                console.log(this.state.serverSearchData)
+                return(<FlatList 
+                    horizontal={false}
+                    data={eval(this.state.serverSearchData)}
+                    keyExtractor={this._keyExtractor}
+                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.discover_serverTileList}
+                    renderItem={(item) => 
+                        this.state.components.serverTile(item)}/>);
             case 1:
-                
-                console.log(this.state.eventSearchData);
-                
-                // return(<FlatList 
-                //     horizontal={false}
-                //     data={this.state.eventSearchData["events"]}
-                //     keyExtractor={this._keyExtractor}
-                //     showsHorizontalScrollIndicator={false}
-                //     showsHorizontalScrollIndicator={false}
-                //     style={{marginTop:40}}
-                //     renderItem={(item) => 
-                //         this.state.components.eventTile(item)}/>);
-            
+                return(<FlatList 
+                    horizontal={false}
+                    data={eval(this.state.eventSearchData)}
+                    keyExtractor={this._keyExtractor}
+                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
+                    style={{marginTop:40}}
+                    renderItem={(item) => 
+                        this.state.components.eventTile(item)}/>);
             case 2:
                 return(<FlatList
                     horizontal={false}
-                    data={this.state.profileSearchData}
+                    data={eval(this.state.profileSearchData)}
                     keyExtractor={this._keyExtractor}
                     showsHorizontalScrollIndicator={false}
                     style={{marginTop:40}}
