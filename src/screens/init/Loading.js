@@ -117,7 +117,7 @@ export default class Loading extends React.Component{
     }
 
     render(){
-        // nukeStore();     //reset button
+        //nukeStore();     //reset button
     return(
     <View style={{flex:1, backgroundColor:"black", marginTop:30}}>
         <Text style={{fontSize:24, color:"white"}}>{this.state.text}</Text>

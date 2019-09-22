@@ -54,7 +54,8 @@ export default class BareComponents extends React.PureComponent{
     * This component is used by 
     *       src/Discover/Discover.js
     *************************************************************************/
-    eventTile(){
+    eventTile(item){
+        console.log("got item", item);
         return(<Text>Event Tile</Text>);
     }
 

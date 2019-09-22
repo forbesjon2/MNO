@@ -1,7 +1,7 @@
 export default function reducer(
     state = {
         //Global variables
-        URL: "ws://216.171.62.161:8080",
+        URL: "ws://cdn.ca2ie.net",
         loading: true,
         connectionView:false,
         connectionViewConnecting:true,

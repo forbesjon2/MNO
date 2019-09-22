@@ -56,7 +56,7 @@ export default class Discover extends React.Component{
             console.log("Done. Parsin");
             let profileData = JSON.parse(JSON.stringify(Store.getState().Global.usersData));
             let serverData = JSON.parse(JSON.stringify(Store.getState().Global.serverData));
-            let eventData = JSON.parse(JSON.stringify(Store.getState().Global.calendarData));
+            let eventData = JSON.parse(JSON.stringify(Store.getState().Global.calendarData))["events"];
             this.setState({ profileData:profileData, profileSearchData:profileData, 
                 serverData: serverData, serverSearchData: serverData, 
                 eventData: eventData, eventSearchData: eventData});
@@ -114,16 +114,18 @@ export default class Discover extends React.Component{
             case 0:
                 return(<Text>Servers page</Text>)
             case 1:
-                return(<Text>Events page</Text>);
+                
+                console.log(this.state.eventSearchData);
+                
                 // return(<FlatList 
-                //     horizontal={true}
-                //     data={this.state.groupSearchData}
+                //     horizontal={false}
+                //     data={this.state.eventSearchData["events"]}
                 //     keyExtractor={this._keyExtractor}
                 //     showsHorizontalScrollIndicator={false}
+                //     showsHorizontalScrollIndicator={false}
                 //     style={{marginTop:40}}
-                //     renderItem={({item}) => 
-                // this.state.components.groupView(item, false)}/>);
-
+                //     renderItem={(item) => 
+                //         this.state.components.eventTile(item)}/>);
             
             case 2:
                 return(<FlatList
