@@ -3,7 +3,7 @@ import {Text, View, Button, TouchableWithoutFeedback, ScrollView} from 'react-na
 import {Ionicons} from '@expo/vector-icons';
 import Store from "../../Store";
 import {styles} from "../../Styles";
-/**
+/*************************************************************************
  * This is the page that shows the individual event.
  * It appears when you click on a particular event in the
  * events page and redirects you here.
@@ -12,7 +12,7 @@ import {styles} from "../../Styles";
  * description/title of the evnet
  * 
  * TODO fix the date & implement attending
- */
+ *************************************************************************/
 export default class SingleEventView extends React.Component{
     static navigationOptions = ({navigation}) => ({
         header: null 

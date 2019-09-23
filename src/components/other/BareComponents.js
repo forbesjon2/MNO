@@ -90,8 +90,9 @@ export default class BareComponents extends React.PureComponent{
     * [{"unique_id":"<uuid>","name":"<name>","alias":"<alias>","users":<num users>}]
     *************************************************************************/
     serverTile(serverData){
+        serverData = serverData["item"];
         return(<View>
-            <TouchableOpacity onPress={() => console.log("server tile redirect button")}>
+            <TouchableOpacity onPress={() => {NavigationService.navigate("ServerView", {serverName: serverData["name"], serverAlias:serverData["alias"], serverID:serverData["unique_id"], followers:serverData["users"]})}}>
                 <View style={styles.bareComponents_serverTile}>
                     <Text numberOfLines={1} style={styles.bareComponents_serverAttr}>Alias: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>os2g</Text></Text>
                     <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {marginBottom:10}]}>Followers: <Text numberOfLines={1} style={[styles.bareComponents_serverAttr, {fontFamily:"Khula-Light"}]}>1</Text></Text>
