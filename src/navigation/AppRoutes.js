@@ -7,6 +7,8 @@ import SettingsRoutes from "../screens/Settings/SettingsRoutes";
 import profileScreen from '../screens/Profile/Profile';
 import InitialRoutes from "../screens/init/InitialRoutes";
 import Loading from "../screens/init/Loading";
+import GroupView from "../screens/Discover/GroupView";
+
 /*************************************************************************
  * HOME ROUTES
  * 
@@ -30,6 +32,7 @@ const homeRoutes = createSwitchNavigator({
  * Home: the main screen
  * Events: the events screen (with the calendar)
  * Discover: the search screen
+ * GroupView: 
  * Profile: your profile screen
  * Settings: the settings screen with many routes inside a stackNavigator
  *          located inside SettingsRoutes.js in the settings folder
@@ -41,6 +44,7 @@ const AppRoutes = createSwitchNavigator({
     // Messages:{screen: MessagesRoutes},
     Profile:{screen: profileScreen},
     Settings:{screen: SettingsRoutes},
+    GroupView:{screen:GroupView},
     InitialRoutes:{screen: InitialRoutes},
     Loading:{screen:Loading}
 }, {

@@ -80,11 +80,12 @@ import NavigationService from "./navigation/NavigationService";
 function createPost(server_unique_id, user_unique_id, content, type, incog){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
-            return [ws.send('{"type":"create", "action":"create_post", "payload":{"server_unique_id":"' + 
+            ws.send('{"type":"create", "action":"create_post", "payload":{"server_unique_id":"' + 
                 server_unique_id + '", "user_unique_id":"' + user_unique_id + '", "content":"' + content 
-                + '", "type":"' + type + '", "incog":' + incog + '}}'), ws];
-        }).then((resp)=> {
-            resp[1].onmessage = (message) => {
+                + '", "type":"' + type + '", "incog":' + incog + '}}');
+            return ws;
+        }).then((ws)=> {
+            ws.onmessage = (message) => {
                 if(message["data"].includes("error")) {
                     reject(message["data"]);
                     errorEventHandler(message["data"]);
@@ -93,7 +94,7 @@ function createPost(server_unique_id, user_unique_id, content, type, incog){
                     resolve(JSON.parse(message["data"]));
                 }
             }
-            resp[1].onerror = (err) => {
+            ws.onerror = (err) => {
                 errorEventHandler(err);
                 reject(err);
             }
@@ -132,19 +133,20 @@ function createPost(server_unique_id, user_unique_id, content, type, incog){
 function createEvent(reference_unique_id, reference_type, heading, description, location, start_time, end_time, attending){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
-            return [ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
+            ws.send('{"type":"create", "action":"create_event", "payload":{"reference_unique_id":"' + 
                 reference_unique_id + '", "reference_type":"' + reference_type + '", "heading":"' 
                 + heading + '", "description":"' + description + '", "location":"' + location
-                + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}'), ws];
-        }).then((resp) =>{
-            resp[1].onmessage = (message) => {
+                + '", "start_time":' + start_time + ', "end_time":' + end_time + '}}');
+            return  ws;
+        }).then((ws) =>{
+            ws.onmessage = (message) => {
                 if(message["data"].includes("error")){
                     errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }
                 else resolve(JSON.parse(message["data"]));
             }
-            resp[1].onerror = (err) => {
+            ws.onerror = (err) => {
                 errorEventHandler(err);
                 reject(err);
             }
@@ -192,28 +194,30 @@ function createEvent(reference_unique_id, reference_type, heading, description, 
 function createAccount(email, alias, group_id, password){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) =>{
-            return [ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
+            ws.send('{"type":"create", "action":"create_user", "payload":{"email":"' + email + '", "name":""'
                 + ', "description":"", "sub_name":"", "image_uri":"", "group_id":"' + group_id + '", "alias":"' 
-                + alias + '", "password":"' + password + '", "device_id":""}}'), ws];
-        }).then((resp) =>{
-            resp[1].onmessage = (message) => {
+                + alias + '", "password":"' + password + '", "device_id":""}}');
+            return ws;
+        }).then((ws) =>{
+            ws.onmessage = (message) => {
                 if(message["data"].includes("error")) {
                     errorEventHandler(message["data"]);
                     reject(message["data"]);
+                }else{
+                    let user_id = message["data"].toString().split("  ")[0];
+                    let session_token = message["data"].toString().split("  ")[1];
+                    let account_info = Store.getState().Global.accountInfo;
+                    account_info["user_id"] = user_id;
+                    account_info["email"] = email;
+                    account_info["groups"][0] = group_id;
+                    account_info["alias"] = alias;
+                    AsyncStorage.multiSet([["accountInfo", JSON.stringify(account_info)], ["sessionToken", JSON.stringify(session_token)]]).catch(()=> null);
+                    Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
+                    Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
+                    resolve("success");
                 }
-                let user_id = message["data"].toString().split("  ")[0];
-                let session_token = message["data"].toString().split("  ")[1];
-                let account_info = Store.getState().Global.accountInfo;
-                account_info["user_id"] = user_id;
-                account_info["email"] = email;
-                account_info["groups"][0] = group_id;
-                account_info["alias"] = alias;
-                AsyncStorage.multiSet([["accountInfo", JSON.stringify(account_info)], ["sessionToken", JSON.stringify(session_token)]]).catch(()=> null);
-                Store.dispatch({type:"SET_SESSION_TOKEN", payload:session_token});
-                Store.dispatch({type:"SET_ACCOUNT_INFO", payload:account_info});
-                resolve("success");
             }
-            resp[1].onerror = (err) => {
+            ws.onerror = (err) => {
                 errorEventHandler(err);
                 reject(err);
             }
@@ -275,20 +279,21 @@ function createServer(server_name, alias, description, group_unique_id, ws){
         var global_permission = "---";
 
         initializeWebsocket().then((ws) =>{
-            return ws.send('{"type":"create", "action":"create_server", "payload":{"user_id":"' 
+            ws.send('{"type":"create", "action":"create_server", "payload":{"user_id":"' 
                 + user_id + '", "user_email":"' + email + '", "name":"' + server_name 
                 + '", "session_token":"' + session_token + '", "alias":"' + alias +'", "description":"' 
                 + description + '", "global_permission":"' + global_permission + '", "group_unique_id":"' 
                 + group_unique_id + '"}}');
-        }).then((resp) => {
-            resp[1].onmessage = (message) => {
+            return ws
+        }).then((ws) => {
+            ws.onmessage = (message) => {
                 if(message["data"].includes("error")){
                     errorEventHandler(message["data"]);
                     reject(message["data"]);
                 }
                 resolve(message["data"]);
             }
-            resp[1].onerror = (err) => {
+            ws.onerror = (err) => {
                 errorEventHandler(err);
                 reject(err);
             }
@@ -351,9 +356,10 @@ function createServer(server_name, alias, description, group_unique_id, ws){
 function login(email, password){
     return new Promise((resolve, reject) => {
         initializeWebsocket().then((ws) => {
-            return [ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}'), ws];
-        }).then((resp) => {
-            resp[1].onmessage = (message) => {
+            ws.send('{"type":"retrieve", "action":"login", "payload":{"email":"' + email + '", "password":"' + password + '"}}');
+            return ws;
+        }).then((ws) => {
+            ws.onmessage = (message) => {
                 if(message["data"] == "error"){
                     errorEventHandler(message["data"]);
                     reject("error");
@@ -376,7 +382,7 @@ function login(email, password){
                     });
                 }
             }
-            resp[1].onerror = (err) => {
+            ws.onerror = (err) => {
                 errorEventHandler(err);
                 reject(err);
             }
