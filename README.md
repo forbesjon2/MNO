@@ -1,5 +1,6 @@
 # MNO
-miniowl app
+miniowl app. Intended to be a form of college social network app
+<br>
 https://youtu.be/eT0aPIVplrM
 <br>
 
